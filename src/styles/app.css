@@ -958,6 +958,14 @@ main:focus {
   padding: 0 0.25rem;
 }
 
+.move-code {
+  min-height: 4.5rem;
+  padding: 0.5rem 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  word-break: break-all;
+}
+
 .help-q {
   border-bottom: 1px solid var(--line-soft);
 }

@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import { BackHeader } from '../components/BackHeader';
+import { Link } from 'react-router-dom';
+import { MovePhone } from '../components/MovePhone';
 import { SwitchRow } from '../components/Switch';
+import { setUsageSharing } from '../lib/analytics';
 import { useStore, type Appearance, type TextSize } from '../state/store';
 
 const SIZES: [TextSize, string][] = [
@@ -55,19 +58,25 @@ export function Settings() {
         <div className="list">
           <SwitchRow label="Sound" description="Quiet clicks and a chime when you finish"
             checked={data.settings.sound} onChange={(sound) => updateSettings({ sound })} />
+          <SwitchRow label="Share anonymous usage" description="Counts like puzzles played, with nothing that identifies you"
+            checked={data.settings.shareUsage} onChange={(shareUsage) => { setUsageSharing(shareUsage); updateSettings({ shareUsage }); }} />
         </div>
+
+        <Link to="/help" className="btn btn--outline btn--block">Help and feedback</Link>
+
+        <MovePhone />
 
         <section className="section">
           <h2 className="kicker">Your account</h2>
           <div className="panel card--outline">
-            <span>No account needed. Your progress is saved on this device. Optional accounts, to keep progress across devices, come in a later update.</span>
+            <span>No account needed. Your progress is saved on this device. To move it to a new phone, use “Move to a new phone” above.</span>
           </div>
         </section>
 
         <section className="section">
           <h2 className="kicker">Privacy</h2>
           <div className="panel card--outline">
-            <span>Your puzzles, scores and private memories stay on this device. We don’t sell your data.</span>
+            <span>Your puzzles, scores and private memories stay on this device. With usage sharing on, we receive anonymous counts only. We don’t sell your data.</span>
           </div>
         </section>
 
