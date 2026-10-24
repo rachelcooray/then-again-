@@ -35,6 +35,6 @@ describe('App', () => {
     await userEvent.click(screen.getByRole('button', { name: /Reset all data/ }));
     await userEvent.click(screen.getByRole('button', { name: 'Reset' }));
     expect(document.documentElement.dataset.textSize).toBe('standard');
-    expect(screen.getByRole('status')).toHaveTextContent('reset');
+    expect(screen.getByText('All data on this device has been reset.')).toBeInTheDocument();
   });
 });
