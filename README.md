@@ -26,12 +26,16 @@ Set `VITE_SHOW_CATALOGUE=false` to hide the internal full-catalogue view in a pu
 | `src/content/` | The 22 formats, theme rotation, daily sets by local date, the planning catalogue |
 | `src/state/` | On-device progress and settings, streak and badge maths, local-midnight rollover |
 | `src/screens/` | Today, Library, Catalogue, Themes, Collection, Rewards, Gems, Reminders, Settings, Play |
+| `src/engines/` | Puzzle engines: game rules (unit-tested), solvers, and each engine's screen |
+| `design/canvas/` | The design canvas source files, for reference |
 | `e2e/` | Phase acceptance tests |
 
 ## Build phases
 
 1. **Foundation**: done. Design tokens, app shell, mobile and desktop navigation, all main screens, local progress.
-2. First puzzle wave: Word Guess, Word Search, Sudoku, Rewind, Circle Word Finder, Daily Bingo, 4×4 Logic.
+2. **First puzzle wave**: done. Word Guess, Word Search, Sudoku, Rewind, Circle Word Finder, Daily Bingo and 4×4 Logic,
+   on seven engines in `src/engines/` that share one interface. Word games check guesses against a SCOWL dictionary
+   (`npm run dictionary` rebuilds it). Puzzles currently come from the design canvas (`src/content/puzzles.ts`).
 3. Content pipeline: Supabase, generators and solvers, safety gate, 90-day calendar, admin dashboard.
 4. Remaining 15 formats.
 5. Gems, rewards and streaks (server-side wallet).

@@ -325,6 +325,11 @@ main:focus {
   text-align: center;
 }
 
+.btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
 .btn--on-family {
   background: var(--fixed-ink);
   color: var(--fixed-paper);

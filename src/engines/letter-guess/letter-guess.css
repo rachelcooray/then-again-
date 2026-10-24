@@ -19,6 +19,12 @@
   padding-top: 0.2rem;
 }
 
+/* Lighter persimmon keeps the label readable on the dark-theme card. */
+[data-theme='dark'] .lg-clue .kicker { color: #f5845f; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) .lg-clue .kicker { color: #f5845f; }
+}
+
 .lg-board {
   display: flex;
   flex-direction: column;

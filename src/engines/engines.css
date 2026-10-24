@@ -1,0 +1,421 @@
+.eng {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+
+/* ---------- Word Search ---------- */
+.ws-grid {
+  padding: 0.625rem;
+  border-radius: var(--radius-l);
+  background: var(--fixed-ink);
+  display: grid;
+  gap: 0.25rem;
+}
+
+.ws-cell {
+  aspect-ratio: 1;
+  min-width: 0;
+  padding: 0;
+  border: 2px solid transparent;
+  border-radius: 0.5rem;
+  background: #2a2622;
+  color: var(--fixed-paper);
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 1.125rem;
+}
+
+.ws-cell.is-found {
+  background: var(--chartreuse);
+  color: var(--fixed-ink);
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.ws-cell.is-missed {
+  background: var(--lilac);
+  color: var(--fixed-ink);
+}
+
+.ws-cell.is-start {
+  background: var(--persimmon);
+  color: var(--fixed-ink);
+  font-weight: 700;
+}
+
+.ws-cell.is-hint {
+  border-color: var(--persimmon);
+}
+
+.ws-cell:disabled {
+  cursor: default;
+  opacity: 1;
+}
+
+.ws-words,
+.ls-slots {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.ws-words li,
+.ls-slots li {
+  min-height: 2.25rem;
+  padding: 0.25rem 0.75rem;
+  display: inline-flex;
+  align-items: center;
+  border-radius: 1.125rem;
+  border: 2px solid var(--line);
+  background: var(--white);
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: 0.875rem;
+  letter-spacing: 0.04em;
+}
+
+.ws-words li.is-found {
+  border-color: var(--chartreuse-edge);
+  background: var(--chartreuse);
+  color: var(--fixed-ink);
+  text-decoration: line-through;
+}
+
+.ws-words li.is-missed,
+.ls-slots li.is-missed {
+  border-style: dashed;
+  border-color: var(--lilac-edge);
+}
+
+/* ---------- Number grid ---------- */
+.ng-grid {
+  display: grid;
+  border: 3px solid var(--ink);
+  border-radius: 0.75rem;
+  overflow: hidden;
+  background: var(--white);
+}
+
+.ng-cell {
+  aspect-ratio: 1;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  border-right: 1px solid var(--line-soft);
+  border-bottom: 1px solid var(--line-soft);
+  background: var(--white);
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 1.25rem;
+}
+
+.ng-cell.is-given {
+  font-weight: 600;
+}
+
+.ng-cell.is-entry {
+  color: var(--cobalt);
+  font-weight: 700;
+}
+
+.ng-cell.box-right {
+  border-right: 3px solid var(--ink);
+}
+
+.ng-cell.box-bottom {
+  border-bottom: 3px solid var(--ink);
+}
+
+.ng-cell.is-peer {
+  background: #eef0f8;
+}
+
+.ng-cell.is-same {
+  background: #c9d3f6;
+}
+
+.ng-cell.is-selected {
+  background: var(--chartreuse);
+  color: var(--fixed-ink);
+}
+
+/* Wrong entries: wavy underline plus "incorrect" in the label, never colour alone. */
+.ng-cell.is-wrong {
+  color: var(--error);
+  text-decoration: underline wavy var(--error);
+  text-underline-offset: 0.2em;
+}
+
+.ng-cell:disabled {
+  cursor: default;
+}
+
+[data-theme='dark'] .ng-cell.is-entry { color: #9fb0ff; }
+[data-theme='dark'] .ng-cell.is-wrong { color: var(--error); }
+[data-theme='dark'] .ng-cell.is-peer { background: #24232c; }
+[data-theme='dark'] .ng-cell.is-same { background: #2f3a6b; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) .ng-cell.is-entry { color: #9fb0ff; }
+  :root:not([data-theme='light']) .ng-cell.is-wrong { color: var(--error); }
+  :root:not([data-theme='light']) .ng-cell.is-peer { background: #24232c; }
+  :root:not([data-theme='light']) .ng-cell.is-same { background: #2f3a6b; }
+}
+
+.ng-pad {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.375rem;
+}
+
+.ng-key {
+  min-height: 3.25rem;
+  min-width: 0;
+  border: 0;
+  border-radius: 0.75rem;
+  background: var(--button);
+  color: var(--on-button);
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: 1.25rem;
+}
+
+/* ---------- Grouping ---------- */
+.gr-tiles {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.gr-tile {
+  min-height: 3.5rem;
+  padding: 0.375rem 0.5rem;
+  border: 2px solid var(--line);
+  border-radius: 0.75rem;
+  background: var(--white);
+  color: var(--ink);
+  font-weight: 700;
+  font-size: 0.9375rem;
+  line-height: 1.2;
+}
+
+.gr-tile[aria-pressed='true'] {
+  border-color: var(--button);
+  background: var(--button);
+  color: var(--on-button);
+}
+
+.gr-group {
+  border-radius: var(--radius-m);
+  padding: 0.75rem 0.875rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  color: var(--fixed-ink);
+}
+
+.gr-group--0 { background: var(--persimmon); }
+.gr-group--1 { background: var(--chartreuse); }
+.gr-group--2 { background: var(--lilac); }
+.gr-group--3 { background: #a8b7f2; }
+
+.gr-group.is-missed {
+  background: transparent;
+  color: var(--ink);
+  border: 2px dashed var(--line);
+}
+
+.gr-group__name {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.125rem;
+}
+
+.gr-meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.25rem 1rem;
+  font-weight: 600;
+}
+
+/* ---------- Letter set ---------- */
+.ls-word {
+  min-height: 3rem;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: 1.75rem;
+  letter-spacing: 0.12em;
+  border-bottom: 2px solid var(--ink);
+}
+
+.ls-circle {
+  position: relative;
+  width: min(18.75rem, 100%);
+  aspect-ratio: 1;
+  margin: 0 auto;
+  border-radius: 50%;
+  background: var(--persimmon);
+}
+
+.ls-letter {
+  position: absolute;
+  width: 3.5rem;
+  height: 3.5rem;
+  transform: translate(-50%, -50%);
+  border: 2px solid var(--fixed-ink);
+  border-radius: 50%;
+  background: var(--fixed-paper);
+  color: var(--fixed-ink);
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: 1.375rem;
+}
+
+.ls-letter[aria-pressed='true'] {
+  background: var(--fixed-ink);
+  color: var(--fixed-paper);
+  text-decoration: underline;
+}
+
+.ls-actions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.ls-actions .btn {
+  padding: 0.5rem;
+}
+
+.ls-slots li.is-found {
+  border-color: var(--persimmon);
+  background: var(--persimmon);
+  color: var(--fixed-ink);
+}
+
+.ls-slots li.is-bonus {
+  border-color: var(--chartreuse-edge);
+  background: var(--chartreuse);
+  color: var(--fixed-ink);
+}
+
+/* ---------- Card (bingo) ---------- */
+.bn-call {
+  border-radius: var(--radius-m);
+  padding: 0.75rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.bn-call .kicker {
+  color: var(--chartreuse);
+}
+
+.bn-call__item {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.5rem;
+}
+
+.bn-card {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.25rem;
+}
+
+.bn-cell {
+  min-width: 0;
+  min-height: 3.5rem;
+  padding: 0.125rem;
+  border: 2px solid var(--line);
+  border-radius: 0.5rem;
+  background: var(--white);
+  color: var(--ink);
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1.15;
+  /* Phones hyphenate long words ("Tele-phone"); anywhere is the fallback where no hyphenation dictionary exists. */
+  -webkit-hyphens: auto;
+  hyphens: auto;
+  overflow-wrap: anywhere;
+}
+
+.bn-cell.is-marked {
+  border-color: var(--fixed-ink);
+  background: var(--chartreuse);
+  color: var(--fixed-ink);
+}
+
+.bn-cell.is-line {
+  background: var(--fixed-ink);
+  color: var(--chartreuse);
+  border-color: var(--fixed-ink);
+  text-decoration: underline;
+}
+
+.bn-cell:disabled {
+  cursor: default;
+  opacity: 1;
+}
+
+/* ---------- Logic grid ---------- */
+.lgd-clues {
+  margin: 0;
+  padding: 0.75rem 0.875rem 0.75rem 2rem;
+  border-radius: var(--radius-m);
+  border: 2px solid var(--ink);
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.lgd-table {
+  display: grid;
+  gap: 0.25rem;
+  align-items: center;
+}
+
+.lgd-head {
+  text-align: center;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: 0.8125rem;
+  overflow-wrap: anywhere;
+}
+
+.lgd-row {
+  font-weight: 700;
+}
+
+.lgd-cell {
+  min-width: 0;
+  min-height: 3rem;
+  border: 2px solid var(--line);
+  border-radius: 0.5rem;
+  background: var(--white);
+  color: var(--ink);
+  font-size: 1.375rem;
+  font-weight: 700;
+}
+
+.lgd-cell--1 {
+  border-color: var(--chartreuse-edge);
+  background: var(--chartreuse);
+  color: var(--fixed-ink);
+}
+
+.lgd-cell--2 {
+  background: var(--track);
+  color: var(--muted);
+}
+
+.lgd-cell:disabled {
+  cursor: default;
+}

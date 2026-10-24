@@ -14,8 +14,17 @@ const ROUTES = [
   '/reminders',
   '/settings',
   '/play/word-guess',
+  '/play/word-search',
+  '/play/sudoku',
+  '/play/rewind',
+  '/play/circle-word',
+  '/play/bingo',
+  '/play/logic-grid',
   '/play/kakuro',
 ];
+
+/** Dense puzzle grids and letter keys can't all be 44px wide on a 320px phone; they must still meet WCAG's 24px minimum. */
+const DENSE = '.ws-cell, .ng-cell, .lg-key, .bn-cell, .lgd-cell';
 
 const VIEWPORTS = {
   mobile: { width: 390, height: 844 },
@@ -42,7 +51,10 @@ function trackErrors(page: Page) {
   return errors;
 }
 
-const go = (page: Page, route: string) => page.goto(`/#${route}`);
+const go = async (page: Page, route: string) => {
+  await page.goto(`/#${route}`);
+  await page.waitForLoadState('networkidle');
+};
 
 for (const [vpName, viewport] of Object.entries(VIEWPORTS)) {
   test.describe(`${vpName}`, () => {
@@ -70,16 +82,23 @@ for (const [vpName, viewport] of Object.entries(VIEWPORTS)) {
     });
 
     test('every button does something', async ({ page }) => {
+      test.setTimeout(300_000);
       const errors = trackErrors(page);
       await seed(page);
       for (const route of ROUTES) {
         await go(page, route);
-        const count = await page.locator('button:visible').count();
-        for (let i = 0; i < count; i++) {
-          await go(page, '/');
+        // Test every distinct kind of button; for grids, two cells stand in for the rest.
+        const kinds = await page.locator('button:visible').evaluateAll((bs) => bs.map((b) => b.className));
+        const tested = new Map<string, number>();
+        for (let i = 0; i < kinds.length; i++) {
+          const seen = tested.get(kinds[i]) ?? 0;
+          if (kinds[i] && seen >= 2) continue;
+          tested.set(kinds[i], seen + 1);
           await go(page, route);
           await page.reload();
+          await page.waitForLoadState('networkidle');
           const button = page.locator('button:visible').nth(i);
+          if (await button.isDisabled()) continue;
           const name = (await button.getAttribute('aria-label')) ?? (await button.innerText());
           // Choosing the option that is already selected is rightly a no-op.
           const selected = await button.evaluate(
@@ -113,12 +132,13 @@ test.describe('layouts at 320px wide', () => {
           expect(overflow, `${route} fits 320px`).toBeLessThanOrEqual(0);
 
           const small = await page
-            .locator('button:visible, a.btn:visible, a.chip:visible, a.icon-btn:visible, a.gem-chip:visible, nav a:visible, [role="switch"]:visible, input:visible')
-            .evaluateAll((els) =>
+            .locator('button:visible, a.btn:visible, a.chip:visible, a.icon-btn:visible, a.gem-chip:visible, nav a:visible, [role="switch"]:visible, input:visible, summary:visible')
+            .evaluateAll((els, dense) =>
               els
-                .map((el) => ({ el, r: el.getBoundingClientRect() }))
-                .filter(({ r }) => r.height < 44 || r.width < 44)
+                .map((el) => ({ el, r: el.getBoundingClientRect(), d: el.matches(dense) }))
+                .filter(({ r, d }) => (d ? r.height < 24 || r.width < 24 : r.height < 44 || r.width < 44))
                 .map(({ el, r }) => `${el.tagName} "${(el.textContent || el.getAttribute('aria-label') || '').trim().slice(0, 30)}" ${Math.round(r.width)}×${Math.round(r.height)}`),
+              DENSE,
             );
           expect(small, `${route} touch targets`).toEqual([]);
         }

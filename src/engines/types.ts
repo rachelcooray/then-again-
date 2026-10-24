@@ -45,6 +45,13 @@ export interface Engine<P, S, A> {
    * because restarting would hand out extra tries; they offer "Play again" once finished.
    */
   restartable: boolean;
+  /** Offers a Hint button that dispatches { type: 'hint' }. */
+  hint?: boolean;
+  /**
+   * Offers "Show the answers", which dispatches { type: 'reveal' } and ends the attempt unsolved.
+   * Formats without limited tries use it as their way to give up.
+   */
+  revealable?: boolean;
   View: ComponentType<EngineViewProps<P, S, A>>;
 }
 

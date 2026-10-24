@@ -29,6 +29,8 @@ export interface AppData {
   /** Display balance only; the authoritative wallet moves server-side in phase 5. */
   gems: number;
   reminders: ReminderPrefs;
+  /** Saved puzzle boards by date and format, so an attempt survives leaving the screen. */
+  attempts: Record<string, unknown>;
 }
 
 export const STORAGE_KEY = 'then-again:v1';
@@ -48,6 +50,7 @@ export const DEFAULT_DATA: AppData = {
     quietEnd: '08:00',
     time: '09:00',
   },
+  attempts: {},
 };
 
 export function loadData(): AppData {
@@ -62,6 +65,7 @@ export function loadData(): AppData {
       settings: { ...DEFAULT_DATA.settings, ...parsed.settings },
       reminders: { ...DEFAULT_DATA.reminders, ...parsed.reminders },
       progress: parsed.progress ?? {},
+      attempts: parsed.attempts ?? {},
     };
   } catch {
     return DEFAULT_DATA;
@@ -81,6 +85,7 @@ interface Store {
   updateSettings: (patch: Partial<Settings>) => void;
   updateReminders: (patch: Partial<ReminderPrefs>) => void;
   recordResult: (record: PuzzleRecord) => void;
+  saveAttempt: (key: string, state: unknown) => void;
   resetAll: () => void;
 }
 
@@ -103,11 +108,15 @@ export function StoreProvider({ children, initial }: { children: ReactNode; init
     (record: PuzzleRecord) => setData((d) => ({ ...d, progress: addRecord(d.progress, record) })),
     [],
   );
+  const saveAttempt = useCallback(
+    (key: string, state: unknown) => setData((d) => ({ ...d, attempts: { ...d.attempts, [key]: state } })),
+    [],
+  );
   const resetAll = useCallback(() => setData(DEFAULT_DATA), []);
 
   const value = useMemo(
-    () => ({ data, updateSettings, updateReminders, recordResult, resetAll }),
-    [data, updateSettings, updateReminders, recordResult, resetAll],
+    () => ({ data, updateSettings, updateReminders, recordResult, saveAttempt, resetAll }),
+    [data, updateSettings, updateReminders, recordResult, saveAttempt, resetAll],
   );
   return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>;
 }
