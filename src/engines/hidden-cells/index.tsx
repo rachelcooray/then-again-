@@ -22,7 +22,10 @@ function reduce(s: HiddenCellsState, a: HiddenCellsAction, p: HiddenCellsPayload
   if (s.boom !== null || isWon(s, p)) return s;
   if (a.type === 'mode') return { ...s, mode: a.mode, note: a.mode === 'dig' ? 'Uncover mode.' : 'Flag mode: tap where you think a mine is.' };
   const i = a.index;
-  if (s.open.includes(i)) return s;
+  if (s.open.includes(i)) {
+    const n = countAround(i, p);
+    return { ...s, note: n ? `${n} ${n === 1 ? 'mine touches' : 'mines touch'} this square.` : 'No mines touch this square.' };
+  }
   if (s.mode === 'flag') {
     const on = s.flags.includes(i);
     return { ...s, flags: on ? s.flags.filter((x) => x !== i) : [...s.flags, i], note: on ? 'Flag removed.' : 'Flagged.' };

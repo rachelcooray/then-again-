@@ -81,7 +81,7 @@ export function reduce(
       return { ...s, typed: s.typed + letter, note: '' };
     }
     case 'delete':
-      return { ...s, typed: s.typed.slice(0, -1), note: '' };
+      return s.typed ? { ...s, typed: s.typed.slice(0, -1), note: '' } : { ...s, note: 'Nothing to delete.' };
     case 'enter': {
       if (s.typed.length < len) return { ...s, note: `${len} letters, please.` };
       if (s.typed !== p.answer && dictionary && !dictionary.has(s.typed)) {

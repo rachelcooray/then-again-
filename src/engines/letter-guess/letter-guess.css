@@ -105,7 +105,8 @@
 .lg-keys {
   display: flex;
   justify-content: center;
-  gap: 0.3125rem;
+  /* Fixed gaps, so larger text sizes don't squeeze ten keys below 24px wide on a 320px phone. */
+  gap: 4px;
 }
 
 .lg-key {

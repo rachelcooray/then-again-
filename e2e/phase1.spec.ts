@@ -90,10 +90,17 @@ for (const [vpName, viewport] of Object.entries(VIEWPORTS)) {
           const seen = tested.get(kinds[i]) ?? 0;
           if (kinds[i] && seen >= 2) continue;
           tested.set(kinds[i], seen + 1);
+          // Each click starts from a fresh board, so an earlier click that finished a puzzle can't change what's on screen.
           await go(page, route);
+          await page.evaluate(() => {
+            const raw = localStorage.getItem('then-again:v1');
+            if (raw) localStorage.setItem('then-again:v1', JSON.stringify({ ...JSON.parse(raw), attempts: {}, progress: {} }));
+          });
           await page.reload();
           await page.waitForLoadState('networkidle');
-          const button = page.locator('button:visible').nth(i);
+          const buttons = page.locator('button:visible');
+          if ((await buttons.count()) <= i) continue;
+          const button = buttons.nth(i);
           if (await button.isDisabled()) continue;
           const name = (await button.getAttribute('aria-label')) ?? (await button.innerText());
           // Choosing the option that is already selected is rightly a no-op.

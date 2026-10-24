@@ -64,6 +64,7 @@ function reduce(s: CrosswordState, a: CrosswordAction, p: CrosswordPayload): Cro
     case 'delete': {
       const v = s.v.slice();
       const k = entry ? entry.cells.indexOf(s.sel) : -1;
+      if (!v[s.sel] && (!entry || k <= 0)) return { ...s, note: 'Nothing to delete here.' };
       if (v[s.sel] || !entry || k <= 0) {
         v[s.sel] = '';
         return { ...s, v, note: '' };
