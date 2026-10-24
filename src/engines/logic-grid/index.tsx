@@ -129,6 +129,8 @@ function View({ payload, state, dispatch }: Props) {
 export const logicGrid: Engine<LogicGridPayload, LogicGridState, LogicGridAction> = {
   id: 'logic-grid',
   restartable: true,
+  help:
+    'Read the clues and mark each square: tap once for ✓ (yes), twice for × (no). Give every row one ✓, then check.',
   hint: true,
   revealable: true,
   init: (p) => ({ marks: Array(p.rows.length * p.cols.length).fill(0), checks: 0, hintsUsed: 0, solved: false, revealed: false, note: '' }),

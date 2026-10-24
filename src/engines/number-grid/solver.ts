@@ -1,26 +1,67 @@
-/** Latin-square-with-boxes solver used to prove a puzzle has exactly one solution. */
+/** Number-grid solver used to prove a puzzle has exactly one solution (Sudoku family and Futoshiki). */
+
+export interface Cage {
+  cells: number[];
+  sum: number;
+}
 
 export interface GridShape {
   size: number;
+  /** 0 for grids without boxes (Futoshiki). */
   boxRows: number;
   boxCols: number;
+  /** Killer Sudoku: each cage adds up to its sum with no repeats. */
+  cages?: Cage[];
+  /** Futoshiki: [a, b] means the number in cell a is smaller than the one in cell b. */
+  less?: [number, number][];
 }
 
-/** Counts solutions up to `limit` (2 is enough to prove uniqueness). 0 means empty cell. */
-export function countSolutions(values: number[], shape: GridShape, limit = 2): number {
-  const { size, boxRows, boxCols } = shape;
-  const v = values.slice();
-  const ok = (i: number, n: number) => {
-    const r = Math.floor(i / size);
-    const c = i % size;
-    for (let k = 0; k < size; k++) {
-      if (v[r * size + k] === n || v[k * size + c] === n) return false;
-    }
+/** Whether placing n at i breaks a rule, given the other values (0 = empty). */
+export function breaksRule(v: number[], i: number, n: number, shape: GridShape): boolean {
+  const { size, boxRows, boxCols, cages, less } = shape;
+  const r = Math.floor(i / size);
+  const c = i % size;
+  for (let k = 0; k < size; k++) {
+    if ((r * size + k !== i && v[r * size + k] === n) || (k * size + c !== i && v[k * size + c] === n)) return true;
+  }
+  if (boxRows) {
     const br = r - (r % boxRows);
     const bc = c - (c % boxCols);
-    for (let y = 0; y < boxRows; y++) for (let x = 0; x < boxCols; x++) if (v[(br + y) * size + bc + x] === n) return false;
-    return true;
-  };
+    for (let y = 0; y < boxRows; y++)
+      for (let x = 0; x < boxCols; x++) {
+        const j = (br + y) * size + bc + x;
+        if (j !== i && v[j] === n) return true;
+      }
+  }
+  if (cages) {
+    const cage = cages.find((cg) => cg.cells.includes(i));
+    if (cage) {
+      let total = n;
+      let empty = 0;
+      for (const j of cage.cells) {
+        if (j === i) continue;
+        if (v[j] === n) return true;
+        if (v[j]) total += v[j];
+        else empty++;
+      }
+      if (total > cage.sum || (empty === 0 && total !== cage.sum)) return true;
+    }
+  }
+  if (less) {
+    for (const [a, b] of less) {
+      if (a === i && v[b] && !(n < v[b])) return true;
+      if (b === i && v[a] && !(v[a] < n)) return true;
+    }
+  }
+  return false;
+}
+
+/** Counts solutions up to `limit` (2 is enough to prove uniqueness). 0 means an empty cell. */
+export function countSolutions(values: number[], shape: GridShape, limit = 2): number {
+  const v = values.slice();
+  for (let i = 0; i < v.length; i++) {
+    if (v[i] && breaksRule(v, i, v[i], shape)) return 0;
+  }
   let count = 0;
   const solve = (): void => {
     if (count >= limit) return;
@@ -30,7 +71,7 @@ export function countSolutions(values: number[], shape: GridShape, limit = 2): n
     for (let i = 0; i < v.length; i++) {
       if (v[i]) continue;
       const options: number[] = [];
-      for (let n = 1; n <= size; n++) if (ok(i, n)) options.push(n);
+      for (let n = 1; n <= shape.size; n++) if (!breaksRule(v, i, n, shape)) options.push(n);
       if (!options.length) return;
       if (best < 0 || options.length < bestOptions.length) {
         best = i;
@@ -49,20 +90,24 @@ export function countSolutions(values: number[], shape: GridShape, limit = 2): n
       if (count >= limit) return;
     }
   };
-  // A given that already breaks the rules has no solutions.
-  for (let i = 0; i < v.length; i++) {
-    if (!v[i]) continue;
-    const n = v[i];
-    v[i] = 0;
-    const fine = ok(i, n);
-    v[i] = n;
-    if (!fine) return 0;
-  }
   solve();
   return count;
 }
 
-/** True when a full grid follows every row, column and box rule. */
-export function isValidSolution(values: number[], shape: GridShape): boolean {
-  return values.every((n) => n >= 1 && n <= shape.size) && countSolutions(values, shape) === 1;
+/** One solution, or null; used by the generators. */
+export function solveOne(values: number[], shape: GridShape, random: () => number = () => 0.5): number[] | null {
+  const v = values.slice();
+  const go = (): boolean => {
+    const i = v.indexOf(0);
+    if (i < 0) return true;
+    const order = Array.from({ length: shape.size }, (_, k) => k + 1).sort(() => random() - 0.5);
+    for (const n of order) {
+      if (breaksRule(v, i, n, shape)) continue;
+      v[i] = n;
+      if (go()) return true;
+      v[i] = 0;
+    }
+    return false;
+  };
+  return go() ? v : null;
 }

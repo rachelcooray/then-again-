@@ -82,6 +82,8 @@ function View({ payload, state, dispatch }: Props) {
 export const card: Engine<CardPayload, CardState, CardAction> = {
   id: 'card',
   restartable: false,
+  help:
+    'Press Call next to hear the next item. Tap it on your card if you have it. A full row, column or diagonal wins.',
   init: (p) => ({ called: 0, marked: [centre(p)], ended: false, note: '' }),
   reduce: (s, a, p) => reduce(s, a, p),
   status(s, p) {

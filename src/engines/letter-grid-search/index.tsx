@@ -132,6 +132,8 @@ function View({ payload, state, dispatch }: Props) {
 export const letterGridSearch: Engine<WordSearchPayload, WordSearchState, WordSearchAction> = {
   id: 'letter-grid-search',
   restartable: true,
+  help:
+    'Tap a word’s first letter, then its last. On a keyboard, move with the arrow keys and press Enter on each letter.',
   hint: true,
   revealable: true,
   init: () => ({ found: [], start: null, hinted: null, hintsUsed: 0, revealed: false, note: '' }),

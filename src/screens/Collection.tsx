@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { config } from '../config';
 import { getFormat } from '../content/formats';
 import { getTheme } from '../content/themes';
 import { formatIssue } from '../lib/date';
@@ -25,7 +26,7 @@ export function Collection() {
         <h1 className="display">My collection</h1>
         <nav className="chip-row" aria-label="Collection">
           <Link to="/rewards" className="chip chip--solid">Rewards &amp; badges</Link>
-          <Link to="/gems" className="chip chip--outline">Gems</Link>
+          {config.gemsEnabled && <Link to="/gems" className="chip chip--outline">Gems</Link>}
           <Link to="/reminders" className="chip chip--outline">Reminders</Link>
           <Link to="/settings" className="chip chip--outline">Settings</Link>
         </nav>

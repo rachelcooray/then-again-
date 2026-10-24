@@ -11,7 +11,7 @@ import { letterSet, type LetterSetPayload } from './letter-set';
 import { logicGrid, solveLogicGrid, type LogicGridPayload } from './logic-grid';
 import { numberGrid, type NumberGridPayload } from './number-grid';
 import { countSolutions } from './number-grid/solver';
-import { ENGINES } from './registry';
+import { engineFor } from './registry';
 import type { AnyEngine, EngineContext } from './types';
 
 const dictionary: ReadonlySet<string> = new Set(
@@ -33,7 +33,7 @@ describe('phase 2 formats', () => {
   it('have an engine and a puzzle', () => {
     for (const id of ['word-guess', 'word-search', 'sudoku', 'rewind', 'circle-word', 'bingo', 'logic-grid']) {
       const f = FORMATS.find((x) => x.id === id)!;
-      expect(ENGINES[f.engine], id).toBeDefined();
+      expect(engineFor(f), id).toBeDefined();
       expect(getPuzzle(D, id), id).toBeDefined();
     }
   });

@@ -57,7 +57,7 @@ function AppRoutes() {
           <Route path="themes" element={<Themes />} />
           <Route path="collection" element={<Collection />} />
           <Route path="rewards" element={<Rewards />} />
-          <Route path="gems" element={<Gems />} />
+          <Route path="gems" element={config.gemsEnabled ? <Gems /> : <Navigate to="/collection" replace />} />
           <Route path="reminders" element={<Reminders />} />
           <Route path="settings" element={<Settings />} />
           <Route path="play/:formatId" element={<Play />} />

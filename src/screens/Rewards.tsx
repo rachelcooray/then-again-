@@ -1,4 +1,5 @@
 import type { CSSProperties } from 'react';
+import { config } from '../config';
 import { BackHeader } from '../components/BackHeader';
 import { GemChip } from '../components/GemChip';
 import { getDailySet } from '../content/daily';
@@ -43,7 +44,7 @@ export function Rewards() {
   return (
     <>
       <BackHeader title="Rewards" fallback="/collection" backLabel="Back to my collection">
-        <GemChip />
+        {config.gemsEnabled && <GemChip />}
       </BackHeader>
       <div className="screen">
         <div className="card card--strong streak">
@@ -69,7 +70,7 @@ export function Rewards() {
           <span className="small" style={{ color: 'var(--on-strong-muted)' }}>
             {streak >= 7
               ? 'Seven days in a row. Well played.'
-              : `Play on ${7 - streak} more day${7 - streak === 1 ? '' : 's'} in a row to earn 20 Gems and a mystery envelope.`}{' '}
+              : `Play on ${7 - streak} more day${7 - streak === 1 ? '' : 's'} in a row to earn ${config.gemsEnabled ? '20 Gems and ' : ''}a mystery envelope.`}{' '}
             Streak shields, earned now and then, cover a missed day automatically.
           </span>
         </div>
@@ -86,7 +87,11 @@ export function Rewards() {
         <div className="panel fam-connect">
           <span className="kicker">Mystery envelope · earned, never sold</span>
           <span className="panel__title">Reach a 7-day streak to earn one</span>
-          <span className="small">Could contain: a collectible (6 in 10), a theme pack (3 in 10) or 50 Gems (1 in 10).</span>
+          <span className="small">
+            {config.gemsEnabled
+              ? 'Could contain: a collectible (6 in 10), a theme pack (3 in 10) or 50 Gems (1 in 10).'
+              : 'You’ll see what it could contain, and the odds of each, before you open it.'}
+          </span>
         </div>
 
         <section className="section">
@@ -106,6 +111,7 @@ export function Rewards() {
           </ul>
         </section>
 
+{config.gemsEnabled && (
         <section className="section">
           <h2 className="kicker">The Collection Cabinet · 0 of {CABINET.length} in this set</h2>
           <ul className="grid-2 badges">
@@ -118,6 +124,7 @@ export function Rewards() {
           </ul>
           <p className="small muted">Collectibles open with Gems in a later update. Earned Gems are never taken away, and every reward can be earned without paying.</p>
         </section>
+        )}
       </div>
     </>
   );

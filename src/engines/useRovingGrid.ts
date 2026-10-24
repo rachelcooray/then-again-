@@ -43,5 +43,5 @@ export function useRovingGrid(count: number, cols: number, initial = 0) {
     onFocus: () => setActive(i),
   });
 
-  return { active, setActive, onKeyDown, cellProps };
+  return { active, setActive, onKeyDown, cellProps, focusCell: move };
 }

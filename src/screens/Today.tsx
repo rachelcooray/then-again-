@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { config } from '../config';
 import { getDailySet } from '../content/daily';
 import { FAMILIES, getFormat, type PuzzleFormat } from '../content/formats';
 import { compactDate, formatIssue, longDate } from '../lib/date';
@@ -26,7 +27,7 @@ export function Today() {
       <div className="today-head mobile-only">
         <Link to="/" className="logo" aria-label="Then Again, today">then again<span>.</span></Link>
         <div className="today-head__right">
-          <GemChip />
+          {config.gemsEnabled && <GemChip />}
           <div className="kicker today-head__date">{issue}<br />{compactDate(today)}</div>
           <Link to="/settings" className="icon-btn" aria-label="Settings"><SettingsIcon /></Link>
         </div>

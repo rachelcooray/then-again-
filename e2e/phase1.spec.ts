@@ -1,7 +1,11 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test, type Page } from '@playwright/test';
+import { FORMATS } from '../src/content/formats';
 
 /** Phase 1 acceptance tests (brief section 11). */
+
+// These walk every screen, including all 22 puzzles, so they need more than the default 30 seconds.
+test.describe.configure({ timeout: 300_000 });
 
 const ROUTES = [
   '/',
@@ -10,21 +14,13 @@ const ROUTES = [
   '/themes',
   '/collection',
   '/rewards',
-  '/gems',
   '/reminders',
   '/settings',
-  '/play/word-guess',
-  '/play/word-search',
-  '/play/sudoku',
-  '/play/rewind',
-  '/play/circle-word',
-  '/play/bingo',
-  '/play/logic-grid',
-  '/play/kakuro',
+  ...FORMATS.map((f) => `/play/${f.id}`),
 ];
 
 /** Dense puzzle grids and letter keys can't all be 44px wide on a 320px phone; they must still meet WCAG's 24px minimum. */
-const DENSE = '.ws-cell, .ng-cell, .lg-key, .bn-cell, .lgd-cell';
+const DENSE = '.ws-cell, .ng-cell, .lg-key, .bn-cell, .lgd-cell, .ngm-cell, .ms-cell, .cw-cell';
 
 const VIEWPORTS = {
   mobile: { width: 390, height: 844 },
@@ -82,7 +78,7 @@ for (const [vpName, viewport] of Object.entries(VIEWPORTS)) {
     });
 
     test('every button does something', async ({ page }) => {
-      test.setTimeout(300_000);
+      test.setTimeout(900_000);
       const errors = trackErrors(page);
       await seed(page);
       for (const route of ROUTES) {

@@ -1,4 +1,5 @@
 import { NavLink, Outlet, useLocation } from 'react-router-dom';
+import { config } from '../config';
 import { CollectionIcon, LibraryIcon, SettingsIcon, ThemesIcon, TodayIcon } from './Icons';
 import { GemChip } from './GemChip';
 
@@ -38,7 +39,7 @@ export function Layout() {
                 <NavLink key={to} to={to} end={end}>{label}</NavLink>
               ))}
             </nav>
-            <GemChip />
+            {config.gemsEnabled && <GemChip />}
             <NavLink to="/settings" className="icon-btn" aria-label="Settings"><SettingsIcon /></NavLink>
           </div>
         </div>

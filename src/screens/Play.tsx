@@ -6,7 +6,7 @@ import { getDailySet } from '../content/daily';
 import { loadDictionary } from '../content/dictionary';
 import { FAMILIES, getFormat, type PuzzleFormat } from '../content/formats';
 import { getPuzzle } from '../content/puzzles';
-import { ENGINES } from '../engines/registry';
+import { engineFor } from '../engines/registry';
 import type { AnyEngine, EngineContext, Puzzle } from '../engines/types';
 import { formatIssue } from '../lib/date';
 import { recordKey } from '../state/progress';
@@ -15,23 +15,12 @@ import { useToday } from '../state/useToday';
 import { NotFound } from './NotFound';
 import './play.css';
 
-/** How to play, beyond the one-line rules: the controls for each engine. */
-const CONTROLS: Record<string, string> = {
-  'letter-guess': 'Type on your keyboard or tap the letters, then Enter. A blue tile with a line is in the right place; a green tile with a dot is in the word but somewhere else; grey letters aren’t in it.',
-  'letter-grid-search': 'Tap a word’s first letter, then its last. On a keyboard, move with the arrow keys and press Enter on each letter.',
-  'number-grid': 'Choose a square, then a number. On a keyboard, move with the arrow keys and type 1 to 9; Backspace erases. “Check my grid” underlines anything that doesn’t fit.',
-  grouping: 'Choose four things you think belong together, then Check group. “One away” means three of the four are right.',
-  'letter-set': 'Tap letters around the circle, or type them, then Submit or press Enter. Backspace removes the last letter. Other real words you find count as bonus words.',
-  card: 'Press Call next to hear the next item. Tap it on your card if you have it. A full row, column or diagonal wins.',
-  'logic-grid': 'Read the clues and mark each square: tap once for ✓ (yes), twice for × (no). Give every row one ✓, then check.',
-};
-
 export function Play() {
   const { formatId = '' } = useParams();
   const today = useToday();
   const format = getFormat(formatId);
   if (!format) return <NotFound />;
-  const engine = ENGINES[format.engine];
+  const engine = engineFor(format);
   const puzzle = getPuzzle(today, format.id);
   if (!engine || !puzzle) return <ComingSoon format={format} />;
   // Remount when the day or format changes so nothing carries over.
@@ -124,7 +113,7 @@ function PuzzleScreen({ format, engine, puzzle, today }: { format: PuzzleFormat;
         <p className="play-rules">{intro ? `${intro} ` : ''}{format.rules}</p>
         <details className="play-help">
           <summary>How to play</summary>
-          <p>{CONTROLS[engine.id]}</p>
+          <p>{engine.help}</p>
         </details>
 
         {practice && (

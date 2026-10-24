@@ -140,6 +140,8 @@ export const letterSet: Engine<LetterSetPayload, LetterSetState, LetterSetAction
   id: 'letter-set',
   needsDictionary: true,
   restartable: true,
+  help:
+    'Tap letters around the circle, or type them, then Submit or press Enter. Backspace removes the last letter. Other real words you find count as bonus words.',
   hint: true,
   revealable: true,
   init: () => ({ path: [], found: [], hint: null, hintsUsed: 0, revealed: false, note: '' }),

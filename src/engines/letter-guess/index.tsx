@@ -113,6 +113,8 @@ export const letterGuess: Engine<LetterGuessPayload, LetterGuessState, LetterGue
   id: 'letter-guess',
   needsDictionary: true,
   restartable: false,
+  help:
+    'Type on your keyboard or tap the letters, then Enter. A blue tile with a line is in the right place; a green tile with a dot is in the word but somewhere else; grey letters aren’t in it.',
   init,
   reduce: (s, a, p, ctx) => reduce(s, a, p, ctx.dictionary),
   status(s, p) {

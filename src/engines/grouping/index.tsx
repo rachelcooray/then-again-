@@ -117,6 +117,8 @@ const SYMBOLS = ['🟧', '🟦', '🟩', '🟪'];
 export const grouping: Engine<GroupingPayload, GroupingState, GroupingAction> = {
   id: 'grouping',
   restartable: false,
+  help:
+    'Choose four things you think belong together, then Check group. “One away” means three of the four are right.',
   init: () => ({ sel: [], found: [], mistakes: 0, history: [], note: '' }),
   reduce: (s, a, p) => reduce(s, a, p),
   status(s, p) {

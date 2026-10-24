@@ -45,6 +45,8 @@ export interface Engine<P, S, A> {
    * because restarting would hand out extra tries; they offer "Play again" once finished.
    */
   restartable: boolean;
+  /** "How to play": the controls, beyond the one-line rules. */
+  help: string;
   /** Offers a Hint button that dispatches { type: 'hint' }. */
   hint?: boolean;
   /**
@@ -59,8 +61,8 @@ export interface Engine<P, S, A> {
 export interface Puzzle<P = unknown> {
   id: string;
   formatId: string;
-  /** Result card: a short memory or fact. */
-  memory: { title?: string; text: string };
+  /** Result card: a short memory or fact. `draft` marks text no person has reviewed yet. */
+  memory: { title?: string; text: string; draft?: boolean };
   payload: P;
 }
 
