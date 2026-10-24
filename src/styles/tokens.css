@@ -1,0 +1,93 @@
+/* Modern Puzzle Club design tokens (brief section 2). */
+:root {
+  --ink: #141210;
+  --paper: #f7f6f2;
+  --white: #ffffff;
+  --muted: #55504a;
+  --line: #cfcbc2;
+  --line-soft: #d8d5ce;
+
+  --persimmon: #e8552b;
+  --cobalt: #2340c4;
+  --chartreuse: #d9ec4c;
+  --chartreuse-edge: #9bb21f;
+  --lilac: #bfaef5;
+  --lilac-edge: #8c76e0;
+  --error: #b3261e;
+
+  /* Text on family fills stays near-black in both themes; cobalt takes white. */
+  --on-family: #141210;
+  --on-cobalt: #ffffff;
+  --fixed-ink: #141210;
+  --fixed-paper: #f7f6f2;
+
+  /* Dark surfaces: navigation, dark cards. */
+  --strong: #141210;
+  --on-strong: #f7f6f2;
+  --on-strong-muted: #c9c5bd;
+  --strong-line: #3a3631;
+  --track: #e9e6df;
+
+  /* Primary buttons. */
+  --button: #141210;
+  --on-button: #f7f6f2;
+
+  --focus: #2340c4;
+
+  --font-display: 'Bricolage Grotesque', system-ui, sans-serif;
+  --font-body: 'Figtree', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+
+  --radius-s: 0.75rem;
+  --radius-m: 1rem;
+  --radius-l: 1.25rem;
+  --gutter: 1rem;
+
+  color-scheme: light;
+}
+
+/* Dark theme: paper and ink swap, family colours stay. */
+:root[data-theme='dark'] {
+  --ink: #f7f6f2;
+  --paper: #141210;
+  --white: #1f1c19;
+  --muted: #bdb7ad;
+  --line: #5a544c;
+  --line-soft: #3a3631;
+  --error: #ff8f85;
+  --strong: #2a2723;
+  --on-strong: #f7f6f2;
+  --on-strong-muted: #cfcac1;
+  --strong-line: #4a453f;
+  --track: #2a2723;
+  --button: #f7f6f2;
+  --on-button: #141210;
+  --focus: #bfaef5;
+  color-scheme: dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --ink: #f7f6f2;
+    --paper: #141210;
+    --white: #1f1c19;
+    --muted: #bdb7ad;
+    --line: #5a544c;
+    --line-soft: #3a3631;
+    --error: #ff8f85;
+    --strong: #2a2723;
+    --on-strong: #f7f6f2;
+    --on-strong-muted: #cfcac1;
+    --strong-line: #4a453f;
+    --track: #2a2723;
+    --button: #f7f6f2;
+    --on-button: #141210;
+    --focus: #bfaef5;
+    color-scheme: dark;
+  }
+}
+
+/* Three user text sizes; every size in the app is in rem so it scales. */
+html { font-size: 100%; }
+html[data-text-size='large'] { font-size: 112.5%; }
+html[data-text-size='larger'] { font-size: 125%; }

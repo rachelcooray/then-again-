@@ -1,0 +1,90 @@
+.streak {
+  padding: 1rem;
+  gap: 0.625rem;
+  border-radius: var(--radius-l);
+}
+
+.streak__head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.25rem 0.75rem;
+}
+
+.streak__title {
+  font-size: 1.5rem;
+}
+
+.streak__shields {
+  color: var(--chartreuse);
+}
+
+.streak__days {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 0.3125rem;
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.streak__days li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.streak__mark {
+  height: 2rem;
+  border-radius: 0.5rem;
+  display: grid;
+  place-items: center;
+}
+
+.streak__mark--done {
+  background: var(--chartreuse);
+  color: var(--fixed-ink);
+}
+
+.streak__mark--today {
+  border: 2px dashed var(--on-strong);
+}
+
+.streak__mark--missed {
+  border: 2px solid var(--strong-line);
+  color: var(--on-strong-muted);
+}
+
+.badges {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.badges .card {
+  padding: 0.75rem;
+  min-width: 0;
+}
+
+.badge__name {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.125rem;
+  line-height: 1.1;
+  color: inherit;
+}
+
+.badges .card--dashed .badge__name {
+  color: var(--ink);
+}
+
+.cabinet-item {
+  min-height: 5.5rem;
+  justify-content: space-between;
+}

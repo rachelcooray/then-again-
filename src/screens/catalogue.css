@@ -1,0 +1,65 @@
+.catalogue-family {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+  padding-top: 0.375rem;
+}
+
+.catalogue-swatch {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 0.25rem;
+}
+
+.catalogue-family__name {
+  font-size: 1.5rem;
+}
+
+.catalogue-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(13.125rem, 100%), 1fr));
+  gap: 0.5rem;
+}
+
+.catalogue-item {
+  min-height: 3.5rem;
+  border-radius: var(--radius-s);
+  border: 2px solid var(--line);
+  background: var(--white);
+  padding: 0.5rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.125rem;
+}
+
+.catalogue-item__name {
+  font-weight: 700;
+  font-size: 0.9375rem;
+  line-height: 1.2;
+}
+
+.catalogue-item .kicker {
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+}
+
+.catalogue-item--playable {
+  border-color: var(--strong);
+  background: var(--strong);
+  color: var(--on-strong);
+}
+
+.catalogue-item--launch {
+  border-color: var(--chartreuse-edge);
+  background: var(--chartreuse);
+  color: var(--fixed-ink);
+}
+
+.catalogue-item--licence {
+  border-color: var(--persimmon);
+}
