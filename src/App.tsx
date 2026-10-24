@@ -1,7 +1,12 @@
 import { useEffect } from 'react';
 import { HashRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { config } from './config';
+import { ErrorBoundary } from './components/ErrorBoundary';
 import { Layout } from './components/Layout';
+import { compareVersions, APP_VERSION } from './lib/platform';
+import { useRemoteConfig } from './lib/remoteConfig';
+import { UpdateRequired } from './screens/UpdateRequired';
+import { Help } from './screens/Help';
 import { Catalogue } from './screens/Catalogue';
 import { Collection } from './screens/Collection';
 import { Gems } from './screens/Gems';
@@ -26,6 +31,7 @@ const TITLES: [RegExp, string][] = [
   [/^\/gems/, 'Gems'],
   [/^\/reminders/, 'Reminders'],
   [/^\/settings/, 'Settings'],
+  [/^\/help/, 'Help'],
   [/^\/play/, 'Puzzle'],
 ];
 
@@ -42,9 +48,12 @@ function RouteEffects() {
 
 function AppRoutes() {
   const { data } = useStore();
+  const { pathname } = useLocation();
+  const remote = useRemoteConfig();
   useApplySettings(data.settings);
+  if (compareVersions(APP_VERSION, remote.min_version) < 0) return <UpdateRequired />;
   return (
-    <>
+    <ErrorBoundary resetKey={pathname}>
       <RouteEffects />
       <Routes>
         <Route element={<Layout />}>
@@ -60,11 +69,12 @@ function AppRoutes() {
           <Route path="gems" element={config.gemsEnabled ? <Gems /> : <Navigate to="/collection" replace />} />
           <Route path="reminders" element={<Reminders />} />
           <Route path="settings" element={<Settings />} />
+          <Route path="help" element={<Help />} />
           <Route path="play/:formatId" element={<Play />} />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
-    </>
+    </ErrorBoundary>
   );
 }
 

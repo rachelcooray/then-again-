@@ -10,6 +10,15 @@ import '@fontsource/ibm-plex-mono/latin-600.css';
 import './styles/tokens.css';
 import './styles/app.css';
 import { App } from './App';
+import { startOutbox } from './lib/backend';
+import { setUsageSharing, startAnalytics } from './lib/analytics';
+import { startErrorReporting } from './lib/errors';
+import { loadData } from './state/store';
+
+startErrorReporting();
+startOutbox();
+setUsageSharing(loadData().settings.shareUsage);
+startAnalytics();
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

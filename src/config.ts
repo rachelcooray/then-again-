@@ -11,6 +11,11 @@ export const config = {
   gemsEnabled: import.meta.env.VITE_GEMS === 'true',
   /** Purchases, Gem packs, Plus and adverts stay off during the free pilot (section 7). */
   monetisationEnabled: false,
+  /** Where players can email for help. Shown in Help when set (VITE_SUPPORT_EMAIL). */
+  supportEmail: (import.meta.env.VITE_SUPPORT_EMAIL as string | undefined) ?? '',
+  /** Store pages, for the "please update" screen (VITE_APP_STORE_URL, VITE_PLAY_STORE_URL). */
+  appStoreUrl: (import.meta.env.VITE_APP_STORE_URL as string | undefined) ?? '',
+  playStoreUrl: (import.meta.env.VITE_PLAY_STORE_URL as string | undefined) ?? '',
   /** The full catalogue is an internal planning view; hide it before public release. */
   showCatalogue: import.meta.env.VITE_SHOW_CATALOGUE !== 'false',
 } as const;

@@ -957,3 +957,34 @@ main:focus {
 .settings-sample {
   padding: 0 0.25rem;
 }
+
+.help-q {
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.help-q summary {
+  min-height: 2.75rem;
+  display: flex;
+  align-items: center;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.help-q p {
+  padding: 0 0 0.75rem;
+}
+
+.help-form label {
+  font-weight: 700;
+}
+
+.help-text {
+  min-height: 7rem;
+  padding: 0.625rem 0.875rem;
+  resize: vertical;
+}
+
+.help-email {
+  user-select: all;
+  overflow-wrap: anywhere;
+}

@@ -8,6 +8,8 @@ export interface Settings {
   textSize: TextSize;
   appearance: Appearance;
   sound: boolean;
+  /** Anonymous usage counts for the pilot; players can turn this off. */
+  shareUsage: boolean;
 }
 
 export interface ReminderPrefs {
@@ -37,7 +39,7 @@ export const STORAGE_KEY = 'then-again:v1';
 
 export const DEFAULT_DATA: AppData = {
   version: 1,
-  settings: { textSize: 'standard', appearance: 'system', sound: true },
+  settings: { textSize: 'standard', appearance: 'system', sound: true, shareUsage: true },
   progress: {},
   gems: 0,
   reminders: {
@@ -86,6 +88,8 @@ interface Store {
   updateReminders: (patch: Partial<ReminderPrefs>) => void;
   recordResult: (record: PuzzleRecord) => void;
   saveAttempt: (key: string, state: unknown) => void;
+  /** Brings in progress from another phone. Results already on this phone are kept. */
+  importData: (incoming: Pick<AppData, 'progress' | 'settings' | 'reminders'>) => void;
   resetAll: () => void;
 }
 
@@ -112,11 +116,21 @@ export function StoreProvider({ children, initial }: { children: ReactNode; init
     (key: string, state: unknown) => setData((d) => ({ ...d, attempts: { ...d.attempts, [key]: state } })),
     [],
   );
+  const importData = useCallback(
+    (incoming: Pick<AppData, 'progress' | 'settings' | 'reminders'>) =>
+      setData((d) => ({
+        ...d,
+        progress: Object.values(incoming.progress ?? {}).reduce(addRecord, d.progress),
+        settings: { ...d.settings, ...incoming.settings },
+        reminders: { ...d.reminders, ...incoming.reminders },
+      })),
+    [],
+  );
   const resetAll = useCallback(() => setData(DEFAULT_DATA), []);
 
   const value = useMemo(
-    () => ({ data, updateSettings, updateReminders, recordResult, saveAttempt, resetAll }),
-    [data, updateSettings, updateReminders, recordResult, saveAttempt, resetAll],
+    () => ({ data, updateSettings, updateReminders, recordResult, saveAttempt, importData, resetAll }),
+    [data, updateSettings, updateReminders, recordResult, saveAttempt, importData, resetAll],
   );
   return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>;
 }
