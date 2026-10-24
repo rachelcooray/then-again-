@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Then Again: Minesweeper</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&amp;family=Figtree:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@500;600&amp;display=swap">
+<style>
+body{margin:0;background:#F7F6F2}
+a{color:#141210}a:hover{color:#2340C4}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #F7F6F2; color: #141210; font-family: Figtree, system-ui, sans-serif; display: flex; flex-direction: column; overflow: hidden">
+  <div style="display: flex; align-items: center; gap: 12px; padding: 16px 16px 10px">
+    <a href="Library.dc.html" aria-label="Back to the library" style="width: 44px; height: 44px; border-radius: 22px; border: 2px solid #141210; display: grid; place-items: center; text-decoration: none; font-size: 20px; font-weight: 700">←</a>
+    <div style="flex-grow: 1; display: flex; flex-direction: column">
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; letter-spacing: 0.08em">GRID · Nº 023</span>
+      <span style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 26px; line-height: 1; letter-spacing: -0.02em">Minesweeper</span>
+    </div>
+    <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600; background: #141210; color: #D9EC4C; border-radius: 10px; padding: 6px 10px">{{flagLine}}</span>
+  </div>
+  <p style="margin: 0 20px 14px; font-size: 15px; color: #55504A; line-height: 1.4">Six hidden mines. Each number tells you how many mines touch that square. Uncover every safe square.</p>
+  <div role="grid" aria-label="Minefield" style="margin: 0 16px; padding: 8px; border-radius: 16px; background: #141210; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 4px">
+    <sc-for list="{{cells}}" as="c" hint-placeholder-count="36">
+      <button onClick="{{c.tap}}" aria-label="{{c.label}}" style="aspect-ratio: 1; border: 0; border-radius: 8px; background: {{c.bg}}; color: {{c.fg}}; font-family: 'IBM Plex Mono', monospace; font-weight: 700; font-size: 22px; padding: 0; cursor: pointer">{{c.text}}</button>
+    </sc-for>
+  </div>
+  <div role="group" aria-label="Tap mode" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin: 16px 16px 0; padding: 4px; border-radius: 16px; background: #E9E6DF">
+    <button onClick="{{modeDig}}" aria-pressed="{{digOn}}" style="min-height: 48px; border-radius: 12px; border: 0; background: {{digBg}}; color: {{digFg}}; font-family: Figtree, sans-serif; font-weight: 700; font-size: 15px; cursor: pointer">Uncover</button>
+    <button onClick="{{modeFlag}}" aria-pressed="{{flagOn}}" style="min-height: 48px; border-radius: 12px; border: 0; background: {{flagBg}}; color: {{flagFg}}; font-family: Figtree, sans-serif; font-weight: 700; font-size: 15px; cursor: pointer">⚑ Flag</button>
+  </div>
+  <div aria-live="polite" style="min-height: 22px; padding: 12px 20px 0; font-size: 15px; font-weight: 600; text-align: center">{{message}}</div>
+  <sc-if value="{{over}}" hint-placeholder-val="{{ false }}">
+    <div style="margin: auto 16px 16px; border-radius: 18px; background: {{endBg}}; color: {{endFg}}; padding: 18px; display: flex; flex-direction: column; gap: 8px">
+      <span style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 28px; line-height: 1.05">{{endTitle}}</span>
+      <button onClick="{{restart}}" style="min-height: 50px; border-radius: 12px; border: 0; background: #141210; color: #F7F6F2; font-family: Figtree, sans-serif; font-weight: 700; font-size: 16px; cursor: pointer">Play again</button>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { open: [], flags: [], mode: 'dig', boom: null };
+  }
+  renderVals() {
+    const N = 6, MINES = [3, 8, 14, 21, 27, 32];
+    const s = this.state;
+    const nb = (i) => { const r = Math.floor(i / N), c = i % N, out = []; for (let dr = -1; dr <= 1; dr++) for (let dc = -1; dc <= 1; dc++) { if (!dr && !dc) continue; const rr = r + dr, cc = c + dc; if (rr >= 0 && rr < N && cc >= 0 && cc < N) out.push(rr * N + cc); } return out; };
+    const count = (i) => nb(i).filter((k) => MINES.includes(k)).length;
+    const won = s.open.length === N * N - MINES.length && s.boom === null;
+    const over = won || s.boom !== null;
+    const COLORS = ['#141210', '#2340C4', '#1F7A3A', '#B3261E', '#6A2BB3', '#8A4B0F'];
+    const cells = [];
+    for (let i = 0; i < N * N; i++) {
+      const isOpen = s.open.includes(i), flag = s.flags.includes(i), mine = MINES.includes(i);
+      let text = '', bg = '#3A3631', fg = '#F7F6F2', label = 'Hidden square';
+      if (isOpen) { const n = count(i); text = n ? String(n) : ''; bg = '#F7F6F2'; fg = COLORS[n] || '#141210'; label = n ? n + ' mines nearby' : 'No mines nearby'; }
+      else if (over && mine) { text = '✸'; bg = i === s.boom ? '#E8552B' : '#BFAEF5'; fg = '#141210'; label = 'Mine'; }
+      else if (flag) { text = '⚑'; bg = '#D9EC4C'; fg = '#141210'; label = 'Flagged'; }
+      const at = i;
+      cells.push({ text: text, bg: bg, fg: fg, label: label + ', row ' + (Math.floor(i / N) + 1) + ', column ' + (i % N + 1),
+        tap: () => {
+          if (over || s.open.includes(at)) return;
+          if (s.mode === 'flag') return this.setState({ flags: s.flags.includes(at) ? s.flags.filter((x) => x !== at) : s.flags.concat([at]) });
+          if (s.flags.includes(at)) return;
+          if (MINES.includes(at)) return this.setState({ boom: at });
+          const open = s.open.slice(), stack = [at];
+          while (stack.length) { const k = stack.pop(); if (open.includes(k) || MINES.includes(k)) continue; open.push(k); if (count(k) === 0) nb(k).forEach((x) => { if (!open.includes(x)) stack.push(x); }); }
+          this.setState({ open: open, flags: s.flags.filter((f) => !open.includes(f)) });
+        } });
+    }
+    const dig = s.mode === 'dig';
+    return {
+      cells: cells, over: over,
+      flagLine: (MINES.length - s.flags.length) + ' LEFT',
+      message: over ? '' : (dig ? 'Uncover mode: tap a square.' : 'Flag mode: tap where you think a mine is.'),
+      endTitle: won ? 'Field cleared. Not a single mine touched.' : 'Boom. That one was a mine.',
+      endBg: won ? '#D9EC4C' : '#E8552B', endFg: '#141210',
+      digOn: dig ? 'true' : 'false', flagOn: dig ? 'false' : 'true',
+      digBg: dig ? '#141210' : 'transparent', digFg: dig ? '#F7F6F2' : '#141210',
+      flagBg: dig ? 'transparent' : '#141210', flagFg: dig ? '#141210' : '#F7F6F2',
+      modeDig: () => this.setState({ mode: 'dig' }), modeFlag: () => this.setState({ mode: 'flag' }),
+      restart: () => this.setState({ open: [], flags: [], mode: 'dig', boom: null })
+    };
+  }
+}
+</script>
+</body>
+</html>

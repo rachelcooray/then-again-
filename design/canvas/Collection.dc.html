@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Then Again: My collection</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&amp;family=Figtree:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@500;600&amp;display=swap">
+<style>
+body{margin:0;background:#F7F6F2}
+a{color:#141210}a:hover{color:#2340C4}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #F7F6F2; color: #141210; font-family: Figtree, system-ui, sans-serif; display: flex; flex-direction: column; overflow: hidden">
+  <div style="padding: 18px 20px 4px">
+    <h1 style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 34px; letter-spacing: -0.03em; line-height: 1">My collection</h1>
+    <div style="display: flex; gap: 8px; margin-top: 12px">
+      <a href="Rewards.dc.html" style="min-height: 44px; padding: 0 14px; border-radius: 22px; background: #141210; color: #F7F6F2; display: inline-flex; align-items: center; font-weight: 700; font-size: 14px; text-decoration: none">Rewards &amp; badges</a>
+      <a href="Gems.dc.html" style="min-height: 44px; padding: 0 14px; border-radius: 22px; border: 2px solid #141210; display: inline-flex; align-items: center; font-weight: 700; font-size: 14px; text-decoration: none">Gems</a>
+      <a href="Notifications.dc.html" style="min-height: 44px; padding: 0 14px; border-radius: 22px; border: 2px solid #141210; display: inline-flex; align-items: center; font-weight: 700; font-size: 14px; text-decoration: none">Reminders</a>
+    </div>
+  </div>
+  <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; padding: 14px 16px 6px">
+    <div style="border-radius: 14px; background: #141210; color: #F7F6F2; padding: 12px; display: flex; flex-direction: column"><span style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 32px; line-height: 1; color: #D9EC4C">7</span><span style="font-size: 13px; margin-top: 4px">puzzles solved</span></div>
+    <div style="border-radius: 14px; border: 2px solid #141210; padding: 12px; display: flex; flex-direction: column"><span style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 32px; line-height: 1">3</span><span style="font-size: 13px; margin-top: 4px">days played</span></div>
+    <div style="border-radius: 14px; border: 2px solid #141210; padding: 12px; display: flex; flex-direction: column"><span style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 32px; line-height: 1">2</span><span style="font-size: 13px; margin-top: 4px">stories saved</span></div>
+  </div>
+  <div role="tablist" aria-label="Collection sections" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; margin: 10px 16px; padding: 4px; border-radius: 16px; background: #E9E6DF">
+    <sc-for list="{{tabs}}" as="t" hint-placeholder-count="3">
+      <button role="tab" aria-selected="{{t.on}}" onClick="{{t.pick}}" style="min-height: 44px; border-radius: 12px; border: 0; background: {{t.bg}}; color: {{t.fg}}; font-family: Figtree, sans-serif; font-weight: 700; font-size: 14px; cursor: pointer">{{t.label}}</button>
+    </sc-for>
+  </div>
+  <div style="flex-grow: 1; overflow-y: auto; padding: 0 16px 12px; display: flex; flex-direction: column; gap: 8px">
+    <sc-if value="{{showSolved}}" hint-placeholder-val="{{ true }}">
+      <sc-for list="{{solved}}" as="x" hint-placeholder-count="5">
+        <div style="display: flex; align-items: center; gap: 12px; min-height: 56px; border-bottom: 1px solid #D8D5CE">
+          <span aria-hidden="true" style="width: 14px; height: 14px; border-radius: 7px; background: {{x.dot}}; flex-shrink: 0"></span>
+          <span style="flex-grow: 1; display: flex; flex-direction: column"><span style="font-weight: 700">{{x.name}}</span><span style="font-size: 13px; color: #55504A">{{x.theme}}</span></span>
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600">{{x.result}}</span>
+        </div>
+      </sc-for>
+    </sc-if>
+    <sc-if value="{{showStories}}" hint-placeholder-val="{{ false }}">
+      <div style="border-radius: 16px; background: #BFAEF5; padding: 14px 16px; display: flex; flex-direction: column; gap: 6px">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; letter-spacing: 0.08em">REWIND · SCHOOL DAYS</span>
+        <span style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 20px">Playground games</span>
+        <span style="font-size: 15px; line-height: 1.4">Suddenly everyone played marbles, then nobody did, and the skipping rhymes went round again.</span>
+      </div>
+      <div style="border-radius: 16px; background: #E8552B; padding: 14px 16px; display: flex; flex-direction: column; gap: 6px">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; letter-spacing: 0.08em">WORD GUESS · SCHOOL DAYS</span>
+        <span style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 20px">Chalk</span>
+        <span style="font-size: 15px; line-height: 1.4">Every classroom had a blackboard, a box of chalk and a duster that sent up a little cloud.</span>
+      </div>
+    </sc-if>
+    <sc-if value="{{showMine}}" hint-placeholder-val="{{ false }}">
+      <div style="border-radius: 16px; border: 2px dashed #141210; padding: 18px; display: flex; flex-direction: column; gap: 8px">
+        <span style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 20px">Your memories live here</span>
+        <span style="font-size: 15px; line-height: 1.4; color: #55504A">After Rewind, you can write a line about your own life. It stays private on your phone.</span>
+        <a href="Rewind.dc.html" style="align-self: flex-start; min-height: 46px; padding: 0 16px; border-radius: 12px; background: #141210; color: #F7F6F2; display: inline-flex; align-items: center; font-weight: 700; text-decoration: none">Play Rewind →</a>
+      </div>
+    </sc-if>
+  </div>
+  <nav aria-label="Main" style="margin: 0 12px 14px; padding: 6px; border-radius: 22px; background: #141210; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px">
+    <a href="Main.dc.html" style="min-height: 52px; border-radius: 16px; color: #C9C5BD; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; font-size: 12px; font-weight: 600; text-decoration: none"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7v9H3z"></path></svg>Today</a>
+    <a href="Library.dc.html" style="min-height: 52px; border-radius: 16px; color: #C9C5BD; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; font-size: 12px; font-weight: 600; text-decoration: none"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h6v14H4zM14 5h6v14h-6z"></path></svg>Library</a>
+    <a href="Themes.dc.html" style="min-height: 52px; border-radius: 16px; color: #C9C5BD; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; font-size: 12px; font-weight: 600; text-decoration: none"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 4-8 4-8-4 8-4zM4 12l8 4 8-4M4 17l8 4 8-4"></path></svg>Themes</a>
+    <a href="Collection.dc.html" aria-current="page" style="min-height: 52px; border-radius: 16px; background: #E8552B; color: #141210; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; font-size: 12px; font-weight: 700; text-decoration: none"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12v18l-6-4-6 4z"></path></svg>Collection</a>
+  </nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { tab: 'solved' };
+  }
+  renderVals() {
+    const tab = this.state.tab;
+    const tabs = [['solved', 'Solved'], ['stories', 'Stories'], ['mine', 'My memories']].map(([k, label]) => ({
+      label: label, on: tab === k ? 'true' : 'false',
+      bg: tab === k ? '#141210' : 'transparent', fg: tab === k ? '#F7F6F2' : '#141210',
+      pick: () => this.setState({ tab: k })
+    }));
+    const solved = [
+      { name: 'Word Guess', theme: 'School days · Nº 023', result: '4/6', dot: '#E8552B' },
+      { name: 'Word Search', theme: 'Things that made us wait · Nº 018', result: '6/6', dot: '#9BB21F' },
+      { name: 'Word Guess', theme: 'Things that made us wait · Nº 018', result: '3/6', dot: '#E8552B' },
+      { name: 'Rewind', theme: 'Things we used to keep · Nº 017', result: '4/4', dot: '#8C76E0' },
+      { name: 'Sudoku', theme: 'Things we used to keep · Nº 017', result: 'Done', dot: '#2340C4' },
+      { name: 'Word Search', theme: 'Things we used to keep · Nº 017', result: '7/7', dot: '#9BB21F' },
+      { name: 'Word Guess', theme: 'Things we used to keep · Nº 017', result: '5/6', dot: '#E8552B' }
+    ];
+    return { tabs: tabs, solved: solved, showSolved: tab === 'solved', showStories: tab === 'stories', showMine: tab === 'mine' };
+  }
+}
+</script>
+</body>
+</html>

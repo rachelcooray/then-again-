@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Then Again: Circle Word Finder</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&amp;family=Figtree:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@500;600&amp;display=swap">
+<style>
+body{margin:0;background:#F7F6F2}
+a{color:#141210}a:hover{color:#2340C4}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #F7F6F2; color: #141210; font-family: Figtree, system-ui, sans-serif; display: flex; flex-direction: column; overflow: hidden">
+  <div style="display: flex; align-items: center; gap: 12px; padding: 16px 16px 10px">
+    <a href="Library.dc.html" aria-label="Back to the library" style="width: 44px; height: 44px; border-radius: 22px; border: 2px solid #141210; display: grid; place-items: center; text-decoration: none; font-size: 20px; font-weight: 700">←</a>
+    <div style="flex-grow: 1; display: flex; flex-direction: column">
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; letter-spacing: 0.08em">WORD GAMES · Nº 023</span>
+      <span style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 26px; line-height: 1; letter-spacing: -0.02em">Circle Word Finder</span>
+    </div>
+    <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600; background: #E8552B; border-radius: 10px; padding: 6px 10px">{{countLine}}</span>
+  </div>
+  <p style="margin: 0 20px 6px; font-size: 15px; color: #55504A; line-height: 1.4">Tap letters around the circle to make words of four letters or more. Find eight, including the one that uses every letter.</p>
+  <div aria-live="polite" style="margin: 6px 16px 0; min-height: 56px; border-radius: 14px; border: 2px solid #141210; background: #FFFFFF; display: flex; align-items: center; justify-content: center; font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 28px; letter-spacing: 0.12em">{{current}}</div>
+  <div style="position: relative; width: 300px; height: 300px; margin: 14px auto 0; border-radius: 150px; background: #E8552B">
+    <sc-for list="{{letters}}" as="l" hint-placeholder-count="7">
+      <button onClick="{{l.tap}}" aria-label="{{l.label}}" style="position: absolute; left: {{l.x}}; top: {{l.y}}; width: 64px; height: 64px; margin: -32px 0 0 -32px; border-radius: 32px; border: 3px solid #141210; background: {{l.bg}}; color: {{l.fg}}; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 28px; cursor: pointer">{{l.ch}}</button>
+    </sc-for>
+  </div>
+  <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; padding: 14px 16px 6px">
+    <button onClick="{{undo}}" style="min-height: 50px; border-radius: 12px; border: 2px solid #141210; background: transparent; color: #141210; font-family: Figtree, sans-serif; font-weight: 700; font-size: 15px; cursor: pointer">Undo</button>
+    <button onClick="{{clear}}" style="min-height: 50px; border-radius: 12px; border: 2px solid #141210; background: transparent; color: #141210; font-family: Figtree, sans-serif; font-weight: 700; font-size: 15px; cursor: pointer">Clear</button>
+    <button onClick="{{submit}}" style="min-height: 50px; border-radius: 12px; border: 0; background: #141210; color: #F7F6F2; font-family: Figtree, sans-serif; font-weight: 700; font-size: 15px; cursor: pointer">Submit</button>
+  </div>
+  <div aria-live="polite" style="min-height: 22px; padding: 4px 20px 0; font-size: 15px; font-weight: 600">{{message}}</div>
+  <div style="display: flex; flex-wrap: wrap; gap: 6px; padding: 8px 16px 16px">
+    <sc-for list="{{slots}}" as="s" hint-placeholder-count="8">
+      <span style="min-height: 34px; display: inline-flex; align-items: center; padding: 0 12px; border-radius: 17px; border: 2px solid {{s.edge}}; background: {{s.bg}}; font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 14px; letter-spacing: 0.06em">{{s.text}}</span>
+    </sc-for>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { path: [], found: [], note: '' };
+  }
+  renderVals() {
+    const L = ['P', 'E', 'N', 'C', 'I', 'L', 'S'];
+    const TARGET = ['PENCILS', 'PENCIL', 'SPINE', 'SLICE', 'CLIPS', 'LINES', 'PILES', 'SNIP'];
+    const BONUS = ['SPLICE', 'PINES', 'PINE', 'LINE', 'NICE', 'PILE', 'CLIP', 'LIPS', 'PENS', 'PINS', 'SPIN', 'EPIC', 'ISLE', 'LENS', 'SLIP', 'SPEC'];
+    const s = this.state;
+    const word = s.path.map((i) => L[i]).join('');
+    const letters = L.map((ch, i) => {
+      const a = (i / L.length) * Math.PI * 2 - Math.PI / 2, used = s.path.includes(i);
+      return { ch: ch, x: (150 + 112 * Math.cos(a)) + 'px', y: (150 + 112 * Math.sin(a)) + 'px', bg: used ? '#141210' : '#F7F6F2', fg: used ? '#F7F6F2' : '#141210', label: ch + (used ? ', used' : ''),
+        tap: () => { if (!used) this.setState({ path: s.path.concat([i]), note: '' }); } };
+    });
+    const slots = TARGET.map((w) => { const got = s.found.includes(w); return { text: got ? w : w.replace(/./g, '·'), bg: got ? '#E8552B' : '#FFFFFF', edge: got ? '#E8552B' : '#CFCBC2' }; });
+    const extra = s.found.filter((w) => !TARGET.includes(w));
+    if (extra.length) slots.push({ text: '+' + extra.length + ' bonus', bg: '#D9EC4C', edge: '#9BB21F' });
+    const got = s.found.filter((w) => TARGET.includes(w)).length;
+    return {
+      letters: letters, slots: slots,
+      current: word || ' ',
+      countLine: got + '/8',
+      message: s.note || (got === 8 ? 'All eight found. The everything-word was PENCILS.' : ''),
+      undo: () => this.setState({ path: s.path.slice(0, -1), note: '' }),
+      clear: () => this.setState({ path: [], note: '' }),
+      submit: () => {
+        if (word.length < 4) return this.setState({ note: 'Words need four letters or more.' });
+        if (s.found.includes(word)) return this.setState({ path: [], note: 'Already found.' });
+        if (TARGET.includes(word) || BONUS.includes(word)) return this.setState({ path: [], found: s.found.concat([word]), note: TARGET.includes(word) ? 'Nice: ' + word + '.' : word + ' is a bonus word.' });
+        this.setState({ path: [], note: 'Not in today’s word list.' });
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>

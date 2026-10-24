@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Then Again: Full catalogue</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&amp;family=Figtree:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@500;600&amp;display=swap">
+<style>
+body{margin:0;background:#F7F6F2}
+a{color:#141210}a:hover{color:#2340C4}
+</style>
+</helmet>
+<div style="box-sizing: border-box; min-height: 100vh; background: #F7F6F2; color: #141210; font-family: Figtree, system-ui, sans-serif">
+  <header style="max-width: 1240px; margin: 0 auto; padding: 22px 32px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px">
+    <div style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 34px; letter-spacing: -0.03em">then again<span style="color: #E8552B">.</span></div>
+    <nav aria-label="Main" style="display: flex; flex-wrap: wrap; gap: 6px; padding: 6px; border-radius: 18px; background: #141210">
+      <a href="DesktopToday.dc.html" style="min-height: 44px; padding: 0 18px; border-radius: 12px; color: #E9E6DF; display: inline-flex; align-items: center; font-weight: 600; text-decoration: none">Today</a>
+      <a href="DesktopLibrary.dc.html" aria-current="page" style="min-height: 44px; padding: 0 18px; border-radius: 12px; background: #E8552B; color: #141210; display: inline-flex; align-items: center; font-weight: 700; text-decoration: none">Library</a>
+      <a href="Themes.dc.html" style="min-height: 44px; padding: 0 18px; border-radius: 12px; color: #E9E6DF; display: inline-flex; align-items: center; font-weight: 600; text-decoration: none">Themes</a>
+      <a href="Collection.dc.html" style="min-height: 44px; padding: 0 18px; border-radius: 12px; color: #E9E6DF; display: inline-flex; align-items: center; font-weight: 600; text-decoration: none">Collection</a>
+    </nav>
+  </header>
+  <main style="max-width: 1240px; margin: 0 auto; padding: 8px 32px 64px; display: flex; flex-direction: column; gap: 22px">
+    <a href="DesktopLibrary.dc.html" style="align-self: flex-start; font-weight: 700; text-decoration: none">← Back to the library</a>
+    <div style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 18px">
+      <div style="display: flex; flex-direction: column; gap: 10px; flex: 1 1 480px; min-width: 0">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600; letter-spacing: 0.08em">THE PLAN, NOT YET THE PRODUCT</span>
+        <h1 style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 64px; line-height: 0.95; letter-spacing: -0.04em">The full catalogue</h1>
+        <p style="margin: 0; font-size: 18px; line-height: 1.45; max-width: 640px">Every puzzle format planned for Then Again, grouped by family. Most share a handful of engines, so one well-built engine can power many formats.</p>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; flex: 0 1 520px">
+        <sc-for list="{{stats}}" as="s" hint-placeholder-count="4">
+          <div style="border-radius: 14px; background: {{s.bg}}; color: {{s.fg}}; padding: 12px; display: flex; flex-direction: column">
+            <span style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 30px; line-height: 1">{{s.n}}</span>
+            <span style="font-size: 13px; font-weight: 600; margin-top: 4px">{{s.label}}</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+    <div role="group" aria-label="Filter by status" style="display: flex; flex-wrap: wrap; gap: 8px">
+      <sc-for list="{{chips}}" as="ch" hint-placeholder-count="5">
+        <button onClick="{{ch.pick}}" aria-pressed="{{ch.on}}" style="min-height: 46px; padding: 0 18px; border-radius: 23px; border: 2px solid #141210; background: {{ch.bg}}; color: {{ch.fg}}; font-family: Figtree, sans-serif; font-weight: 700; font-size: 15px; cursor: pointer">{{ch.label}}</button>
+      </sc-for>
+    </div>
+    <sc-for list="{{fams}}" as="f" hint-placeholder-count="9">
+      <section style="display: flex; flex-direction: column; gap: 12px; padding-top: 6px">
+        <div style="display: flex; align-items: center; gap: 12px">
+          <span aria-hidden="true" style="width: 16px; height: 16px; border-radius: 4px; background: {{f.color}}"></span>
+          <h2 style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 30px; letter-spacing: -0.02em">{{f.name}}</h2>
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600">{{f.count}}</span>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 8px">
+          <sc-for list="{{f.items}}" as="it" hint-placeholder-count="12">
+            <div style="min-height: 56px; border-radius: 12px; border: 2px solid {{it.edge}}; background: {{it.bg}}; color: {{it.fg}}; padding: 8px 12px; display: flex; flex-direction: column; justify-content: center; gap: 2px">
+              <span style="font-weight: 700; font-size: 15px; line-height: 1.2">{{it.name}}</span>
+              <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; letter-spacing: 0.06em">{{it.tag}}</span>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+    </sc-for>
+    <sc-if value="{{empty}}" hint-placeholder-val="{{ false }}">
+      <p style="color: #55504A">Nothing in this view.</p>
+    </sc-if>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2600}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { filter: 'all' };
+  }
+  renderVals() {
+    const PLAYABLE = ['Word Guess', 'Word Search', 'Classic Sudoku', 'Word Connections (Rewind)', 'Circle Word Finder', 'Mini Crossword', 'Nonogram', 'Daily Bingo', 'Mystery Object', 'General Knowledge Quiz', 'Word Ladder', 'Mini Sudoku', 'Minesweeper', 'Higher or Lower', 'Anagrams', 'Word Hive', 'Killer Sudoku', 'Kakuro', 'Futoshiki', '4×4 Logic', 'Sliding Tile', 'Put It in Order'];
+    const LAUNCH = ['Circle Word Finder', 'Word Ladder', 'Anagrams', 'Word Hive', 'Mini Crossword', 'Mini Sudoku', 'Killer Sudoku', 'Kakuro', 'Nonogram', 'Futoshiki', '4×4 Logic', 'Daily Bingo', 'Sliding Tile', 'Minesweeper', 'Spot the Difference', 'Hidden Object', 'General Knowledge Quiz', 'Higher or Lower', 'Put It in Order', 'Mystery Object'];
+    const LICENCE = ['Tune Recognition', 'Song Title Scramble', 'Movie Quote Quiz', 'Film Still Mystery', 'TV Theme Challenge', 'Album Cover Mystery', 'Jingle Recognition', 'Vintage Advert Mystery', 'Packaging Through Time'];
+    const FAMS = [
+      ['Word games', '#E8552B', ['Word Guess', 'Multi-Word Guess', 'Word Search', 'Word Grid Hunt', 'Theme Path', 'Circle Word Finder', 'Word Hive', 'Anagrams', 'Word Scramble', 'Word Ladder', 'Word Chain', 'Missing Vowels', 'Hangman', 'Spelling Challenge', 'Word Connections (Rewind)', 'Word Association', 'Crossword', 'Mini Crossword', 'Cryptic Crossword', 'Cryptogram', 'Quote Decoder', 'Acrostic', 'Word Wheel', 'Word Fill', 'Double Definition', 'Rebus', 'Rhyme Match', 'Synonym Match', 'Antonym Match', 'Prefix and Suffix', 'Phrase Completion', 'Word Search Variants', 'Word Placement', 'Letter Box Challenge', 'Word Ranking']],
+      ['Numbers & logic', '#2340C4', ['Classic Sudoku', 'Mini Sudoku', 'Killer Sudoku', 'Diagonal Sudoku', 'Irregular Sudoku', 'Arithmetic Cages', 'Kakuro', 'Futoshiki', 'Nonogram', 'Hitori', 'Hidato', 'Number Search', 'Number Sequence', 'Equation Guess', 'Cross Sums', 'Sum Grid', 'Number Balance', 'Magic Square', 'Arithmetic Maze', 'Prime Number Hunt', 'Factor Puzzle', 'Target Number', 'Missing Operator', 'Maths Crossword', 'Number Placement', '4×4 Logic', '5×5 Logic', 'Sequence Ordering', 'Estimation Challenge']],
+      ['Grid & spatial', '#141210', ['Daily Bingo', 'Sliding Tile', 'Fifteen Puzzle', 'Lights Out', 'Minesweeper', 'Battleships Logic', 'Fleet Placement', 'Fillomino', 'Slitherlink', 'Nurikabe', 'Bridges', 'Star Battle', 'Tents and Trees', 'Parking Puzzle', 'Block Packing', 'Tangram', 'Matchstick Puzzle', 'Pattern Completion', 'Shape Rotation', 'Jigsaw Puzzle', 'Maze', 'Mirror Maze', 'Pipe Connection', 'Route Finder', 'Domino Logic', 'Match Pairs', 'Memory Cards', 'Tile Matching', 'Sequence Tiles']],
+      ['Visual & observation', '#9BB21F', ['Hidden Object', 'Picture Search', 'Spot the Difference', 'What’s Missing?', 'Zoomed-In Mystery', 'Silhouette Guess', 'Shadow Match', 'Picture Connections', 'Visual Sequence', 'Odd One Out', 'Optical Illusion Challenge', 'Perspective Puzzle', 'Image Reconstruction', 'Object Rotation', 'Pixel Reveal', 'Cropped Photograph', 'Icon Riddle', 'Visual Analogy', 'Colour Pattern', 'Find the Intruder']],
+      ['Trivia & deduction', '#8C76E0', ['General Knowledge Quiz', 'True or False', 'Multiple Choice', 'Higher or Lower', 'Closest Wins', 'Put It in Order', 'Timeline Challenge', 'Mystery Object', 'Twenty Questions', 'Logic Deduction', 'Who Am I?', 'Where in the World?', 'Map Challenge', 'Flag Identification', 'Landmark Guess', 'Historical Date Guess', 'Invention Match', 'Science Riddles', 'Everyday Knowledge', 'Fact or Myth', 'Category Ranking', 'Clue-by-Clue Mystery']],
+      ['Brain teasers', '#2340C4', ['Riddles', 'Lateral Thinking', 'Short Logic Problems', 'Logic Grid', 'Truth-Teller Puzzle', 'Knights and Knaves', 'River Crossing', 'Bridge and Torch', 'Weighing Puzzle', 'Counterfeit Coin', 'Prisoner and Switches', 'Birthday Paradox', 'Monty Hall', 'Matchstick Equations', 'Impossible at First', 'What Comes Next?', 'The Missing Clue']],
+      ['Music & sound', '#E8552B', ['Tune Recognition', 'Sound Mystery', 'Instrument Match', 'Song Title Scramble', 'Music Timeline', 'Artist Clues', 'Movie Quote Quiz', 'Film Still Mystery', 'TV Theme Challenge', 'Album Cover Mystery', 'Jingle Recognition', 'Voice or Accent Challenge', 'Sound Sequence', 'Name That Era']],
+      ['Memory & culture (Then Again originals)', '#8C76E0', ['Object Through the Ages', 'Then and Now', 'Old or New?', 'Forgotten Words', 'Phrase Origins', 'Name That Object', 'What Was It Used For?', 'Memory Sequence', 'Everyday Timeline', 'Vintage Advert Mystery', 'Packaging Through Time', 'Household Sound Memory', 'Generations Challenge', 'Lost and Found', 'Common Thread']],
+      ['Social modes', '#141210', ['Daily Duel', 'Pass and Play', 'Family Challenge', 'Puzzle of the Week', 'Streak Challenge', 'Personal Best', 'Cooperative Mystery', 'Create a Challenge', 'Friend Comparison', 'Community Theme']]
+    ];
+    const statusOf = (n) => PLAYABLE.includes(n) ? 'playable' : LAUNCH.includes(n) ? 'launch' : LICENCE.includes(n) ? 'licence' : 'later';
+    const LOOK = {
+      playable: { tag: '✓ PLAYABLE NOW', bg: '#141210', fg: '#F7F6F2', edge: '#141210' },
+      launch: { tag: '● LAUNCH LIST', bg: '#D9EC4C', fg: '#141210', edge: '#9BB21F' },
+      later: { tag: '○ LATER', bg: '#FFFFFF', fg: '#141210', edge: '#CFCBC2' },
+      licence: { tag: '! NEEDS A LICENCE', bg: '#FFFFFF', fg: '#141210', edge: '#E8552B' }
+    };
+    const all = FAMS.flatMap(([, , items]) => items);
+    const count = (k) => all.filter((n) => statusOf(n) === k).length;
+    const f = this.state.filter;
+    const fams = FAMS.map(([name, color, items]) => {
+      const shown = items.filter((n) => f === 'all' || statusOf(n) === f);
+      return { name: name, color: color, count: shown.length + (f === 'all' ? ' FORMATS' : ' SHOWN'), items: shown.map((n) => { const L = LOOK[statusOf(n)]; return { name: n, tag: L.tag, bg: L.bg, fg: L.fg, edge: L.edge }; }) };
+    }).filter((x) => x.items.length);
+    const chips = [['all', 'Everything (' + all.length + ')'], ['playable', 'Playable now'], ['launch', 'Launch list'], ['later', 'Later'], ['licence', 'Needs a licence']].map(([k, label]) => ({
+      label: label, on: f === k ? 'true' : 'false', bg: f === k ? '#141210' : '#FFFFFF', fg: f === k ? '#F7F6F2' : '#141210', pick: () => this.setState({ filter: k })
+    }));
+    return {
+      fams: fams, chips: chips, empty: fams.length === 0,
+      stats: [
+        { n: String(all.length), label: 'formats planned', bg: '#141210', fg: '#F7F6F2' },
+        { n: String(count('playable')), label: 'playable now', bg: '#E8552B', fg: '#141210' },
+        { n: String(count('launch')), label: 'on the launch list', bg: '#D9EC4C', fg: '#141210' },
+        { n: String(count('licence')), label: 'need a licence', bg: '#BFAEF5', fg: '#141210' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

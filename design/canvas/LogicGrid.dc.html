@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Then Again: 4×4 Logic</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&amp;family=Figtree:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@500;600&amp;display=swap">
+<style>
+body{margin:0;background:#F7F6F2}
+a{color:#141210}a:hover{color:#2340C4}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #F7F6F2; color: #141210; font-family: Figtree, system-ui, sans-serif; display: flex; flex-direction: column; overflow: hidden">
+  <div style="display: flex; align-items: center; gap: 12px; padding: 16px 16px 10px">
+    <a href="Library.dc.html" aria-label="Back to the library" style="width: 44px; height: 44px; border-radius: 22px; border: 2px solid #141210; display: grid; place-items: center; text-decoration: none; font-size: 20px; font-weight: 700">←</a>
+    <div style="flex-grow: 1; display: flex; flex-direction: column">
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; letter-spacing: 0.08em">NUMBERS &amp; LOGIC · Nº 023</span>
+      <span style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 26px; line-height: 1; letter-spacing: -0.02em">4×4 Logic</span>
+    </div>
+    <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600; background: #2340C4; color: #FFFFFF; border-radius: 10px; padding: 6px 10px">TEA TIME</span>
+  </div>
+  <p style="margin: 0 20px 10px; font-size: 15px; color: #55504A; line-height: 1.4">Four friends each chose a different treat at the tea shop. Use the clues to work out who had what. Tap a square to mark ✓ or ×.</p>
+  <ol style="margin: 0 16px 12px; padding: 12px 14px 12px 34px; border-radius: 14px; background: #141210; color: #F7F6F2; font-size: 15px; line-height: 1.5">
+    <li>Cy had the toast.</li>
+    <li>Ada had neither the toast nor the tart.</li>
+    <li>Ben had either the tart or the bun.</li>
+    <li>Di didn’t have the scone or the tart.</li>
+  </ol>
+  <div role="grid" aria-label="Logic grid" style="margin: 0 16px; display: grid; grid-template-columns: 72px repeat(4, minmax(0, 1fr)); gap: 4px">
+    <span></span>
+    <span style="text-align: center; font-weight: 700; font-size: 14px; padding-bottom: 4px">Toast</span>
+    <span style="text-align: center; font-weight: 700; font-size: 14px; padding-bottom: 4px">Scone</span>
+    <span style="text-align: center; font-weight: 700; font-size: 14px; padding-bottom: 4px">Bun</span>
+    <span style="text-align: center; font-weight: 700; font-size: 14px; padding-bottom: 4px">Tart</span>
+    <sc-for list="{{rows}}" as="r" hint-placeholder-count="4">
+      <span style="display: flex; align-items: center; font-weight: 700; font-size: 16px">{{r.name}}</span>
+      <sc-for list="{{r.cells}}" as="c" hint-placeholder-count="4">
+        <button onClick="{{c.tap}}" aria-label="{{c.label}}" style="min-height: 56px; border-radius: 10px; border: 2px solid #141210; background: {{c.bg}}; color: {{c.fg}}; font-family: 'IBM Plex Mono', monospace; font-weight: 700; font-size: 24px; padding: 0; cursor: pointer">{{c.mark}}</button>
+      </sc-for>
+    </sc-for>
+  </div>
+  <button onClick="{{check}}" style="margin: 16px 16px 0; min-height: 52px; border-radius: 14px; border: 0; background: #2340C4; color: #FFFFFF; font-family: Figtree, sans-serif; font-weight: 700; font-size: 16px; cursor: pointer">Check my answer</button>
+  <div aria-live="polite" style="min-height: 22px; padding: 12px 20px 0; font-size: 15px; font-weight: 600; text-align: center">{{message}}</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { g: Array(16).fill(0), note: '' };
+  }
+  renderVals() {
+    const NAMES = ['Ada', 'Ben', 'Cy', 'Di'], SNACKS = ['Toast', 'Scone', 'Bun', 'Tart'];
+    const ANSWER = [1, 3, 0, 2];
+    const s = this.state;
+    const rows = NAMES.map((n, r) => ({
+      name: n,
+      cells: SNACKS.map((sn, c) => {
+        const i = r * 4 + c, st = s.g[i];
+        return { mark: st === 1 ? '✓' : st === 2 ? '×' : '', bg: st === 1 ? '#D9EC4C' : st === 2 ? '#E9E6DF' : '#FFFFFF', fg: st === 2 ? '#8A857D' : '#141210',
+          label: n + ' and ' + sn + ', ' + (st === 1 ? 'yes' : st === 2 ? 'no' : 'unmarked'),
+          tap: () => { const g = s.g.slice(); g[i] = (g[i] + 1) % 3; this.setState({ g: g, note: '' }); } };
+      })
+    }));
+    return {
+      rows: rows, message: s.note,
+      check: () => {
+        const picks = NAMES.map((_, r) => [0, 1, 2, 3].filter((c) => s.g[r * 4 + c] === 1));
+        if (picks.some((p) => p.length !== 1)) return this.setState({ note: 'Give each friend exactly one ✓.' });
+        const right = picks.filter((p, r) => p[0] === ANSWER[r]).length;
+        this.setState({ note: right === 4 ? 'Solved! Ada: scone, Ben: tart, Cy: toast, Di: bun.' : right + ' of 4 are right. Re-read the clues.' });
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>

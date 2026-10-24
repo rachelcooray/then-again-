@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Then Again: Word Ladder</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&amp;family=Figtree:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@500;600&amp;display=swap">
+<style>
+body{margin:0;background:#F7F6F2}
+a{color:#141210}a:hover{color:#2340C4}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #F7F6F2; color: #141210; font-family: Figtree, system-ui, sans-serif; display: flex; flex-direction: column; overflow: hidden">
+  <div style="display: flex; align-items: center; gap: 12px; padding: 16px 16px 10px">
+    <a href="Library.dc.html" aria-label="Back to the library" style="width: 44px; height: 44px; border-radius: 22px; border: 2px solid #141210; display: grid; place-items: center; text-decoration: none; font-size: 20px; font-weight: 700">←</a>
+    <div style="flex-grow: 1; display: flex; flex-direction: column">
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; letter-spacing: 0.08em">WORD GAMES · Nº 023</span>
+      <span style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 26px; line-height: 1; letter-spacing: -0.02em">Word Ladder</span>
+    </div>
+    <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600; background: #E8552B; border-radius: 10px; padding: 6px 10px">PAR 4</span>
+  </div>
+  <p style="margin: 0 20px 14px; font-size: 15px; color: #55504A; line-height: 1.4">Turn COLD into WARM by changing one letter at a time. Every step must be a real word.</p>
+  <div style="display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 0 16px">
+    <sc-for list="{{rungs}}" as="r" hint-placeholder-count="3">
+      <div style="width: 220px; min-height: 52px; border-radius: 12px; background: {{r.bg}}; color: {{r.fg}}; border: 2px solid #141210; display: flex; align-items: center; justify-content: center; font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 26px; letter-spacing: 0.18em">{{r.word}}</div>
+    </sc-for>
+    <sc-if value="{{playing}}" hint-placeholder-val="{{ true }}">
+      <div style="width: 220px; min-height: 52px; border-radius: 12px; border: 2px dashed #8A857D; display: flex; align-items: center; justify-content: center; font-size: 14px; color: #55504A">your next word</div>
+    </sc-if>
+    <div style="width: 220px; min-height: 52px; border-radius: 12px; background: #E8552B; border: 2px solid #141210; display: flex; align-items: center; justify-content: center; font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 26px; letter-spacing: 0.18em">WARM</div>
+  </div>
+  <sc-if value="{{playing}}" hint-placeholder-val="{{ true }}">
+    <div style="display: flex; gap: 8px; padding: 18px 16px 0">
+      <label for="rung" style="position: absolute; width: 1px; height: 1px; overflow: hidden">Next word</label>
+      <input id="rung" value="{{typed}}" onChange="{{onType}}" maxlength="4" autocapitalize="characters" placeholder="4 letters" style="flex-grow: 1; min-height: 52px; border-radius: 12px; border: 2px solid #141210; background: #FFFFFF; padding: 0 14px; font-family: 'IBM Plex Mono', monospace; font-size: 22px; letter-spacing: 0.18em; text-transform: uppercase; color: #141210; min-width: 0">
+      <button onClick="{{submit}}" style="min-height: 52px; padding: 0 18px; border-radius: 12px; border: 0; background: #141210; color: #F7F6F2; font-family: Figtree, sans-serif; font-weight: 700; font-size: 16px; cursor: pointer">Add</button>
+      <button onClick="{{undo}}" aria-label="Remove last step" style="min-height: 52px; width: 52px; border-radius: 12px; border: 2px solid #141210; background: transparent; color: #141210; font-size: 18px; cursor: pointer">↶</button>
+    </div>
+  </sc-if>
+  <div aria-live="polite" style="min-height: 22px; padding: 12px 20px 0; font-size: 15px; font-weight: 600; text-align: center">{{message}}</div>
+  <sc-if value="{{done}}" hint-placeholder-val="{{ false }}">
+    <div style="margin: auto 16px 16px; border-radius: 18px; background: #E8552B; padding: 18px; display: flex; flex-direction: column; gap: 8px">
+      <span style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 28px; line-height: 1.05">{{doneTitle}}</span>
+      <span style="font-size: 15px">One route: COLD, CORD, CARD, WARD, WARM.</span>
+      <a href="Library.dc.html" style="min-height: 50px; border-radius: 12px; background: #141210; color: #F7F6F2; display: flex; align-items: center; justify-content: center; font-weight: 700; text-decoration: none">Back to the library →</a>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { steps: ['COLD'], typed: '', note: '' };
+  }
+  renderVals() {
+    const WORDS = ['COLD', 'CORD', 'CARD', 'WARD', 'WARM', 'WORD', 'WORM', 'CORE', 'CARE', 'WARE', 'WORE', 'COLT', 'BOLD', 'GOLD', 'HOLD', 'FOLD', 'MOLD', 'COAL', 'CARP', 'CART', 'WART', 'HARD', 'HARM', 'FARM', 'FORM', 'NORM', 'LORD', 'FORD', 'HERD', 'BARD', 'LARD', 'YARD', 'WAND', 'WANT', 'WORN', 'CORN', 'COIL', 'COOL', 'POOL', 'TOLD', 'SOLD', 'COLA', 'CODE'];
+    const s = this.state;
+    const last = s.steps[s.steps.length - 1];
+    const done = last === 'WARM';
+    const diff = (a, b) => a.split('').filter((ch, i) => ch !== b[i]).length;
+    const rungs = s.steps.filter((w) => w !== 'WARM').map((w, i) => ({ word: w, bg: i === 0 ? '#141210' : '#FFFFFF', fg: i === 0 ? '#F7F6F2' : '#141210' }));
+    const moves = s.steps.length - 1;
+    return {
+      rungs: rungs, playing: !done, done: done,
+      typed: s.typed, message: s.note,
+      doneTitle: moves <= 4 ? 'Climbed in ' + moves + '. Right on par!' : 'Climbed in ' + moves + ' steps.',
+      onType: (e) => this.setState({ typed: e.target.value.toUpperCase().replace(/[^A-Z]/g, '').slice(0, 4), note: '' }),
+      undo: () => { if (s.steps.length > 1) this.setState({ steps: s.steps.slice(0, -1), note: '' }); },
+      submit: () => {
+        const w = s.typed;
+        if (w.length !== 4) return this.setState({ note: 'Four letters, please.' });
+        if (diff(w, last) !== 1) return this.setState({ note: 'Change exactly one letter of ' + last + '.' });
+        if (!WORDS.includes(w)) return this.setState({ note: w + ' isn’t in today’s word list.' });
+        if (s.steps.includes(w)) return this.setState({ note: 'You’ve already used ' + w + '.' });
+        this.setState({ steps: s.steps.concat([w]), typed: '', note: '' });
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>

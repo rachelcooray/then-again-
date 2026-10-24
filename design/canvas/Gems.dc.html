@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Then Again: Gems</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&amp;family=Figtree:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@500;600&amp;display=swap">
+<style>
+body{margin:0;background:#F7F6F2}
+a{color:#141210}a:hover{color:#2340C4}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #F7F6F2; color: #141210; font-family: Figtree, system-ui, sans-serif; display: flex; flex-direction: column; overflow: hidden">
+  <div style="display: flex; align-items: center; gap: 12px; padding: 16px 16px 8px">
+    <a href="Main.dc.html" aria-label="Back to today" style="width: 44px; height: 44px; border-radius: 22px; border: 2px solid #141210; display: grid; place-items: center; text-decoration: none; font-size: 20px; font-weight: 700">←</a>
+    <span style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 28px; letter-spacing: -0.02em">Gems</span>
+  </div>
+  <div style="flex-grow: 1; overflow-y: auto; padding: 0 16px 16px; display: flex; flex-direction: column; gap: 12px">
+    <div style="border-radius: 20px; background: #141210; color: #F7F6F2; padding: 18px 20px; display: flex; align-items: center; gap: 16px">
+      <svg width="56" height="56" viewBox="0 0 48 48" aria-hidden="true"><path d="M14 6h20l10 12-20 24L4 18z" fill="#E8552B"></path><path d="M4 18h40M14 6l10 36M34 6L24 42M14 6l-2 12M34 6l2 12" stroke="#141210" stroke-width="2" fill="none" stroke-linejoin="round"></path></svg>
+      <div style="display: flex; flex-direction: column">
+        <span aria-live="polite" style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 44px; line-height: 1">{{balance}}</span>
+        <span style="font-size: 14px; color: #C9C5BD">Gems to spend</span>
+      </div>
+    </div>
+
+    <div style="border-radius: 18px; background: #E8552B; padding: 16px; display: flex; flex-direction: column; gap: 8px">
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; letter-spacing: 0.08em">YESTERDAY · WORD GUESS · NOT SOLVED</span>
+      <span style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 22px; line-height: 1.1">Have another go?</span>
+      <span style="font-size: 15px; line-height: 1.35">A retry starts a fresh attempt. Your first result stays in your stats, and a retry win is shown separately from first-try wins.</span>
+      <button onClick="{{retry}}" disabled="{{retryUsed}}" style="min-height: 50px; border-radius: 12px; border: 0; background: #141210; color: #F7F6F2; font-family: Figtree, sans-serif; font-weight: 700; font-size: 16px; cursor: pointer">{{retryLabel}}</button>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 6px">
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; letter-spacing: 0.08em; padding-top: 4px">EARN GEMS BY PLAYING</span>
+      <div style="border-radius: 16px; border: 2px solid #141210; padding: 4px 14px">
+        <div style="display: flex; justify-content: space-between; min-height: 40px; align-items: center; border-bottom: 1px solid #D8D5CE; font-size: 15px"><span>Solve a daily puzzle, first time</span><b style="font-family: 'IBM Plex Mono', monospace">+5</b></div>
+        <div style="display: flex; justify-content: space-between; min-height: 40px; align-items: center; border-bottom: 1px solid #D8D5CE; font-size: 15px"><span>Play three puzzle families in a day</span><b style="font-family: 'IBM Plex Mono', monospace">+5</b></div>
+        <div style="display: flex; justify-content: space-between; min-height: 40px; align-items: center; border-bottom: 1px solid #D8D5CE; font-size: 15px"><span>Finish today’s full set</span><b style="font-family: 'IBM Plex Mono', monospace">+10</b></div>
+        <div style="display: flex; justify-content: space-between; min-height: 40px; align-items: center; border-bottom: 1px solid #D8D5CE; font-size: 15px"><span>Play on 7 days in a row</span><b style="font-family: 'IBM Plex Mono', monospace">+20</b></div>
+        <div style="display: flex; justify-content: space-between; min-height: 40px; align-items: center; font-size: 15px"><span>Complete a theme collection</span><b style="font-family: 'IBM Plex Mono', monospace">+30</b></div>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 6px">
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; letter-spacing: 0.08em; padding-top: 4px">GET MORE GEMS</span>
+      <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
+        <sc-for list="{{packs}}" as="p" hint-placeholder-count="3">
+          <button onClick="{{p.buy}}" style="min-height: 104px; border-radius: 16px; border: 2px solid #141210; background: {{p.bg}}; color: #141210; font-family: Figtree, sans-serif; padding: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; cursor: pointer">
+            <span style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 26px; line-height: 1">{{p.gems}}</span>
+            <span style="font-size: 12px; font-weight: 600">Gems</span>
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 14px; font-weight: 600">{{p.price}}</span>
+          </button>
+        </sc-for>
+      </div>
+      <a href="Collection.dc.html" style="margin-top: 4px; border-radius: 16px; background: #2340C4; color: #FFFFFF; padding: 14px 16px; display: flex; flex-direction: column; gap: 2px; text-decoration: none">
+        <span style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 20px">Then Again Plus</span>
+        <span style="font-size: 14px">100 Gems every month, no adverts, the full archive. Price to test: $2.99 a month.</span>
+      </a>
+      <div aria-live="polite" style="min-height: 20px; font-size: 14px; font-weight: 600; padding-top: 4px">{{note}}</div>
+      <span style="font-size: 13px; color: #55504A; line-height: 1.4">Prototype: no real payments. In the app, purchases go through Apple or Google with a confirmation step, and today’s puzzles never need Gems to play.</span>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { balance: 145, retried: false, note: '' };
+  }
+  renderVals() {
+    const s = this.state;
+    const packs = [
+      { gems: '100', price: '$0.99', bg: '#FFFFFF' },
+      { gems: '550', price: '$4.99', bg: '#D9EC4C' },
+      { gems: '1,200', price: '$9.99', bg: '#BFAEF5' }
+    ].map((p) => ({ gems: p.gems, price: p.price, bg: p.bg, buy: () => this.setState({ note: 'This would open the app store’s payment sheet for ' + p.gems + ' Gems.' }) }));
+    return {
+      balance: String(s.balance),
+      packs: packs,
+      note: s.note,
+      retryUsed: s.retried,
+      retryLabel: s.retried ? 'Retry unlocked. Good luck!' : 'Retry for 10 Gems',
+      retry: () => {
+        if (s.retried) return;
+        if (s.balance < 10) return this.setState({ note: 'Not enough Gems. Play today’s puzzles to earn more.' });
+        this.setState({ balance: s.balance - 10, retried: true, note: '10 Gems spent. Your retry is ready.' });
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>

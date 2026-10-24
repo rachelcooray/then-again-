@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Then Again: Futoshiki</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&amp;family=Figtree:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@500;600&amp;display=swap">
+<style>
+body{margin:0;background:#F7F6F2}
+a{color:#141210}a:hover{color:#2340C4}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #F7F6F2; color: #141210; font-family: Figtree, system-ui, sans-serif; display: flex; flex-direction: column; overflow: hidden">
+  <div style="display: flex; align-items: center; gap: 12px; padding: 16px 16px 10px">
+    <a href="Library.dc.html" aria-label="Back to the library" style="width: 44px; height: 44px; border-radius: 22px; border: 2px solid #141210; display: grid; place-items: center; text-decoration: none; font-size: 20px; font-weight: 700">←</a>
+    <div style="flex-grow: 1; display: flex; flex-direction: column">
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; letter-spacing: 0.08em">NUMBERS &amp; LOGIC · Nº 023</span>
+      <span style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 26px; line-height: 1; letter-spacing: -0.02em">Futoshiki</span>
+    </div>
+    <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600; background: #2340C4; color: #FFFFFF; border-radius: 10px; padding: 6px 10px">4×4</span>
+  </div>
+  <p style="margin: 0 20px 14px; font-size: 15px; color: #55504A; line-height: 1.4">Use 1 to 4 once in every row and column. The signs between squares must hold: the open side points to the bigger number.</p>
+  <div role="grid" aria-label="Futoshiki grid" style="margin: 0 auto; display: grid; grid-template-columns: 62px 22px 62px 22px 62px 22px 62px; grid-template-rows: 62px 22px 62px 22px 62px 22px 62px">
+    <sc-for list="{{items}}" as="it" hint-placeholder-count="49">
+      <sc-if value="{{it.isCell}}" hint-placeholder-val="{{ true }}">
+        <button onClick="{{it.tap}}" aria-label="{{it.label}}" style="border-radius: 10px; border: 2px solid #141210; background: {{it.bg}}; color: {{it.fg}}; font-family: 'IBM Plex Mono', monospace; font-weight: 700; font-size: 28px; padding: 0; cursor: pointer; text-decoration: {{it.deco}}">{{it.text}}</button>
+      </sc-if>
+      <sc-if value="{{it.isSign}}" hint-placeholder-val="{{ false }}">
+        <span aria-hidden="true" style="display: flex; align-items: center; justify-content: center; font-family: 'IBM Plex Mono', monospace; font-weight: 700; font-size: 18px; color: {{it.fg}}">{{it.text}}</span>
+      </sc-if>
+    </sc-for>
+  </div>
+  <div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; padding: 20px 16px 0">
+    <sc-for list="{{pad}}" as="p" hint-placeholder-count="5">
+      <button onClick="{{p.press}}" aria-label="{{p.label}}" style="min-height: 58px; border-radius: 14px; border: 2px solid #141210; background: #FFFFFF; color: #141210; font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 24px; cursor: pointer">{{p.text}}</button>
+    </sc-for>
+  </div>
+  <div aria-live="polite" style="min-height: 22px; padding: 12px 20px 0; font-size: 15px; font-weight: 600; text-align: center">{{message}}</div>
+  <sc-if value="{{done}}" hint-placeholder-val="{{ false }}">
+    <div style="margin: auto 16px 16px; border-radius: 18px; background: #2340C4; color: #FFFFFF; padding: 18px; display: flex; flex-direction: column; gap: 8px">
+      <span style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 28px; line-height: 1.05">Every sign holds true.</span>
+      <a href="Library.dc.html" style="min-height: 50px; border-radius: 12px; background: #D9EC4C; color: #141210; display: flex; align-items: center; justify-content: center; font-weight: 700; text-decoration: none">Back to the library →</a>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    const v = Array(16).fill(0); v[0] = 1;
+    this.state = { v: v, sel: null, note: '' };
+  }
+  renderVals() {
+    const SOL = [1, 3, 4, 2, 4, 2, 1, 3, 3, 4, 2, 1, 2, 1, 3, 4];
+    const GIVEN = { 0: 1 };
+    const LESS = [[10, 14], [5, 1], [13, 12], [10, 9], [8, 9], [14, 15], [0, 1], [0, 4], [8, 4], [13, 14], [5, 4], [5, 9], [13, 9], [11, 7]];
+    const s = this.state;
+    const done = s.v.every((x, i) => x === SOL[i]);
+    const broken = (a, b) => s.v[a] && s.v[b] && !(s.v[a] < s.v[b]);
+    const dupe = (i) => { const x = s.v[i]; if (!x) return false; const r = Math.floor(i / 4), c = i % 4; for (let k = 0; k < 4; k++) { if (k !== c && s.v[r * 4 + k] === x) return true; if (k !== r && s.v[k * 4 + c] === x) return true; } return false; };
+    const items = [];
+    for (let R = 0; R < 7; R++) for (let C = 0; C < 7; C++) {
+      if (R % 2 === 0 && C % 2 === 0) {
+        const i = (R / 2) * 4 + C / 2, given = GIVEN[i] !== undefined, bad = !given && dupe(i);
+        items.push({ isCell: true, isSign: false, text: s.v[i] || '', bg: s.sel === i ? '#D9EC4C' : '#FFFFFF', fg: given ? '#141210' : bad ? '#B3261E' : '#2340C4', deco: bad ? 'underline wavy #B3261E' : 'none',
+          label: 'Row ' + (R / 2 + 1) + ', column ' + (C / 2 + 1) + ', ' + (s.v[i] || 'empty') + (given ? ', given' : '') + (bad ? ', repeats in its row or column' : ''),
+          tap: () => { if (!given) this.setState({ sel: i, note: '' }); } });
+      } else if (R % 2 === 0 && C % 2 === 1) {
+        const a = (R / 2) * 4 + (C - 1) / 2, b = a + 1;
+        const lt = LESS.find(([x, y]) => x === a && y === b), gt = LESS.find(([x, y]) => x === b && y === a);
+        const pair = lt || gt;
+        items.push({ isCell: false, isSign: true, text: lt ? '<' : gt ? '>' : '', fg: pair && broken(pair[0], pair[1]) ? '#B3261E' : '#141210' });
+      } else if (R % 2 === 1 && C % 2 === 0) {
+        const a = ((R - 1) / 2) * 4 + C / 2, b = a + 4;
+        const lt = LESS.find(([x, y]) => x === a && y === b), gt = LESS.find(([x, y]) => x === b && y === a);
+        const pair = lt || gt;
+        items.push({ isCell: false, isSign: true, text: lt ? '∧' : gt ? '∨' : '', fg: pair && broken(pair[0], pair[1]) ? '#B3261E' : '#141210' });
+      } else {
+        items.push({ isCell: false, isSign: true, text: '', fg: '#141210' });
+      }
+    }
+    const put = (n) => () => {
+      if (s.sel === null) return this.setState({ note: 'Tap a square first.' });
+      const v = s.v.slice(); v[s.sel] = n; this.setState({ v: v, note: '' });
+    };
+    return {
+      items: items, done: done,
+      pad: [1, 2, 3, 4].map((n) => ({ text: String(n), label: 'Enter ' + n, press: put(n) })).concat([{ text: '⌫', label: 'Erase', press: put(0) }]),
+      message: s.note || (done ? '' : 'A sign turns red if your numbers break it.')
+    };
+  }
+}
+</script>
+</body>
+</html>

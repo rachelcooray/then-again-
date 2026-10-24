@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Then Again: Library on desktop</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&amp;family=Figtree:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@500;600&amp;display=swap">
+<style>
+body{margin:0;background:#F7F6F2}
+a{color:#141210}a:hover{color:#2340C4}
+</style>
+</helmet>
+<div style="box-sizing: border-box; min-height: 100vh; background: #F7F6F2; color: #141210; font-family: Figtree, system-ui, sans-serif">
+  <header style="max-width: 1240px; margin: 0 auto; padding: 22px 32px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px">
+    <div style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 34px; letter-spacing: -0.03em">then again<span style="color: #E8552B">.</span></div>
+    <nav aria-label="Main" style="display: flex; flex-wrap: wrap; gap: 6px; padding: 6px; border-radius: 18px; background: #141210">
+      <a href="DesktopToday.dc.html" style="min-height: 44px; padding: 0 18px; border-radius: 12px; color: #E9E6DF; display: inline-flex; align-items: center; font-weight: 600; text-decoration: none">Today</a>
+      <a href="DesktopLibrary.dc.html" aria-current="page" style="min-height: 44px; padding: 0 18px; border-radius: 12px; background: #E8552B; color: #141210; display: inline-flex; align-items: center; font-weight: 700; text-decoration: none">Library</a>
+      <a href="Themes.dc.html" style="min-height: 44px; padding: 0 18px; border-radius: 12px; color: #E9E6DF; display: inline-flex; align-items: center; font-weight: 600; text-decoration: none">Themes</a>
+      <a href="Collection.dc.html" style="min-height: 44px; padding: 0 18px; border-radius: 12px; color: #E9E6DF; display: inline-flex; align-items: center; font-weight: 600; text-decoration: none">Collection</a>
+    </nav>
+  </header>
+  <main style="max-width: 1240px; margin: 0 auto; padding: 8px 32px 56px; display: flex; flex-direction: column; gap: 22px">
+    <div style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px">
+      <h1 style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 64px; line-height: 0.95; letter-spacing: -0.04em">The library</h1>
+      <div style="display: flex; flex-direction: column; gap: 6px; flex: 0 1 380px; min-width: 240px">
+        <label for="dsearch" style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; letter-spacing: 0.08em">SEARCH PUZZLES</label>
+        <input id="dsearch" type="search" value="{{query}}" onChange="{{onQuery}}" placeholder="Try “sudoku” or “words”" style="min-height: 50px; border-radius: 14px; border: 2px solid #141210; background: #FFFFFF; padding: 0 16px; font-family: Figtree, sans-serif; font-size: 17px; color: #141210">
+      </div>
+    </div>
+    <div role="group" aria-label="Filter by puzzle family" style="display: flex; flex-wrap: wrap; gap: 8px">
+      <sc-for list="{{chips}}" as="ch" hint-placeholder-count="5">
+        <button onClick="{{ch.pick}}" aria-pressed="{{ch.on}}" style="min-height: 46px; padding: 0 18px; border-radius: 23px; border: 2px solid {{ch.edge}}; background: {{ch.bg}}; color: {{ch.fg}}; font-family: Figtree, sans-serif; font-weight: 700; font-size: 15px; cursor: pointer">{{ch.label}}</button>
+      </sc-for>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px">
+      <sc-for list="{{cards}}" as="c" hint-placeholder-count="9">
+        <sc-if value="{{c.live}}" hint-placeholder-val="{{ true }}">
+          <a href="{{c.href}}" style="min-height: 210px; text-decoration: none; border-radius: 20px; background: {{c.bg}}; color: {{c.fg}}; padding: 20px; display: flex; flex-direction: column; gap: 6px">
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; letter-spacing: 0.08em">{{c.kicker}}</span>
+            <span style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 30px; line-height: 1">{{c.name}}</span>
+            <span style="font-size: 16px; line-height: 1.4">{{c.desc}}</span>
+            <span style="margin-top: auto; font-weight: 700">{{c.meta}} <span aria-hidden="true">→</span></span>
+          </a>
+        </sc-if>
+        <sc-if value="{{c.soon}}" hint-placeholder-val="{{ false }}">
+          <div style="min-height: 210px; border-radius: 20px; border: 2px dashed {{c.edge}}; padding: 20px; display: flex; flex-direction: column; gap: 6px; color: #55504A">
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; letter-spacing: 0.08em">{{c.kicker}} · COMING SOON</span>
+            <span style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 28px; line-height: 1; color: #141210">{{c.name}}</span>
+            <span style="font-size: 16px; line-height: 1.4">{{c.desc}}</span>
+          </div>
+        </sc-if>
+      </sc-for>
+    </div>
+    <sc-if value="{{empty}}" hint-placeholder-val="{{ false }}">
+      <p style="text-align: center; color: #55504A; margin: 30px 0">No puzzles match that search.</p>
+    </sc-if>
+    <a href="Catalogue.dc.html" style="align-self: flex-start; min-height: 54px; padding: 0 24px; border-radius: 14px; background: #141210; color: #F7F6F2; display: inline-flex; align-items: center; font-weight: 700; font-size: 17px; text-decoration: none">See the full catalogue of 190+ planned puzzles →</a>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { fam: 'all', q: '' };
+  }
+  renderVals() {
+    const F = {
+      word: { label: 'Words', kicker: 'WORD GAMES', bg: '#E8552B', fg: '#141210', edge: '#E8552B' },
+      search: { label: 'Search', kicker: 'SEARCH', bg: '#D9EC4C', fg: '#141210', edge: '#9BB21F' },
+      logic: { label: 'Logic', kicker: 'NUMBERS & LOGIC', bg: '#2340C4', fg: '#FFFFFF', edge: '#2340C4' },
+      connect: { label: 'Trivia & more', kicker: 'TRIVIA & CONNECTIONS', bg: '#BFAEF5', fg: '#141210', edge: '#8C76E0' }
+    };
+    const all = [
+      { name: 'Word Guess', fam: 'word', desc: 'Find the hidden five-letter word in six tries.', meta: '3 min · Easy', href: 'WordGuess.dc.html', live: true },
+      { name: 'Word Search', fam: 'search', desc: 'Find six themed words hidden in the grid.', meta: '5 min · Easy', href: 'WordSearch.dc.html', live: true },
+      { name: 'Sudoku', fam: 'logic', desc: 'Every row, column and box holds 1 to 9 once.', meta: '10 min · Medium', href: 'Sudoku.dc.html', live: true },
+      { name: 'Rewind', fam: 'connect', desc: 'Sort sixteen familiar things into four groups.', meta: '4 min · Medium', href: 'Rewind.dc.html', live: true },
+      { name: 'Circle Word Finder', fam: 'word', desc: 'Make words from seven letters around a circle.', meta: '5 min · Easy', href: 'CircleWord.dc.html', live: true },
+      { name: 'Mini Crossword', fam: 'word', desc: 'A four-by-four crossword that reads both ways.', meta: '3 min · Easy', href: 'MiniCrossword.dc.html', live: true },
+      { name: 'Nonogram', fam: 'logic', desc: 'Fill squares from number clues to reveal a picture.', meta: '5 min · Medium', href: 'Nonogram.dc.html', live: true },
+      { name: 'Daily Bingo', fam: 'connect', desc: 'Mark called objects and complete a line.', meta: '4 min · Easy', href: 'Bingo.dc.html', live: true },
+      { name: 'Mystery Object', fam: 'connect', desc: 'Name the everyday object in as few clues as you can.', meta: '3 min · Medium', href: 'MysteryObject.dc.html', live: true },
+      { name: 'The Quiz', fam: 'connect', desc: 'Five questions, one at a time.', meta: '3 min · Easy', href: 'Quiz.dc.html', live: true },
+      { name: 'Word Ladder', fam: 'word', desc: 'Turn one word into another, a letter at a time.', meta: '3 min · Medium', href: 'WordLadder.dc.html', live: true },
+      { name: 'Mini Sudoku', fam: 'logic', desc: 'A quick 4×4 grid for a short break.', meta: '2 min · Easy', href: 'MiniSudoku.dc.html', live: true },
+      { name: 'Minesweeper', fam: 'logic', desc: 'Uncover every safe square using the number clues.', meta: '4 min · Medium', href: 'Minesweeper.dc.html', live: true },
+      { name: 'Higher or Lower', fam: 'connect', desc: 'Guess whether the next number goes up or down.', meta: '2 min · Easy', href: 'HigherLower.dc.html', live: true },
+      { name: 'Picture Search', fam: 'search', desc: 'Spot the hidden objects in a busy scene.', live: false },
+      { name: '4×4 Logic', fam: 'logic', desc: 'Work out who had which treat from four clues.', meta: '3 min · Easy', href: 'LogicGrid.dc.html', live: true },
+      { name: 'Anagrams', fam: 'word', desc: 'Unscramble five everyday things.', meta: '3 min · Easy', href: 'Anagrams.dc.html', live: true },
+      { name: 'Word Hive', fam: 'word', desc: 'Make words from seven letters, always using the centre.', meta: '6 min · Medium', href: 'WordHive.dc.html', live: true },
+      { name: 'Killer Sudoku', fam: 'logic', desc: 'No starting numbers, just cages that must add up.', meta: '5 min · Medium', href: 'KillerSudoku.dc.html', live: true },
+      { name: 'Kakuro', fam: 'logic', desc: 'A crossword made of sums.', meta: '4 min · Medium', href: 'Kakuro.dc.html', live: true },
+      { name: 'Futoshiki', fam: 'logic', desc: 'Fill the grid so every greater-than sign holds.', meta: '5 min · Medium', href: 'Futoshiki.dc.html', live: true },
+      { name: 'Sliding Tile', fam: 'logic', desc: 'Slide the numbers back into order.', meta: '3 min · Easy', href: 'SlidingTile.dc.html', live: true },
+      { name: 'Put It in Order', fam: 'connect', desc: 'Arrange five steps from first to last.', meta: '2 min · Easy', href: 'PutInOrder.dc.html', live: true }
+    ];
+    const q = this.state.q.trim().toLowerCase();
+    const shown = all.filter((c) => (this.state.fam === 'all' || c.fam === this.state.fam) && (!q || (c.name + ' ' + c.desc + ' ' + F[c.fam].label).toLowerCase().includes(q)));
+    const chips = [['all', 'All puzzles']].concat(Object.keys(F).map((k) => [k, F[k].label])).map(([k, label]) => {
+      const on = this.state.fam === k;
+      return { label: label, on: on ? 'true' : 'false', edge: on ? (k === 'all' ? '#141210' : F[k].edge) : '#CFCBC2', bg: on ? (k === 'all' ? '#141210' : F[k].bg) : '#FFFFFF', fg: on ? (k === 'all' ? '#F7F6F2' : F[k].fg) : '#141210', pick: () => this.setState({ fam: k }) };
+    });
+    return {
+      chips: chips,
+      cards: shown.map((c) => ({ name: c.name, desc: c.desc, meta: c.meta || '', href: c.href || '', live: c.live, soon: !c.live, kicker: F[c.fam].kicker, bg: F[c.fam].bg, fg: F[c.fam].fg, edge: F[c.fam].edge })),
+      empty: shown.length === 0,
+      query: this.state.q,
+      onQuery: (e) => this.setState({ q: e.target.value })
+    };
+  }
+}
+</script>
+</body>
+</html>

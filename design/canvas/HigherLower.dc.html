@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Then Again: Higher or Lower</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&amp;family=Figtree:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@500;600&amp;display=swap">
+<style>
+body{margin:0;background:#F7F6F2}
+a{color:#141210}a:hover{color:#2340C4}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #F7F6F2; color: #141210; font-family: Figtree, system-ui, sans-serif; display: flex; flex-direction: column; overflow: hidden">
+  <div style="display: flex; align-items: center; gap: 12px; padding: 16px 16px 10px">
+    <a href="Library.dc.html" aria-label="Back to the library" style="width: 44px; height: 44px; border-radius: 22px; border: 2px solid #141210; display: grid; place-items: center; text-decoration: none; font-size: 20px; font-weight: 700">←</a>
+    <div style="flex-grow: 1; display: flex; flex-direction: column">
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; letter-spacing: 0.08em">TRIVIA · Nº 023</span>
+      <span style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 26px; line-height: 1; letter-spacing: -0.02em">Higher or Lower</span>
+    </div>
+    <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600; background: #BFAEF5; border-radius: 10px; padding: 6px 10px">{{scoreLine}}</span>
+  </div>
+  <p style="margin: 0 20px 14px; font-size: 15px; color: #55504A; line-height: 1.4">Is the next number higher or lower? Six in a row for a perfect run.</p>
+  <div style="margin: 0 16px; border-radius: 20px; background: #141210; color: #F7F6F2; padding: 20px; display: flex; flex-direction: column; gap: 4px">
+    <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; letter-spacing: 0.08em; color: #D9EC4C">KNOWN</span>
+    <span style="font-size: 18px; font-weight: 600">{{knownName}}</span>
+    <span style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 56px; line-height: 1">{{knownValue}}</span>
+  </div>
+  <div style="margin: 10px 16px 0; border-radius: 20px; border: 3px solid #141210; padding: 20px; display: flex; flex-direction: column; gap: 4px; background: {{nextBg}}">
+    <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; letter-spacing: 0.08em">NEXT</span>
+    <span style="font-size: 18px; font-weight: 600">{{nextName}}</span>
+    <span style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 56px; line-height: 1">{{nextValue}}</span>
+  </div>
+  <div aria-live="polite" style="min-height: 22px; padding: 12px 20px 0; font-size: 16px; font-weight: 700; text-align: center">{{message}}</div>
+  <sc-if value="{{asking}}" hint-placeholder-val="{{ true }}">
+    <div style="margin-top: auto; padding: 8px 16px 16px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+      <button onClick="{{lower}}" style="min-height: 64px; border-radius: 16px; border: 3px solid #141210; background: #FFFFFF; color: #141210; font-family: Figtree, sans-serif; font-weight: 800; font-size: 19px; cursor: pointer">↓ Lower</button>
+      <button onClick="{{higher}}" style="min-height: 64px; border-radius: 16px; border: 0; background: #141210; color: #F7F6F2; font-family: Figtree, sans-serif; font-weight: 800; font-size: 19px; cursor: pointer">↑ Higher</button>
+    </div>
+  </sc-if>
+  <sc-if value="{{between}}" hint-placeholder-val="{{ false }}">
+    <button onClick="{{next}}" style="margin: auto 16px 16px; min-height: 56px; border-radius: 16px; border: 0; background: #141210; color: #F7F6F2; font-family: Figtree, sans-serif; font-weight: 700; font-size: 17px; cursor: pointer">{{nextLabel}}</button>
+  </sc-if>
+  <sc-if value="{{done}}" hint-placeholder-val="{{ false }}">
+    <div style="margin: auto 16px 16px; border-radius: 18px; background: #BFAEF5; padding: 18px; display: flex; flex-direction: column; gap: 8px">
+      <span style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 40px; line-height: 1">{{finalScore}}</span>
+      <span style="font-size: 16px">{{finalLine}}</span>
+      <button onClick="{{restart}}" style="min-height: 50px; border-radius: 12px; border: 0; background: #141210; color: #F7F6F2; font-family: Figtree, sans-serif; font-weight: 700; font-size: 16px; cursor: pointer">Play again</button>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { i: 0, revealed: false, right: 0, last: null };
+  }
+  renderVals() {
+    const CHAIN = [['Squares on a chessboard', 64], ['Keys on a standard piano', 88], ['Cards in a standard deck', 52], ['Bones in an adult human body', 206], ['Days in a leap year', 366], ['Weeks in a year', 52], ['Minutes in a day', 1440]];
+    const s = this.state;
+    const rounds = CHAIN.length - 1;
+    const done = s.i >= rounds;
+    const known = CHAIN[Math.min(s.i, rounds - 1)], nxt = CHAIN[Math.min(s.i + 1, rounds)];
+    const guess = (up) => () => {
+      if (s.revealed || done) return;
+      const ok = up ? nxt[1] > known[1] : nxt[1] < known[1];
+      this.setState({ revealed: true, right: s.right + (ok ? 1 : 0), last: ok });
+    };
+    return {
+      knownName: known[0], knownValue: String(known[1]),
+      nextName: nxt[0], nextValue: s.revealed ? String(nxt[1]) : '?',
+      nextBg: s.revealed ? (s.last ? '#D9EC4C' : '#E9E6DF') : '#FFFFFF',
+      message: s.revealed ? (s.last ? '✓ Right!' : '× Not this time.') : '',
+      asking: !done && !s.revealed, between: !done && s.revealed, done: done,
+      scoreLine: s.right + '/' + rounds,
+      nextLabel: s.i === rounds - 1 ? 'See my score' : 'Next →',
+      finalScore: s.right + ' / ' + rounds,
+      finalLine: s.right === rounds ? 'A perfect run.' : 'A new chain tomorrow.',
+      higher: guess(true), lower: guess(false),
+      next: () => this.setState({ i: s.i + 1, revealed: false, last: null }),
+      restart: () => this.setState({ i: 0, revealed: false, right: 0, last: null })
+    };
+  }
+}
+</script>
+</body>
+</html>

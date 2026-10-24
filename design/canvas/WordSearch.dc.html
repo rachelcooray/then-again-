@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Then Again: Word Search</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&amp;family=Figtree:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@500;600&amp;display=swap">
+<style>
+body{margin:0;background:#F7F6F2}
+a{color:#141210}a:hover{color:#2340C4}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #F7F6F2; color: #141210; font-family: Figtree, system-ui, sans-serif; display: flex; flex-direction: column; overflow: hidden">
+  <div style="display: flex; align-items: center; gap: 12px; padding: 16px 16px 10px">
+    <a href="Main.dc.html" aria-label="Back to today" style="width: 44px; height: 44px; border-radius: 22px; border: 2px solid #141210; display: grid; place-items: center; text-decoration: none; font-size: 20px; font-weight: 700">←</a>
+    <div style="flex-grow: 1; display: flex; flex-direction: column">
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; letter-spacing: 0.08em">SEARCH · Nº 023</span>
+      <span style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 26px; line-height: 1; letter-spacing: -0.02em">Word Search</span>
+    </div>
+    <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600; background: #D9EC4C; border-radius: 10px; padding: 6px 10px">{{countLine}}</span>
+  </div>
+  <p style="margin: 0 20px 12px; font-size: 15px; color: #55504A; line-height: 1.4">Six things from the school day. Tap a word’s first letter, then its last. Words run across, down or diagonally.</p>
+  <div role="grid" aria-label="Letter grid" style="margin: 0 16px; padding: 10px; border-radius: 18px; background: #141210; display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 4px">
+    <sc-for list="{{cells}}" as="c" hint-placeholder-count="64">
+      <button onClick="{{c.tap}}" aria-label="{{c.label}}" style="aspect-ratio: 1; border: 0; border-radius: 8px; background: {{c.bg}}; color: {{c.fg}}; font-family: 'IBM Plex Mono', monospace; font-weight: {{c.weight}}; font-size: 18px; padding: 0; cursor: pointer">{{c.ch}}</button>
+    </sc-for>
+  </div>
+  <div aria-live="polite" style="min-height: 24px; padding: 10px 20px 0; font-size: 15px; font-weight: 600">{{message}}</div>
+  <div style="display: flex; flex-wrap: wrap; gap: 8px; padding: 10px 16px">
+    <sc-for list="{{words}}" as="w" hint-placeholder-count="6">
+      <span style="min-height: 36px; display: inline-flex; align-items: center; gap: 6px; padding: 0 12px; border-radius: 18px; border: 2px solid {{w.edge}}; background: {{w.bg}}; font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 14px; letter-spacing: 0.04em; text-decoration: {{w.strike}}">{{w.mark}}{{w.word}}</span>
+    </sc-for>
+  </div>
+  <sc-if value="{{done}}" hint-placeholder-val="{{ false }}">
+    <div style="margin: auto 16px 16px; border-radius: 18px; background: #D9EC4C; padding: 18px; display: flex; flex-direction: column; gap: 10px">
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; letter-spacing: 0.08em">ALL SIX FOUND</span>
+      <span style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 26px; line-height: 1.05">Ink on your fingers again.</span>
+      <span style="font-size: 16px; line-height: 1.4">The inkwell sat in a hole in the desk lid, and a spare nib was worth more than gold.</span>
+      <a href="Sudoku.dc.html" style="min-height: 50px; border-radius: 12px; background: #141210; color: #F7F6F2; display: flex; align-items: center; justify-content: center; font-weight: 700; text-decoration: none">Next: Sudoku →</a>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { found: [], start: null, note: '' };
+  }
+  renderVals() {
+    const LET = 'RRHSSOLRUOTBTEWELJRSHLDJEWYCDPEBRFTNKMSEJAPNUCKLSINKWELLEMARBLES';
+    const PLACED = [['RULER', 0, 32], ['SATCHEL', 48, 6], ['INKWELL', 49, 55], ['MARBLES', 57, 63], ['DESK', 22, 46], ['BELL', 31, 55]];
+    const path = (w, a, b) => { const step = (b - a) / (w.length - 1); const out = []; for (let k = 0; k < w.length; k++) out.push(a + step * k); return out; };
+    const s = this.state;
+    const foundCells = new Set();
+    PLACED.forEach(([w, a, b]) => { if (s.found.includes(w)) path(w, a, b).forEach((i) => foundCells.add(i)); });
+    const tap = (i) => () => {
+      if (s.found.length === PLACED.length) return;
+      if (s.start === null) return this.setState({ start: i, note: '' });
+      if (s.start === i) return this.setState({ start: null });
+      const hit = PLACED.find(([w, a, b]) => !s.found.includes(w) && ((a === s.start && b === i) || (a === i && b === s.start)));
+      if (hit) return this.setState({ found: s.found.concat([hit[0]]), start: null, note: 'Found ' + hit[0] + '!' });
+      this.setState({ start: null, note: 'That’s not one of the words. Try another first letter.' });
+    };
+    const cells = LET.split('').map((ch, i) => {
+      const isStart = s.start === i, isFound = foundCells.has(i);
+      return {
+        ch: ch, tap: tap(i),
+        bg: isStart ? '#E8552B' : isFound ? '#D9EC4C' : '#2A2622',
+        fg: isStart || isFound ? '#141210' : '#F7F6F2',
+        weight: isFound ? '700' : '500',
+        label: ch + ', row ' + (Math.floor(i / 8) + 1) + ', column ' + (i % 8 + 1) + (isFound ? ', found' : '') + (isStart ? ', selected' : '')
+      };
+    });
+    const words = PLACED.map(([w]) => {
+      const got = s.found.includes(w);
+      return { word: w, mark: got ? '✓ ' : '', bg: got ? '#D9EC4C' : '#FFFFFF', edge: got ? '#9BB21F' : '#CFCBC2', strike: got ? 'line-through' : 'none' };
+    });
+    const done = s.found.length === PLACED.length;
+    return {
+      cells: cells, words: words, done: done,
+      countLine: s.found.length + '/6',
+      message: s.note || (s.start !== null ? 'Now tap the last letter.' : '')
+    };
+  }
+}
+</script>
+</body>
+</html>

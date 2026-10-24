@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Then Again: Rewind</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&amp;family=Figtree:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@500;600&amp;display=swap">
+<style>
+body{margin:0;background:#F7F6F2}
+a{color:#141210}a:hover{color:#2340C4}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #F7F6F2; color: #141210; font-family: Figtree, system-ui, sans-serif; display: flex; flex-direction: column; overflow: hidden">
+  <div style="display: flex; align-items: center; gap: 12px; padding: 16px 16px 10px">
+    <a href="Main.dc.html" aria-label="Back to today" style="width: 44px; height: 44px; border-radius: 22px; border: 2px solid #141210; display: grid; place-items: center; text-decoration: none; font-size: 20px; font-weight: 700">←</a>
+    <div style="flex-grow: 1; display: flex; flex-direction: column">
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; letter-spacing: 0.08em">CONNECTIONS · Nº 023</span>
+      <span style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 26px; line-height: 1; letter-spacing: -0.02em">Rewind</span>
+    </div>
+    <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600; background: #BFAEF5; border-radius: 10px; padding: 6px 10px">{{foundLine}}</span>
+  </div>
+  <p style="margin: 0 20px 10px; font-size: 15px; color: #55504A; line-height: 1.4">Sixteen things from the school day hide four groups. Choose four that belong together.</p>
+  <div style="display: flex; flex-direction: column; gap: 8px; padding: 0 16px 8px">
+    <sc-for list="{{found}}" as="g" hint-placeholder-count="0">
+      <div style="border-radius: 14px; background: #BFAEF5; padding: 10px 14px; display: flex; flex-direction: column; gap: 2px">
+        <span style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 18px">{{g.name}}</span>
+        <span style="font-size: 14px">{{g.items}}</span>
+      </div>
+    </sc-for>
+  </div>
+  <div role="group" aria-label="Things to sort" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; padding: 0 16px">
+    <sc-for list="{{tiles}}" as="t" hint-placeholder-count="16">
+      <button onClick="{{t.pick}}" aria-pressed="{{t.on}}" style="min-height: 50px; border-radius: 12px; border: 2px solid {{t.edge}}; background: {{t.bg}}; color: {{t.fg}}; font-family: Figtree, sans-serif; font-weight: 700; font-size: 15px; padding: 4px 8px; cursor: pointer">{{t.mark}}{{t.label}}</button>
+    </sc-for>
+  </div>
+  <div aria-live="polite" style="min-height: 24px; padding: 10px 20px 0; font-size: 15px; font-weight: 600">{{message}}</div>
+  <sc-if value="{{playing}}" hint-placeholder-val="{{ true }}">
+    <div style="margin-top: auto; padding: 8px 16px 16px; display: flex; flex-direction: column; gap: 10px">
+      <div style="display: flex; justify-content: space-between; align-items: center; font-size: 14px; font-weight: 600">
+        <span>{{triesLine}}</span><span>{{chosenLine}}</span>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+        <button onClick="{{clear}}" style="min-height: 52px; border-radius: 12px; border: 2px solid #141210; background: transparent; color: #141210; font-family: Figtree, sans-serif; font-weight: 700; font-size: 16px; cursor: pointer">Clear</button>
+        <button onClick="{{check}}" disabled="{{cantCheck}}" style="min-height: 52px; border-radius: 12px; border: 0; background: #141210; color: #F7F6F2; font-family: Figtree, sans-serif; font-weight: 700; font-size: 16px; cursor: pointer; opacity: {{checkOpacity}}">Check group</button>
+      </div>
+    </div>
+  </sc-if>
+  <sc-if value="{{done}}" hint-placeholder-val="{{ false }}">
+    <div style="margin: auto 16px 16px; border-radius: 18px; background: #141210; color: #F7F6F2; padding: 18px; display: flex; flex-direction: column; gap: 10px">
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; letter-spacing: 0.08em; color: #BFAEF5">{{doneKicker}}</span>
+      <span style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 26px; line-height: 1.05">Break time had its own seasons.</span>
+      <span style="font-size: 16px; line-height: 1.4">Suddenly everyone played marbles, then nobody did, and the skipping rhymes went round again.</span>
+      <a href="Collection.dc.html" style="min-height: 50px; border-radius: 12px; background: #BFAEF5; color: #141210; display: flex; align-items: center; justify-content: center; font-weight: 700; text-decoration: none">See my collection →</a>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { sel: [], found: [], mistakes: 0, note: '' };
+  }
+  renderVals() {
+    const GROUPS = [
+      { name: 'In the pencil case', items: ['Fountain pen', 'Ink cartridges', 'Rubber eraser', 'Pencil sharpener'] },
+      { name: 'On the classroom wall', items: ['Times tables chart', 'World map', 'Alphabet frieze', 'Class timetable'] },
+      { name: 'Playground games', items: ['Skipping rope', 'Marbles', 'Hopscotch', 'Jacks'] },
+      { name: 'On the teacher’s desk', items: ['The register', 'Chalk', 'Board duster', 'Red pen'] }
+    ];
+    const ORDER = ['Marbles', 'The register', 'World map', 'Fountain pen', 'Jacks', 'Chalk', 'Pencil sharpener', 'Class timetable', 'Skipping rope', 'Ink cartridges', 'Red pen', 'Alphabet frieze', 'Board duster', 'Hopscotch', 'Times tables chart', 'Rubber eraser'];
+    const s = this.state;
+    const gOf = (it) => GROUPS.findIndex((g) => g.items.includes(it));
+    const left = 4 - s.mistakes;
+    const done = s.found.length === 4 || left <= 0;
+    const tiles = done ? [] : ORDER.filter((it) => !s.found.includes(gOf(it))).map((it) => {
+      const on = s.sel.includes(it);
+      return {
+        label: it, mark: on ? '✓ ' : '', on: on ? 'true' : 'false',
+        bg: on ? '#141210' : '#FFFFFF', fg: on ? '#F7F6F2' : '#141210', edge: on ? '#141210' : '#CFCBC2',
+        pick: () => {
+          if (on) return this.setState({ sel: s.sel.filter((x) => x !== it), note: '' });
+          if (s.sel.length >= 4) return this.setState({ note: 'You’ve chosen four. Tap one to swap it.' });
+          this.setState({ sel: s.sel.concat([it]), note: '' });
+        }
+      };
+    });
+    const shownGroups = done ? [0, 1, 2, 3] : s.found;
+    return {
+      tiles: tiles,
+      found: shownGroups.map((k) => ({ name: GROUPS[k].name + (s.found.includes(k) ? '' : ' (missed)'), items: GROUPS[k].items.join(' · ') })),
+      playing: !done, done: done,
+      foundLine: s.found.length + '/4',
+      triesLine: left + (left === 1 ? ' try left' : ' tries left'),
+      chosenLine: s.sel.length + ' of 4 chosen',
+      cantCheck: s.sel.length !== 4,
+      checkOpacity: s.sel.length === 4 ? '1' : '0.4',
+      message: s.note,
+      doneKicker: s.found.length === 4 ? 'ALL FOUR GROUPS' : 'OUT OF TRIES',
+      clear: () => this.setState({ sel: [], note: '' }),
+      check: () => {
+        if (s.sel.length !== 4) return;
+        const gs = s.sel.map(gOf);
+        const counts = {}; gs.forEach((g) => { counts[g] = (counts[g] || 0) + 1; });
+        const best = Math.max.apply(null, Object.values(counts));
+        if (best === 4) return this.setState({ found: s.found.concat([gs[0]]), sel: [], note: 'Group found: ' + GROUPS[gs[0]].name + '.' });
+        this.setState({ mistakes: s.mistakes + 1, note: best === 3 ? 'So close. Three of those belong together.' : 'Not a group. Try another four.' });
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>

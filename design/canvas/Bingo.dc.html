@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Then Again: Daily Bingo</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&amp;family=Figtree:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@500;600&amp;display=swap">
+<style>
+body{margin:0;background:#F7F6F2}
+a{color:#141210}a:hover{color:#2340C4}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #F7F6F2; color: #141210; font-family: Figtree, system-ui, sans-serif; display: flex; flex-direction: column; overflow: hidden">
+  <div style="display: flex; align-items: center; gap: 12px; padding: 16px 16px 10px">
+    <a href="Library.dc.html" aria-label="Back to the library" style="width: 44px; height: 44px; border-radius: 22px; border: 2px solid #141210; display: grid; place-items: center; text-decoration: none; font-size: 20px; font-weight: 700">←</a>
+    <div style="flex-grow: 1; display: flex; flex-direction: column">
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; letter-spacing: 0.08em">GRID · Nº 023</span>
+      <span style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 26px; line-height: 1; letter-spacing: -0.02em">Daily Bingo</span>
+    </div>
+    <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600; background: #141210; color: #D9EC4C; border-radius: 10px; padding: 6px 10px">{{callLine}}</span>
+  </div>
+  <div style="margin: 0 16px 12px; border-radius: 18px; background: #141210; color: #F7F6F2; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px">
+    <div style="display: flex; flex-direction: column; min-width: 0">
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; color: #D9EC4C">LAST CALLED</span>
+      <span aria-live="polite" style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 28px; line-height: 1.05">{{lastCall}}</span>
+    </div>
+    <button onClick="{{callNext}}" disabled="{{noMore}}" style="min-height: 52px; padding: 0 18px; border-radius: 14px; border: 0; background: #D9EC4C; color: #141210; font-family: Figtree, sans-serif; font-weight: 700; font-size: 16px; cursor: pointer; flex-shrink: 0">Call next</button>
+  </div>
+  <div role="grid" aria-label="Your bingo card" style="margin: 0 16px; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 5px">
+    <sc-for list="{{cells}}" as="c" hint-placeholder-count="25">
+      <button onClick="{{c.tap}}" aria-pressed="{{c.on}}" aria-label="{{c.label}}" style="aspect-ratio: 1; border-radius: 10px; border: 2px solid {{c.edge}}; background: {{c.bg}}; color: {{c.fg}}; font-family: Figtree, sans-serif; font-weight: 700; font-size: 12px; line-height: 1.15; padding: 2px; cursor: pointer">{{c.mark}}{{c.text}}</button>
+    </sc-for>
+  </div>
+  <div aria-live="polite" style="min-height: 22px; padding: 12px 20px 0; font-size: 15px; font-weight: 600; text-align: center">{{message}}</div>
+  <p style="margin: 6px 20px 0; font-size: 14px; color: #55504A; text-align: center">Tap a square only after it’s been called. Complete any row, column or diagonal.</p>
+  <sc-if value="{{won}}" hint-placeholder-val="{{ false }}">
+    <div style="margin: auto 16px 16px; border-radius: 18px; background: #D9EC4C; padding: 18px; display: flex; flex-direction: column; gap: 8px">
+      <span style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 40px; line-height: 1">Bingo!</span>
+      <span style="font-size: 16px">{{wonLine}}</span>
+      <button onClick="{{restart}}" style="min-height: 50px; border-radius: 12px; border: 0; background: #141210; color: #F7F6F2; font-family: Figtree, sans-serif; font-weight: 700; font-size: 16px; cursor: pointer">New card</button>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { called: 0, marked: [12], note: '' };
+  }
+  renderVals() {
+    const CARD = ['Kettle', 'Radio', 'Satchel', 'Marbles', 'Postcard', 'Chalk', 'Teapot', 'Bicycle', 'Atlas', 'Inkwell', 'Piggy bank', 'Toaster', 'FREE', 'Telephone', 'Cassette', 'Jigsaw', 'Stamp', 'Kite', 'Ruler', 'Biscuit tin', 'Umbrella', 'Camera', 'Wristwatch', 'Flask', 'Diary'];
+    const CALLS = ['Teapot', 'Typewriter', 'Atlas', 'Kite', 'Radio', 'Candle', 'Telephone', 'Ruler', 'Bicycle', 'Scarf', 'Inkwell', 'Diary', 'Toaster', 'Camera', 'Thimble', 'Satchel', 'Jigsaw', 'Cassette', 'Lantern', 'Stamp', 'Kettle', 'Postcard', 'Doorbell', 'Flask', 'Marbles', 'Wristwatch', 'Umbrella', 'Chalk', 'Biscuit tin', 'Piggy bank'];
+    const s = this.state;
+    const called = CALLS.slice(0, s.called);
+    const LINES = [];
+    for (let i = 0; i < 5; i++) { LINES.push([0, 1, 2, 3, 4].map((k) => i * 5 + k)); LINES.push([0, 1, 2, 3, 4].map((k) => k * 5 + i)); }
+    LINES.push([0, 6, 12, 18, 24]); LINES.push([4, 8, 12, 16, 20]);
+    const winLine = LINES.find((ln) => ln.every((i) => s.marked.includes(i)));
+    const won = !!winLine;
+    const cells = CARD.map((t, i) => {
+      const on = s.marked.includes(i), inWin = won && winLine.includes(i);
+      return {
+        text: t === 'FREE' ? 'Free' : t, mark: on && t !== 'FREE' ? '✓ ' : '', on: on ? 'true' : 'false',
+        bg: inWin ? '#141210' : on ? '#D9EC4C' : '#FFFFFF', fg: inWin ? '#D9EC4C' : '#141210', edge: on ? '#141210' : '#CFCBC2',
+        label: (t === 'FREE' ? 'Free space' : t) + (on ? ', marked' : ''),
+        tap: () => {
+          if (won || t === 'FREE') return;
+          if (on) return this.setState({ marked: s.marked.filter((x) => x !== i), note: '' });
+          if (!called.includes(t)) return this.setState({ note: t + ' hasn’t been called yet.' });
+          this.setState({ marked: s.marked.concat([i]), note: '' });
+        }
+      };
+    });
+    return {
+      cells: cells, won: won,
+      lastCall: called.length ? called[called.length - 1] : 'Press Call next',
+      callLine: s.called + '/' + CALLS.length,
+      noMore: won || s.called >= CALLS.length,
+      message: s.note,
+      wonLine: 'You got a line after ' + s.called + ' calls.',
+      callNext: () => { if (!won && s.called < CALLS.length) this.setState({ called: s.called + 1, note: '' }); },
+      restart: () => this.setState({ called: 0, marked: [12], note: '' })
+    };
+  }
+}
+</script>
+</body>
+</html>

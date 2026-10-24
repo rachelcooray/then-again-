@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Then Again: Mini Crossword</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&amp;family=Figtree:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@500;600&amp;display=swap">
+<style>
+body{margin:0;background:#F7F6F2}
+a{color:#141210}a:hover{color:#2340C4}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #F7F6F2; color: #141210; font-family: Figtree, system-ui, sans-serif; display: flex; flex-direction: column; overflow: hidden">
+  <div style="display: flex; align-items: center; gap: 12px; padding: 16px 16px 10px">
+    <a href="Library.dc.html" aria-label="Back to the library" style="width: 44px; height: 44px; border-radius: 22px; border: 2px solid #141210; display: grid; place-items: center; text-decoration: none; font-size: 20px; font-weight: 700">←</a>
+    <div style="flex-grow: 1; display: flex; flex-direction: column">
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; letter-spacing: 0.08em">WORD GAMES · Nº 023</span>
+      <span style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 26px; line-height: 1; letter-spacing: -0.02em">Mini Crossword</span>
+    </div>
+    <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600; background: #E8552B; border-radius: 10px; padding: 6px 10px">4×4</span>
+  </div>
+  <div style="margin: 0 16px 10px; padding: 12px 14px; border-radius: 14px; background: #141210; color: #F7F6F2; display: flex; gap: 10px">
+    <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; color: #E8552B; padding-top: 2px">{{clueNo}}</span>
+    <span style="font-size: 16px; line-height: 1.35">{{clueText}}</span>
+  </div>
+  <div role="grid" aria-label="Crossword grid" style="width: 280px; margin: 0 auto; border: 3px solid #141210; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); background: #141210; gap: 2px">
+    <sc-for list="{{cells}}" as="c" hint-placeholder-count="16">
+      <button onClick="{{c.tap}}" aria-label="{{c.label}}" style="position: relative; aspect-ratio: 1; border: 0; background: {{c.bg}}; color: {{c.fg}}; font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 30px; padding: 0; cursor: pointer; text-decoration: {{c.deco}}">{{c.ch}}<span aria-hidden="true" style="position: absolute; top: 4px; left: 6px; font-size: 12px; font-family: Figtree, sans-serif; font-weight: 700">{{c.num}}</span></button>
+    </sc-for>
+  </div>
+  <div style="display: flex; justify-content: center; gap: 8px; padding: 10px 16px 0">
+    <button onClick="{{flip}}" style="min-height: 44px; padding: 0 16px; border-radius: 22px; border: 2px solid #141210; background: #FFFFFF; color: #141210; font-family: Figtree, sans-serif; font-weight: 700; font-size: 14px; cursor: pointer">Direction: {{dirLabel}}</button>
+    <button onClick="{{check}}" style="min-height: 44px; padding: 0 16px; border-radius: 22px; border: 0; background: #141210; color: #F7F6F2; font-family: Figtree, sans-serif; font-weight: 700; font-size: 14px; cursor: pointer">Check</button>
+  </div>
+  <div aria-live="polite" style="min-height: 22px; padding: 8px 20px 0; font-size: 15px; font-weight: 600; text-align: center">{{message}}</div>
+  <div style="margin-top: auto; padding: 8px 6px 16px; display: flex; flex-direction: column; gap: 7px">
+    <sc-for list="{{kb}}" as="krow" hint-placeholder-count="3">
+      <div style="display: flex; gap: 5px; justify-content: center">
+        <sc-for list="{{krow.keys}}" as="k" hint-placeholder-count="10">
+          <button onClick="{{k.press}}" aria-label="{{k.label}}" style="flex: {{k.flex}}; max-width: {{k.maxw}}; min-height: 52px; border: 1px solid #CFCBC2; border-radius: 10px; background: {{k.bg}}; color: {{k.fg}}; font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 16px; padding: 0; cursor: pointer">{{k.text}}</button>
+        </sc-for>
+      </div>
+    </sc-for>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { v: Array(16).fill(''), sel: 0, across: true, wrong: [], note: '' };
+  }
+  renderVals() {
+    const SOL = 'BALLAREALENDLADY'.split('');
+    const CLUES = ['Kicked round the playground', 'Length times width gives you this', 'Let a friend borrow it', 'A polite word for a woman'];
+    const s = this.state;
+    const r = Math.floor(s.sel / 4), c = s.sel % 4;
+    const inWord = (i) => s.across ? Math.floor(i / 4) === r : i % 4 === c;
+    const solved = s.v.join('') === SOL.join('');
+    const cells = s.v.map((ch, i) => ({
+      ch: ch, num: i < 4 ? String(i + 1) : (i % 4 === 0 ? String(i / 4 + 1) : ''),
+      bg: i === s.sel && !solved ? '#E8552B' : solved ? '#D9EC4C' : inWord(i) ? '#FBE3D9' : '#FFFFFF',
+      fg: s.wrong.includes(i) ? '#B3261E' : '#141210',
+      deco: s.wrong.includes(i) ? 'underline wavy #B3261E' : 'none',
+      label: 'Row ' + (Math.floor(i / 4) + 1) + ', column ' + (i % 4 + 1) + ', ' + (ch || 'empty'),
+      tap: () => this.setState({ sel: i, across: i === s.sel ? !s.across : s.across, note: '' })
+    }));
+    const n = s.across ? r : c;
+    const type = (key) => () => {
+      if (solved) return;
+      const v = s.v.slice();
+      if (key === 'DEL') { v[s.sel] = ''; const back = s.across ? (c > 0 ? s.sel - 1 : s.sel) : (r > 0 ? s.sel - 4 : s.sel); return this.setState({ v: v, sel: back, wrong: s.wrong.filter((w) => w !== s.sel) }); }
+      v[s.sel] = key;
+      const next = s.across ? (c < 3 ? s.sel + 1 : s.sel) : (r < 3 ? s.sel + 4 : s.sel);
+      this.setState({ v: v, sel: next, wrong: s.wrong.filter((w) => w !== s.sel), note: v.join('') === SOL.join('') ? 'Solved! It reads the same across and down.' : '' });
+    };
+    const kb = [['Q','W','E','R','T','Y','U','I','O','P'], ['A','S','D','F','G','H','J','K','L'], ['Z','X','C','V','B','N','M','DEL']].map((row) => ({ keys: row.map((k) => k === 'DEL'
+      ? { text: '⌫', label: 'Delete', press: type('DEL'), bg: '#141210', fg: '#F7F6F2', flex: '1.6', maxw: '70px' }
+      : { text: k, label: k, press: type(k), bg: '#FFFFFF', fg: '#141210', flex: '1', maxw: '36px' }) }));
+    return {
+      cells: cells, kb: kb,
+      clueNo: (n + 1) + (s.across ? ' ACROSS' : ' DOWN'),
+      clueText: CLUES[n],
+      dirLabel: s.across ? 'across' : 'down',
+      message: s.note,
+      flip: () => this.setState({ across: !s.across }),
+      check: () => {
+        const wrong = s.v.map((x, i) => (x && x !== SOL[i] ? i : -1)).filter((i) => i >= 0);
+        this.setState({ wrong: wrong, note: wrong.length ? wrong.length + ' letter' + (wrong.length === 1 ? ' is' : 's are') + ' wrong, underlined.' : (s.v.includes('') ? 'So far, so good.' : 'Solved!') });
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>

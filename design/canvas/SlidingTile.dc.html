@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Then Again: Sliding Tile</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&amp;family=Figtree:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@500;600&amp;display=swap">
+<style>
+body{margin:0;background:#F7F6F2}
+a{color:#141210}a:hover{color:#2340C4}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #F7F6F2; color: #141210; font-family: Figtree, system-ui, sans-serif; display: flex; flex-direction: column; overflow: hidden">
+  <div style="display: flex; align-items: center; gap: 12px; padding: 16px 16px 10px">
+    <a href="Library.dc.html" aria-label="Back to the library" style="width: 44px; height: 44px; border-radius: 22px; border: 2px solid #141210; display: grid; place-items: center; text-decoration: none; font-size: 20px; font-weight: 700">←</a>
+    <div style="flex-grow: 1; display: flex; flex-direction: column">
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; letter-spacing: 0.08em">GRID · Nº 023</span>
+      <span style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 26px; line-height: 1; letter-spacing: -0.02em">Sliding Tile</span>
+    </div>
+    <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600; background: #141210; color: #D9EC4C; border-radius: 10px; padding: 6px 10px">{{movesLine}}</span>
+  </div>
+  <p style="margin: 0 20px 18px; font-size: 15px; color: #55504A; line-height: 1.4">Slide the tiles back into order, 1 to 8, with the gap in the bottom-right corner. Tap any tile next to the gap.</p>
+  <div role="grid" aria-label="Sliding puzzle" style="width: 320px; margin: 0 auto; padding: 10px; border-radius: 20px; background: #141210; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
+    <sc-for list="{{tiles}}" as="t" hint-placeholder-count="9">
+      <button onClick="{{t.tap}}" aria-label="{{t.label}}" style="aspect-ratio: 1; border-radius: 14px; border: 0; background: {{t.bg}}; color: #141210; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 40px; padding: 0; cursor: {{t.cursor}}">{{t.text}}</button>
+    </sc-for>
+  </div>
+  <div aria-live="polite" style="min-height: 22px; padding: 16px 20px 0; font-size: 15px; font-weight: 600; text-align: center">{{message}}</div>
+  <button onClick="{{restart}}" style="margin: 12px 16px 0; min-height: 50px; border-radius: 14px; border: 2px solid #141210; background: transparent; color: #141210; font-family: Figtree, sans-serif; font-weight: 700; font-size: 15px; cursor: pointer">Start again</button>
+  <sc-if value="{{done}}" hint-placeholder-val="{{ false }}">
+    <div style="margin: auto 16px 16px; border-radius: 18px; background: #D9EC4C; padding: 18px; display: flex; flex-direction: column; gap: 8px">
+      <span style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 28px; line-height: 1.05">{{doneTitle}}</span>
+      <a href="Library.dc.html" style="min-height: 50px; border-radius: 12px; background: #141210; color: #F7F6F2; display: flex; align-items: center; justify-content: center; font-weight: 700; text-decoration: none">Back to the library →</a>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { b: [1, 2, 3, 4, 8, 5, 7, 6, 0], moves: 0 };
+  }
+  renderVals() {
+    const s = this.state;
+    const done = s.b.join(',') === '1,2,3,4,5,6,7,8,0';
+    const z = s.b.indexOf(0);
+    const adj = (i) => (Math.abs(i - z) === 3) || (Math.abs(i - z) === 1 && Math.floor(i / 3) === Math.floor(z / 3));
+    const tiles = s.b.map((v, i) => {
+      const can = v && adj(i) && !done;
+      return {
+        text: v || '', bg: !v ? '#141210' : v === i + 1 ? '#D9EC4C' : can ? '#FFFFFF' : '#E9E6DF',
+        cursor: can ? 'pointer' : 'default',
+        label: v ? 'Tile ' + v + (can ? ', can move' : '') + (v === i + 1 ? ', in place' : '') : 'Gap',
+        tap: () => { if (!can) return; const b = s.b.slice(); b[z] = v; b[i] = 0; this.setState({ b: b, moves: s.moves + 1 }); }
+      };
+    });
+    return {
+      tiles: tiles, done: done,
+      movesLine: s.moves + ' MOVES',
+      message: done ? '' : 'Tiles already in place turn chartreuse.',
+      doneTitle: 'Back in order in ' + s.moves + ' moves.',
+      restart: () => this.setState({ b: [1, 2, 3, 4, 8, 5, 7, 6, 0], moves: 0 })
+    };
+  }
+}
+</script>
+</body>
+</html>
