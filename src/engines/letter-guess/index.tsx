@@ -49,10 +49,12 @@ function View({ payload, state, dispatch }: Props) {
 
   return (
     <div className="lg">
-      <div className="lg-clue">
-        <span className="kicker">Clue</span>
-        <span>{payload.clue}</span>
-      </div>
+      {payload.clue && (
+        <div className="lg-clue">
+          <span className="kicker">Clue</span>
+          <span>{payload.clue}</span>
+        </div>
+      )}
 
       <div className="lg-board" role="group" aria-label="Your guesses">
         {rows.map((cells, r) => (

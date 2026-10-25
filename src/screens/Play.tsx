@@ -8,6 +8,7 @@ import { FAMILIES, getFormat, type PuzzleFormat } from '../content/formats';
 import { getPuzzle } from '../content/puzzles';
 import { engineFor } from '../engines/registry';
 import type { AnyEngine, EngineContext, Puzzle } from '../engines/types';
+import { LEVEL_NAME } from '../content/schedule';
 import { formatIssue } from '../lib/date';
 import { recordKey } from '../state/progress';
 import { useStore } from '../state/store';
@@ -49,6 +50,8 @@ function PuzzleScreen({ format, engine, puzzle, today }: { format: PuzzleFormat;
   const { data, saveAttempt, recordResult } = useStore();
   const set = getDailySet(today);
   const key = recordKey(today, format.id);
+  // Saved boards are tied to the puzzle too, so a board never loads into a different puzzle.
+  const attemptKey = `${key}:${puzzle.id}`;
   const record = data.progress[key];
   const payload = puzzle.payload;
 
@@ -68,12 +71,12 @@ function PuzzleScreen({ format, engine, puzzle, today }: { format: PuzzleFormat;
   // The live board. The saved copy drops the one-off message so it doesn't come back stale.
   // Practice rounds after finishing are never saved, so the first attempt stays as it was.
   const [practice, setPractice] = useState(false);
-  const [state, setState] = useState<unknown>(() => data.attempts[key] ?? engine.init(payload));
+  const [state, setState] = useState<unknown>(() => data.attempts[attemptKey] ?? engine.init(payload));
   const status = engine.status(state, payload);
 
   const update = (next: unknown) => {
     setState(next);
-    if (!practice) saveAttempt(key, { ...(next as object), note: '' });
+    if (!practice) saveAttempt(attemptKey, { ...(next as object), note: '' });
   };
 
   const dispatch = (action: unknown) => {
@@ -93,9 +96,10 @@ function PuzzleScreen({ format, engine, puzzle, today }: { format: PuzzleFormat;
         solved: status.solved,
         score: status.score,
         completedAt: new Date().toISOString(),
+        inSet: set.formats.includes(format.id),
       });
     }
-  }, [practice, status.done, status.solved, status.score, record, recordResult, today, format.id, set.theme.id, set.issue]);
+  }, [practice, status.done, status.solved, status.score, record, recordResult, today, format.id, set.theme.id, set.issue, set.formats]);
 
   const restart = () => update(engine.init(payload));
 
@@ -109,7 +113,7 @@ function PuzzleScreen({ format, engine, puzzle, today }: { format: PuzzleFormat;
         <span className={`play-progress fam-${format.family}`} aria-label={`Progress ${status.progress}`}>{status.progress}</span>
       </BackHeader>
       <div className="screen play">
-        <span className="kicker">{FAMILIES[format.family].kicker} · {issue}</span>
+        <span className="kicker">{FAMILIES[format.family].kicker} · {issue}{puzzle.level ? ` · ${LEVEL_NAME[puzzle.level]}` : ''}</span>
         <p className="play-rules">{intro ? `${intro} ` : ''}{format.rules}</p>
         <details className="play-help">
           <summary>How to play</summary>

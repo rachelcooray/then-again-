@@ -11,6 +11,8 @@ export interface PuzzleRecord {
   /** Short score such as "4/6" or "Done". */
   score: string;
   completedAt: string;
+  /** False for a Library puzzle outside the day's four. Older records don't say, and count as in the set. */
+  inSet?: boolean;
 }
 
 export type ProgressMap = Record<string, PuzzleRecord>;
@@ -68,7 +70,7 @@ export function formatsTried(progress: ProgressMap): number {
 /** Number of dates on which every puzzle in that date's set was completed. */
 export function fullSetsCompleted(progress: ProgressMap, setSize: (date: DateKey) => number): number {
   const byDate = new Map<DateKey, number>();
-  for (const r of Object.values(progress)) byDate.set(r.date, (byDate.get(r.date) ?? 0) + 1);
+  for (const r of Object.values(progress)) if (r.inSet !== false) byDate.set(r.date, (byDate.get(r.date) ?? 0) + 1);
   let n = 0;
   for (const [date, count] of byDate) if (count >= setSize(date)) n++;
   return n;

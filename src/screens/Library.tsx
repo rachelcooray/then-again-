@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { config } from '../config';
 import { FAMILIES, FAMILY_ORDER, FORMATS, type FamilyId } from '../content/formats';
+import { getPuzzle } from '../content/puzzles';
+import { LEVEL_NAME } from '../content/schedule';
 import { recordKey } from '../state/progress';
 import { useStore } from '../state/store';
 import { useToday } from '../state/useToday';
@@ -59,13 +61,14 @@ export function Library() {
       <div className="cards-grid">
         {live.map((f) => {
           const played = data.progress[recordKey(today, f.id)];
+          const level = getPuzzle(today, f.id)?.level;
           return (
             <Link key={f.id} to={`/play/${f.id}`} className={`card fam-${f.family}`}>
               <span className="kicker">{FAMILIES[f.family].kicker}</span>
               <span className="card__name">{f.name}</span>
               <span>{f.description}</span>
               <span className="card__meta" style={{ marginTop: 'auto' }}>
-                {f.minutes} min · {f.difficulty}{played ? ' · Played today' : ''} <span aria-hidden="true">→</span>
+                {f.minutes} min · {level ? LEVEL_NAME[level] : f.difficulty}{played ? ' · Played today' : ''} <span aria-hidden="true">→</span>
               </span>
             </Link>
           );

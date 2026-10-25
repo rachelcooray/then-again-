@@ -1,66 +1,52 @@
 import { Link } from 'react-router-dom';
 import { getDailySet } from '../content/daily';
-import { FAMILIES, getFormat } from '../content/formats';
-import { earlierThemes, type Theme } from '../content/themes';
-import { formatIssue } from '../lib/date';
-import type { ProgressMap } from '../state/progress';
+import { earlierThemes } from '../content/themes';
+import { addDays, formatIssue, weekStart, type DateKey } from '../lib/date';
+import { playedDates, type ProgressMap } from '../state/progress';
 import { useStore } from '../state/store';
 import { useToday } from '../state/useToday';
 
 const CARD_STYLES = ['fam-word', 'fam-logic', 'fam-search', 'fam-connect', 'card--outline', 'card--outline'];
 
-/** Distinct formats played while this theme ran, out of its four. */
-function playedInTheme(progress: ProgressMap, theme: Theme): number {
-  const ids = new Set(Object.values(progress).filter((r) => r.themeId === theme.id).map((r) => r.formatId));
-  return theme.formats.filter((f) => ids.has(f)).length;
+/** Days played in the week starting on a Monday. */
+function daysPlayedInWeek(progress: ProgressMap, monday: DateKey): number {
+  const played = playedDates(progress);
+  return Array.from({ length: 7 }, (_, i) => addDays(monday, i)).filter((d) => played.has(d)).length;
 }
+
+const playedLine = (n: number) => (n === 0 ? 'Not played' : `${n} of 7 days played`);
 
 export function Themes() {
   const today = useToday();
   const { data } = useStore();
   const { theme, issue } = getDailySet(today);
-  const played = playedInTheme(data.progress, theme);
   const past = earlierThemes(today);
-  const playedLine = (n: number, total: number) => (n === 0 ? 'Not started' : `${n} of ${total} played`);
 
   return (
     <div className="screen">
       <div className="screen__head">
         <h1 className="display">Themes</h1>
-        <p className="muted">Each theme runs through four puzzle types for a week. Play them in any order.</p>
+        <p className="muted">Each theme runs for a week, Monday to Sunday. Its words turn up in the puzzles, and the puzzles get harder as the week goes on.</p>
       </div>
 
       <Link to="/" className="ticket ticket--strong">
         <span className="kicker">This week · {formatIssue(issue)}</span>
         <span className="ticket__name">{theme.name}</span>
-        <span>{theme.description} {playedLine(played, theme.formats.length)}.</span>
-        <span className="chip-row" aria-label="Puzzle types this week">
-          {theme.formats.map((id) => {
-            const f = getFormat(id)!;
-            return (
-              <span key={id} className={`theme-format fam-edge-${f.family}`}>
-                {f.name}
-              </span>
-            );
-          })}
-        </span>
+        <span>{theme.description} {playedLine(daysPlayedInWeek(data.progress, weekStart(today)))}.</span>
         <span className="card__meta">Go to today’s puzzles <span aria-hidden="true">→</span></span>
       </Link>
 
       <section className="section">
         <h2 className="kicker">Earlier themes</h2>
         <div className="grid-2 grid-2--stack-narrow">
-          {past.map(({ theme: t, weekOf }, i) => {
-            const n = playedInTheme(data.progress, t);
-            return (
-              <div key={weekOf} className={`card theme-card ${CARD_STYLES[i % CARD_STYLES.length]}`}>
-                <span className="kicker">{formatIssue(t.issue)}</span>
-                <span className="theme-card__name">{t.name}</span>
-                <span className="small">{t.formats.map((id) => FAMILIES[getFormat(id)!.family].label).filter((v, j, a) => a.indexOf(v) === j).join(' · ')}</span>
-                <span className="card__meta" style={{ marginTop: 'auto' }}>{playedLine(n, t.formats.length)}</span>
-              </div>
-            );
-          })}
+          {past.map(({ theme: t, weekOf }, i) => (
+            <div key={weekOf} className={`card theme-card ${CARD_STYLES[i % CARD_STYLES.length]}`}>
+              <span className="kicker">{formatIssue(t.issue)}</span>
+              <span className="theme-card__name">{t.name}</span>
+              <span className="small">{t.description}</span>
+              <span className="card__meta" style={{ marginTop: 'auto' }}>{playedLine(daysPlayedInWeek(data.progress, weekOf))}</span>
+            </div>
+          ))}
         </div>
       </section>
     </div>

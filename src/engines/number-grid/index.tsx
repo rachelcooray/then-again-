@@ -5,6 +5,9 @@ import type { KeyboardEvent as ReactKeyboardEvent } from 'react';
 import { breaksRule, type GridShape } from './solver';
 import '../engines.css';
 
+/** Up to five keys fit on one row at 320px; more split into two even rows. */
+const padColumns = (keys: number) => (keys <= 5 ? keys : Math.ceil(keys / 2));
+
 export interface NumberGridPayload extends GridShape {
   /** Row by row, 0 for empty. */
   givens: string;
@@ -215,7 +218,7 @@ function View({ payload, state, dispatch }: Props) {
 
       {!over && (
         <>
-          <div className="ng-pad" role="group" aria-label="Numbers" style={{ gridTemplateColumns: `repeat(${size + 1 > 6 ? 5 : size + 1}, minmax(0, 1fr))` }}>
+          <div className="ng-pad" role="group" aria-label="Numbers" style={{ gridTemplateColumns: `repeat(${padColumns(size + 1)}, minmax(0, 1fr))` }}>
             {Array.from({ length: size }, (_, k) => k + 1).map((n) => (
               <button key={n} type="button" className="ng-key" aria-label={`Enter ${n}`} onClick={() => dispatch({ type: 'put', value: n })}>
                 {n}

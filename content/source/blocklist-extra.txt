@@ -1,2 +1,14 @@
 # Extra words to block in generated puzzles, one per line, on top of the open LDNOOBW list.
 # Add anything a reviewer flags: slurs, insults, or words that read badly in a family puzzle.
+ARSE
+ARSES
+PISS
+PISSED
+CRAP
+BOLLOCK
+BOLLOCKS
+BUGGER
+TWAT
+PRAT
+WANK
+SLAG

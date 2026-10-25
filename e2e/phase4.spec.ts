@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import { getPuzzle } from '../src/content/puzzles';
+import { canvasPuzzle } from '../src/content/canvas';
 import type { CrosswordPayload } from '../src/engines/crossword/logic';
 import type { HiddenCellsPayload } from '../src/engines/hidden-cells/logic';
 import type { AnagramsPayload } from '../src/engines/letter-set/anagrams';
@@ -12,12 +12,14 @@ import type { WordChainPayload } from '../src/engines/word-chain/logic';
 
 /** Phase 4 acceptance tests: the other 15 formats, each won and lost through the real screen, by tap and by keyboard. */
 
-const payload = <P>(id: string) => getPuzzle('', id)!.payload as P;
+const payload = <P>(id: string) => canvasPuzzle(id)!.payload as P;
 
 test.use({ viewport: { width: 390, height: 844 } });
 
 const errors: string[] = [];
 test.beforeEach(async ({ page }) => {
+  // These tests play the design puzzles, whose answers they know, rather than the generated calendar.
+  await page.addInitScript(() => localStorage.setItem('then-again:content', 'canvas'));
   errors.length = 0;
   page.on('pageerror', (e) => errors.push(e.message));
 });

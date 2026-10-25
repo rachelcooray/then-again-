@@ -11,7 +11,8 @@
     "test": "vitest run",
     "test:e2e": "playwright test",
     "dictionary": "node scripts/build-dictionary.mjs",
-    "test:db": "bash scripts/test-db.sh"
+    "test:db": "bash scripts/test-db.sh",
+    "content": "tsx scripts/content/plan.ts"
   },
   "dependencies": {
     "@capacitor-community/in-app-review": "^8.0.0",

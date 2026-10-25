@@ -63,6 +63,8 @@ export interface Puzzle<P = unknown> {
   formatId: string;
   /** Result card: a short memory or fact. `draft` marks text no person has reviewed yet. */
   memory: { title?: string; text: string; draft?: boolean };
+  /** 1 easy, 2 medium, 3 hard, for generated puzzles. */
+  level?: 1 | 2 | 3;
   payload: P;
 }
 

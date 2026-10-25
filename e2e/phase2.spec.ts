@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import { getPuzzle } from '../src/content/puzzles';
+import { canvasPuzzle } from '../src/content/canvas';
 import type { CardPayload } from '../src/engines/card/logic';
 import { earliestLine } from '../src/engines/card/logic';
 import type { GroupingPayload } from '../src/engines/grouping';
@@ -11,7 +11,7 @@ import type { NumberGridPayload } from '../src/engines/number-grid';
 
 /** Phase 2 acceptance tests: each format can be won and lost, rules are enforced, results save, tap and keyboard both work. */
 
-const payload = <P>(id: string) => getPuzzle('', id)!.payload as P;
+const payload = <P>(id: string) => canvasPuzzle(id)!.payload as P;
 const wg = payload<LetterGuessPayload>('word-guess');
 const ws = payload<WordSearchPayload>('word-search');
 const su = payload<NumberGridPayload>('sudoku');
@@ -44,6 +44,8 @@ async function expectSaved(page: Page, name: string, score: RegExp) {
 }
 
 test.beforeEach(async ({ page }) => {
+  // These tests play the design puzzles, whose answers they know, rather than the generated calendar.
+  await page.addInitScript(() => localStorage.setItem('then-again:content', 'canvas'));
   const errors: string[] = [];
   page.on('pageerror', (e) => errors.push(e.message));
   (page as Page & { errors?: string[] }).errors = errors;
@@ -242,7 +244,7 @@ test.describe('Daily Bingo', () => {
       if (bn.card.includes(item)) await page.locator('.bn-cell', { hasText: new RegExp(`^${item}$`) }).click();
     }
     await expect(message(page)).toContainText(`A full line after ${n} calls`);
-    await expect(page.locator('#result-title')).toHaveText(getPuzzle('', 'bingo')!.memory.title!);
+    await expect(page.locator('#result-title')).toHaveText(canvasPuzzle('bingo')!.memory.title!);
     await expectSaved(page, 'Daily Bingo', new RegExp(`${n} calls`));
   });
 

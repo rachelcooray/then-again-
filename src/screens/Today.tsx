@@ -2,7 +2,8 @@ import { Link } from 'react-router-dom';
 import { config } from '../config';
 import { getDailySet } from '../content/daily';
 import { FAMILIES, getFormat, type PuzzleFormat } from '../content/formats';
-import { compactDate, formatIssue, longDate } from '../lib/date';
+import { LEVEL_NAME } from '../content/schedule';
+import { compactDate, formatIssue, longDate, longWeekday } from '../lib/date';
 import { GemChip } from '../components/GemChip';
 import { SettingsIcon } from '../components/Icons';
 import { recordKey } from '../state/progress';
@@ -37,6 +38,12 @@ export function Today() {
         <div className="today-hero">
           <p className="kicker desktop-only">{issue} · {longDate(today)} · {set.theme.name}</p>
           <h1 className="display">{set.theme.headline}</h1>
+          {set.level && (
+            <p className="today-level">
+              <span className="kicker">{longWeekday(today)} · {LEVEL_NAME[set.level]}</span>
+              <span className="small muted">Puzzles build from easy on Monday to hard on Saturday.</span>
+            </p>
+          )}
 
           <div className={`ticket fam-${featured.family}`}>
             <span className="kicker">Featured · {FAMILIES[featured.family].kicker} · {featured.minutes} min</span>
@@ -97,7 +104,7 @@ export function Today() {
             <span className="kicker">This week’s theme</span>
             <span className="theme-link__row">
               <span className="theme-link__name">{set.theme.name}</span>
-              <span className="theme-link__more">{set.theme.formats.length} puzzle types <span aria-hidden="true">→</span></span>
+              <span className="theme-link__more">All week <span aria-hidden="true">→</span></span>
             </span>
           </Link>
         </aside>

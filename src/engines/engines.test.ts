@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { FORMATS } from '../content/formats';
-import { getPuzzle } from '../content/puzzles';
+import { canvasPuzzle } from '../content/canvas';
 import { card, earliestLine, FREE, type CardPayload } from './card';
 import { grouping, type GroupingPayload } from './grouping';
 import { letterGridSearch, wordPath, type WordSearchPayload } from './letter-grid-search';
@@ -19,8 +19,7 @@ const dictionary: ReadonlySet<string> = new Set(
 );
 const ctx: EngineContext = { dictionary };
 
-const D = '2026-10-24';
-const payload = <P>(formatId: string) => getPuzzle(D, formatId)!.payload as P;
+const payload = <P>(formatId: string) => canvasPuzzle(formatId)!.payload as P;
 
 /** Runs actions through an engine and returns the final state and status. */
 function play<P>(engine: AnyEngine, p: P, actions: unknown[]) {
@@ -34,7 +33,7 @@ describe('phase 2 formats', () => {
     for (const id of ['word-guess', 'word-search', 'sudoku', 'rewind', 'circle-word', 'bingo', 'logic-grid']) {
       const f = FORMATS.find((x) => x.id === id)!;
       expect(engineFor(f), id).toBeDefined();
-      expect(getPuzzle(D, id), id).toBeDefined();
+      expect(canvasPuzzle(id), id).toBeDefined();
     }
   });
 });

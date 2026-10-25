@@ -92,8 +92,8 @@ function View({ payload, state, dispatch }: Props) {
   return (
     <div className="eng">
       <div className="lg-clue">
-        <span className="kicker">Clue {state.round + 1}/{payload.rounds.length}</span>
-        <span>{cur.clue}</span>
+        <span className="kicker">{cur.clue ? 'Clue' : 'Word'} {state.round + 1}/{payload.rounds.length}</span>
+        {cur.clue && <span>{cur.clue}</span>}
       </div>
       <div className="ls-word" role="status" aria-label={word ? `Your word: ${word}` : 'Your word is empty'}>
         {word || ' '}

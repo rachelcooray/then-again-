@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { FORMATS } from '../content/formats';
-import { getPuzzle, PUZZLES } from '../content/puzzles';
+import { canvasPuzzle, PUZZLES } from '../content/canvas';
 import { crossword } from './crossword';
 import { entries, type CrosswordPayload } from './crossword/logic';
 import { hiddenCells } from './hidden-cells';
@@ -26,7 +26,7 @@ const dictionary: ReadonlySet<string> = new Set(
   readFileSync(join(__dirname, '../content/dictionary/words.txt'), 'utf8').split('\n').filter(Boolean),
 );
 const ctx: EngineContext = { dictionary };
-const payload = <P>(formatId: string) => getPuzzle('', formatId)!.payload as P;
+const payload = <P>(formatId: string) => canvasPuzzle(formatId)!.payload as P;
 
 function play<P>(engine: AnyEngine, p: P, actions: unknown[]) {
   let s = engine.init(p);
@@ -40,7 +40,7 @@ describe('every format', () => {
       const engine = engineFor(f);
       expect(engine, f.id).toBeDefined();
       expect(engine!.help.length, f.id).toBeGreaterThan(20);
-      expect(getPuzzle('', f.id), f.id).toBeDefined();
+      expect(canvasPuzzle(f.id), f.id).toBeDefined();
     }
     expect(PUZZLES).toHaveLength(FORMATS.length);
   });

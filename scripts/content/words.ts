@@ -22,3 +22,12 @@ export const blocklist: ReadonlySet<string> = new Set([
 ]);
 
 export const ofLength = (set: ReadonlySet<string>, n: number) => [...set].filter((w) => w.length === n);
+
+/** Too grim or awkward to be an answer (content/source/answer-avoid.txt), though still accepted as guesses. */
+export const avoid: ReadonlySet<string> = new Set(read('../../content/source/answer-avoid.txt').filter((w) => !w.startsWith('#')));
+
+/** Fit to be an answer: accepted, not blocked and not on the avoid list. */
+export const answerable = (w: string) => accepted.has(w) && !blocklist.has(w) && !avoid.has(w);
+
+/** Plurals and past tenses make dull headline answers. */
+export const looksInflected = (w: string) => (/S$/.test(w) && !/SS$/.test(w)) || /ED$/.test(w);

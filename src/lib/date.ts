@@ -41,6 +41,10 @@ const WEEKDAYS_LONG = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', '
 const MONTHS_SHORT = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const MONTHS_LONG = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
+export function longWeekday(key: DateKey): string {
+  return WEEKDAYS_LONG[weekdayIndex(key)];
+}
+
 export function shortWeekday(key: DateKey): string {
   return WEEKDAYS_SHORT[weekdayIndex(key)];
 }
