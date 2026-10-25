@@ -15,6 +15,8 @@ export interface RemoteConfig {
   paused_formats: string[];
   /** A short message shown on Today, or null. */
   banner: { text: string } | null;
+  /** "Did you have one?" shows a percentage only once a puzzle has this many answers; before that, a count. */
+  vote_percent_after: number;
 }
 
 export const DEFAULT_REMOTE: RemoteConfig = {
@@ -24,6 +26,7 @@ export const DEFAULT_REMOTE: RemoteConfig = {
   gems_enabled: false,
   paused_formats: [],
   banner: null,
+  vote_percent_after: 200,
 };
 
 const KEY = 'then-again:remote-config';

@@ -9,6 +9,7 @@ import { UpdateRequired } from './screens/UpdateRequired';
 import { Help } from './screens/Help';
 import { Catalogue } from './screens/Catalogue';
 import { Collection } from './screens/Collection';
+import { DayComplete } from './screens/DayComplete';
 import { Gems } from './screens/Gems';
 import { Library } from './screens/Library';
 import { NotFound } from './screens/NotFound';
@@ -33,6 +34,7 @@ const TITLES: [RegExp, string][] = [
   [/^\/settings/, 'Settings'],
   [/^\/help/, 'Help'],
   [/^\/play/, 'Puzzle'],
+  [/^\/day/, 'Your day'],
 ];
 
 /** Per-route document title, scroll reset and focus for screen-reader users. */
@@ -71,6 +73,7 @@ function AppRoutes() {
           <Route path="settings" element={<Settings />} />
           <Route path="help" element={<Help />} />
           <Route path="play/:formatId" element={<Play />} />
+          <Route path="day" element={<DayComplete />} />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>

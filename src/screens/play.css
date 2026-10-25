@@ -84,3 +84,38 @@
     width: 100%;
   }
 }
+
+.result__link {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.75rem;
+  border: 2px dashed currentColor;
+  border-radius: var(--radius-s);
+}
+
+.result__link-key {
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+
+.memory-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding-top: 0.625rem;
+  border-top: 1px solid currentColor;
+}
+
+.memory-panel__ask {
+  font-weight: 700;
+}
+
+.memory-panel__saved {
+  min-height: 2.75rem;
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+  color: inherit;
+}

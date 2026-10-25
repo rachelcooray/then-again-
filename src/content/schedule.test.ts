@@ -36,8 +36,9 @@ describe('generated calendar', () => {
     }
   });
 
-  it('doesn’t repeat a format in the day’s four on consecutive days, apart from the theme’s word search', () => {
+  it('doesn’t repeat a format in the day’s four on consecutive days, apart from the word search and the handwritten link week', () => {
     for (const d of dates.slice(1)) {
+      if (getDailySet(d).link) continue;
       const yesterday = getDailySet(addDays(d, -1)).formats;
       for (const f of getDailySet(d).formats) if (f !== 'word-search') expect(yesterday, `${d} ${f}`).not.toContain(f);
     }
@@ -54,6 +55,43 @@ describe('generated calendar', () => {
       const answer = (getPuzzle(d, 'word-guess')!.payload as { answer: string }).answer;
       const search = getPuzzle(d, 'word-search')!.payload as WordSearchPayload;
       expect(search.words.map((w) => w.word)).not.toContain(answer);
+    }
+  });
+
+  it('has seven handwritten link days, each with four clues that don’t give the link away', () => {
+    const linkDays = dates.filter((d) => getDailySet(d).link);
+    expect(linkDays).toEqual(['2026-10-26', '2026-10-27', '2026-10-28', '2026-10-29', '2026-10-30', '2026-10-31', '2026-11-01']);
+    for (const d of linkDays) {
+      const set = getDailySet(d);
+      expect(set.link!.options).toHaveLength(4);
+      expect(set.link!.options).toContain(set.link!.answer);
+      const keys = set.formats.map((f) => getPuzzle(d, f)!.linkKey);
+      expect(keys.every(Boolean), d).toBe(true);
+      for (const k of keys) expect(k, d).not.toContain(set.link!.answer);
+    }
+  });
+
+  it('never shows the link itself on a link day, in any puzzle or memory', () => {
+    for (const d of dates.filter((x) => getDailySet(x).link)) {
+      const answer = getDailySet(d).link!.answer;
+      for (const p of Object.values(scheduledDay(d)!.puzzles)) {
+        expect(`${p.memory.title ?? ''} ${p.memory.text}`, `${d} ${p.formatId} memory`).not.toMatch(new RegExp(`\\b${answer}`, 'i'));
+      }
+      for (const f of getDailySet(d).formats) {
+        const p = getPuzzle(d, f)!.payload as { words?: { word: string }[]; rounds?: { answer: string }[]; answer?: string; targets?: string[] };
+        const words = [...(p.words ?? []).map((w) => w.word), ...(p.rounds ?? []).map((x) => x.answer), ...(p.targets ?? []), p.answer ?? ''];
+        for (const w of words) expect(w, `${d} ${f}`).not.toContain(answer);
+      }
+    }
+  });
+
+  it('puts each link clue where the player will find it', () => {
+    for (const d of dates.filter((x) => getDailySet(x).link)) {
+      for (const f of getDailySet(d).formats) {
+        const p = getPuzzle(d, f)!;
+        const text = JSON.stringify(p.payload).toUpperCase();
+        expect(text, `${d} ${f}`).toContain(p.linkKey);
+      }
     }
   });
 

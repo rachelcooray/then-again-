@@ -62,9 +62,17 @@ export interface Puzzle<P = unknown> {
   id: string;
   formatId: string;
   /** Result card: a short memory or fact. `draft` marks text no person has reviewed yet. */
-  memory: { title?: string; text: string; draft?: boolean };
+  memory: {
+    title?: string;
+    text: string;
+    draft?: boolean;
+    /** The yes-or-no question under the memory; a default fits most puzzles. */
+    ask?: string;
+  };
   /** 1 easy, 2 medium, 3 hard, for generated puzzles. */
   level?: 1 | 2 | 3;
+  /** On a link day, this puzzle's clue to what links the day's four. */
+  linkKey?: string;
   payload: P;
 }
 

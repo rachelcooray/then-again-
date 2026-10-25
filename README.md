@@ -32,6 +32,19 @@ The internal full-catalogue view is hidden unless the build sets `VITE_SHOW_CATA
 - Output: one scrambled file per day in `src/content/generated/days/`, loaded only around today, plus
   `content/reports/runway.md` (what's covered, what needs review, when the calendar runs out) and `checks.json`.
 
+### The hidden daily link (prototype)
+
+Monday 26 October to Sunday 1 November 2026 are handwritten link days (`scripts/content/link-days.ts`). Each of the
+day's four hides one key word, shown on its result card; once all four are done, the Day complete screen (`/day`)
+asks what links them, with two tries. These seven days test whether the link is fun before any of it is generated.
+
+### Memories
+
+Result cards ask a yes-or-no question about the memory ("Did you have one?"). Answers go anonymously to the
+`memory_votes` table; players see a count of answers until a puzzle has `vote_percent_after` of them (200 by default),
+and only then a percentage. "Save this story" keeps a memory in My memories, with the player's own words, on the phone.
+Today asks once where the player grew up (UK, US or elsewhere); the answer is kept in Settings and counted anonymously.
+
 Formats that need written content (Rewind, Mini Crossword, The Quiz, Higher or Lower, Mystery Object, Put It in Order)
 still play the design puzzle every day and are kept out of the day's four. To play the design puzzles everywhere, set
 `localStorage['then-again:content'] = 'canvas'` (the per-format browser tests do this).

@@ -4,12 +4,19 @@ import { Link } from 'react-router-dom';
 import { MovePhone } from '../components/MovePhone';
 import { SwitchRow } from '../components/Switch';
 import { setUsageSharing } from '../lib/analytics';
-import { useStore, type Appearance, type TextSize } from '../state/store';
+import { track } from '../lib/analytics';
+import { useStore, type Appearance, type Region, type TextSize } from '../state/store';
 
 const SIZES: [TextSize, string][] = [
   ['standard', 'Standard'],
   ['large', 'Large'],
   ['larger', 'Larger'],
+];
+
+const REGIONS: [Region, string][] = [
+  ['uk', 'The UK'],
+  ['us', 'The US'],
+  ['other', 'Elsewhere'],
 ];
 
 const APPEARANCES: [Appearance, string][] = [
@@ -54,6 +61,9 @@ export function Settings() {
 
         <Choice label="Appearance" options={APPEARANCES} value={data.settings.appearance}
           onChange={(appearance) => updateSettings({ appearance })} />
+
+        <Choice label="Where you grew up" options={REGIONS} value={data.settings.region ?? 'skipped'}
+          onChange={(region) => { updateSettings({ region }); track('region_choice', { region }); }} />
 
         <div className="list">
           <SwitchRow label="Share anonymous usage" description="Counts like puzzles played, with nothing that identifies you"

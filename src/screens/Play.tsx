@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { BackHeader } from '../components/BackHeader';
 import { ConfirmButton } from '../components/ConfirmButton';
+import { MemoryPanel } from '../components/MemoryPanel';
 import { getDailySet } from '../content/daily';
 import { loadDictionary } from '../content/dictionary';
 import { FAMILIES, getFormat, type PuzzleFormat } from '../content/formats';
@@ -9,6 +10,7 @@ import { getPuzzle } from '../content/puzzles';
 import { engineFor } from '../engines/registry';
 import type { AnyEngine, EngineContext, Puzzle } from '../engines/types';
 import { LEVEL_NAME } from '../content/schedule';
+import { countPuzzle, track } from '../lib/analytics';
 import { formatIssue } from '../lib/date';
 import { recordKey } from '../state/progress';
 import { useStore } from '../state/store';
@@ -88,6 +90,11 @@ function PuzzleScreen({ format, engine, puzzle, today }: { format: PuzzleFormat;
   // Record the first attempt once, when it ends.
   useEffect(() => {
     if (!practice && status.done && !record) {
+      countPuzzle(format.id, status.solved);
+      const inSet = set.formats.includes(format.id);
+      if (inSet && set.formats.every((f) => f === format.id || data.progress[recordKey(today, f)])) {
+        track('set_complete', { level: set.level ?? 0, link: !!set.link });
+      }
       recordResult({
         date: today,
         formatId: format.id,
@@ -99,7 +106,7 @@ function PuzzleScreen({ format, engine, puzzle, today }: { format: PuzzleFormat;
         inSet: set.formats.includes(format.id),
       });
     }
-  }, [practice, status.done, status.solved, status.score, record, recordResult, today, format.id, set.theme.id, set.issue, set.formats]);
+  }, [practice, status.done, status.solved, status.score, record, recordResult, today, format.id, set.theme.id, set.issue, set.formats, set.level, set.link, data.progress]);
 
   const restart = () => update(engine.init(payload));
 
@@ -182,6 +189,8 @@ function ResultCard({ format, puzzle, title, solved, share, today, onPlayAgain }
 }) {
   const { data } = useStore();
   const [note, setNote] = useState('');
+  const set = getDailySet(today);
+  const inSet = set.formats.includes(format.id);
   const next = useMemo(() => {
     const ids = getDailySet(today).formats;
     return ids
@@ -207,10 +216,19 @@ function ResultCard({ format, puzzle, title, solved, share, today, onPlayAgain }
       <span className="kicker">{solved ? 'A little piece of the past' : 'Today’s answer'}</span>
       <h2 className="result__title" id="result-title">{title}</h2>
       <p>{puzzle.memory.text}</p>
-      {next ? (
+      {puzzle.linkKey && inSet && (
+        <p className="result__link">
+          <span className="kicker">Clue to today’s link</span>
+          <span className="result__link-key mono">{puzzle.linkKey}</span>
+        </p>
+      )}
+      <MemoryPanel puzzle={puzzle} date={today} />
+      {!inSet ? (
+        <Link to="/" className="btn btn--on-family btn--block">Back to today’s puzzles <span aria-hidden="true">→</span></Link>
+      ) : next ? (
         <Link to={`/play/${next.id}`} className="btn btn--on-family btn--block">Next: {next.name} <span aria-hidden="true">→</span></Link>
       ) : (
-        <Link to="/" className="btn btn--on-family btn--block">That’s today’s set. Back to today <span aria-hidden="true">→</span></Link>
+        <Link to="/day" className="btn btn--on-family btn--block">{set.link ? 'Find today’s link' : 'See your day'} <span aria-hidden="true">→</span></Link>
       )}
       <div className="grid-2">
         <button type="button" className="btn btn--ghost" onClick={doShare}>Share</button>

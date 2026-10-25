@@ -9,7 +9,16 @@ import { APP_VERSION, PLATFORM } from './platform';
  * count returning players without being able to follow any one of them.
  */
 
-type EventName = 'first_open' | 'daily_visit' | 'puzzle_complete' | 'set_complete' | 'reminder_choice' | 'visit_end';
+type EventName =
+  | 'first_open'
+  | 'daily_visit'
+  | 'puzzle_complete'
+  | 'set_complete'
+  | 'link_result'
+  | 'story_saved'
+  | 'region_choice'
+  | 'reminder_choice'
+  | 'visit_end';
 
 const STATE_KEY = 'then-again:usage';
 let enabled = true;

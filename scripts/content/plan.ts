@@ -24,6 +24,7 @@ import * as grids from './generators/grids';
 import * as numbers from './generators/numbers';
 import type { Draft, Level } from './generators/types';
 import * as words from './generators/words';
+import { LINK_DAYS, type LinkPuzzle } from './link-days';
 import { hashString, rng, type Rng } from './rng';
 
 type Generator = (r: Rng, level: Level, ctx: words.WordContext) => Draft | null;
@@ -125,6 +126,44 @@ function makePuzzle(date: string, formatId: string, level: Level, ctx: Omit<word
   return null;
 }
 
+/** The theme's line, unless it would give the link away ("button jars" on a day whose link is BUTTON). */
+function linkSafeMemory(date: string, answer: string): Puzzle['memory'] {
+  const theme = themeForDate(date);
+  const gives = (t: string) => new RegExp(`\\b${answer}`, 'i').test(t);
+  if (!gives(theme.name) && !gives(theme.description)) return { title: theme.name, text: theme.description };
+  return { title: 'One clue closer', text: 'Each of today’s four puzzles hides a clue. Collect all four, then work out what links them.' };
+}
+
+/** A puzzle on a handwritten link day, built around its key word and checked by the same gate. */
+function makeLinkPuzzle(date: string, level: Level, theme: { id: string; name: string }, lp: LinkPuzzle, answer: string, exclude: Set<string>): Puzzle {
+  let draft: Draft | null = null;
+  for (let k = 0; k < 20 && !draft; k++) {
+    if (lp.picture) {
+      const { title, rows, memory } = lp.picture;
+      draft = { formatId: 'nonogram', level, payload: { cols: rows[0].length, solution: rows.join(''), title, intro: '' }, answers: [title], memory: { text: memory }, needsReview: 'Link day written by hand.' };
+    } else {
+      draft = GENERATORS[lp.formatId](rng(hashString(`link:${date}:${lp.formatId}:${k}`)), level, { theme, fresh: () => true, exclude, force: { key: lp.key, clue: lp.clue } });
+    }
+    if (draft && gate(draft).status === 'rejected') draft = null;
+  }
+  if (!draft) throw new Error(`Link day ${date}: no ${lp.formatId} could be made around ${lp.key}`);
+  const result = gate(draft);
+  report.push({ date, formatId: lp.formatId, level, status: result.status, checks: result.checks, seedTries: 1, note: `link day, key ${lp.key}` });
+  review.set(lp.formatId, (review.get(lp.formatId) ?? 0) + 1);
+  if (lp.formatId === 'word-search') {
+    const p = draft.payload as { intro: string };
+    p.intro = `${p.intro} One of them is a clue to today’s link.`;
+  }
+  return {
+    id: `${lp.formatId}-${date}`,
+    formatId: lp.formatId,
+    memory: draft.memory ? { ...draft.memory, draft: true } : linkSafeMemory(date, answer),
+    level,
+    linkKey: lp.key,
+    payload: draft.payload,
+  };
+}
+
 /** Picks the format in a slot that has gone longest without being in the day's four. */
 function pickFor(slot: string[], date: string, r: Rng, taken: string[], puzzles: Record<string, Puzzle>): string {
   const options = slot.filter((f) => puzzles[f] && !taken.includes(f));
@@ -138,7 +177,9 @@ for (let i = 0; i < length; i++) {
   const theme = themeForDate(date);
   const level = LEVEL_BY_WEEKDAY[weekdayIndex(date)];
   const puzzles: Record<string, Puzzle> = {};
-  const exclude = new Set<string>();
+  const linkDay = LINK_DAYS.find((d) => d.date === date);
+  // On a link day nothing may show the link itself.
+  const exclude = new Set<string>(linkDay ? [linkDay.answer] : []);
   for (const formatId of Object.keys(GENERATORS)) {
     const started = Date.now();
     const p = makePuzzle(date, formatId, level, { theme, exclude });
@@ -164,9 +205,20 @@ for (let i = 0; i < length; i++) {
     .map((f) => ({ f, wait: daysSince(lastFeatured.get(getFormat(f)!.family), date) + r.next() }))
     .sort((a, b) => b.wait - a.wait)[0].f;
   lastFeatured.set(getFormat(featured)!.family, date);
-  const formats = [featured, ...set.filter((f) => f !== featured)];
+  let formats = [featured, ...set.filter((f) => f !== featured)];
 
-  days[date] = { themeId: theme.id, level, formats, puzzles };
+  // A handwritten link day replaces the day's four with its own puzzles.
+  if (linkDay) {
+    for (const lp of linkDay.puzzles) puzzles[lp.formatId] = makeLinkPuzzle(date, level, theme, lp, linkDay.answer, exclude);
+    formats = linkDay.puzzles.map((lp) => lp.formatId);
+    // Library puzzles that day share the theme's line too; keep the link out of every memory.
+    const gives = new RegExp(`\\b${linkDay.answer}`, 'i');
+    for (const p of Object.values(puzzles)) if (gives.test(`${p.memory.title ?? ''} ${p.memory.text}`)) p.memory = linkSafeMemory(date, linkDay.answer);
+    for (const f of formats) lastInSet.set(f, date);
+  }
+  const link = linkDay && { answer: linkDay.answer, options: linkDay.options, explain: linkDay.explain };
+
+  days[date] = { themeId: theme.id, level, formats, puzzles, ...(link ? { link } : {}) };
   process.stdout.write(`${date} ${LEVEL_NAME[level].padEnd(6)} ${formats.join(', ')}\n`);
 }
 

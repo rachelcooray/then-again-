@@ -18,9 +18,16 @@ export interface WordContext {
   fresh: (answer: string) => boolean;
   /** Words another puzzle on the same day is about, so this one mustn't give them away. */
   exclude?: ReadonlySet<string>;
+  /**
+   * A handwritten link day (scripts/content/link-days.ts) fixes the puzzle's key word: the Word Guess
+   * answer, a word in the search, the last anagram, the circle's full word or the ladder's last word.
+   */
+  force?: { key: string; clue?: string };
 }
 
-const themeWords = (ctx: WordContext): ThemeWord[] => (THEME_WORDS[ctx.theme.id] ?? []).filter((t) => !ctx.exclude?.has(t.word));
+/** True if a word is, or contains, one another puzzle that day is about (TEAPOT on a day whose link is TEA). */
+const excluded = (ctx: WordContext, word: string) => [...(ctx.exclude ?? [])].some((e) => word === e || (e.length >= 3 && word.includes(e)));
+const themeWords = (ctx: WordContext): ThemeWord[] => (THEME_WORDS[ctx.theme.id] ?? []).filter((t) => !excluded(ctx, t.word));
 /** Marble and Marbles, or Card and Cards, shouldn't share a card. */
 const nearSame = (a: string, b: string) => a.toUpperCase().startsWith(b.toUpperCase()) || b.toUpperCase().startsWith(a.toUpperCase());
 const NUMBERS = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten'];
@@ -67,10 +74,12 @@ function occurrences(letters: string, cols: number, word: string): number {
 export function wordSearch(r: Rng, level: Level, ctx: WordContext): Draft<WordSearchPayload> | null {
   const cols = 8;
   const count = level === 3 ? 7 : 6;
-  const pool = themeWords(ctx).filter((t) => t.word.length >= 4 && t.word.length <= cols);
+  const key = ctx.force?.key;
+  const pool = themeWords(ctx).filter((t) => t.word.length >= 4 && t.word.length <= cols && t.word !== key);
   if (pool.length < count) return null;
   for (let attempt = 0; attempt < 400; attempt++) {
-    const picked = r.shuffle(pool).slice(0, count).map((t) => t.word).sort((a, b) => b.length - a.length);
+    const chosen = r.shuffle(pool).slice(0, key ? count - 1 : count).map((t) => t.word);
+    const picked = (key ? [key, ...chosen] : chosen).sort((a, b) => b.length - a.length);
     const grid: string[] = Array(cols * cols).fill('');
     const placed: WordSearchPayload['words'] = [];
     for (const word of picked) {
@@ -94,7 +103,7 @@ export function wordSearch(r: Rng, level: Level, ctx: WordContext): Draft<WordSe
     const letters = grid.map((ch) => ch || r.pick(FILL.split(''))).join('');
     if (picked.some((w) => occurrences(letters, cols, w) !== 1)) continue;
     if (hiddenWordsInGrid(letters, cols).length) continue;
-    if (!picked.every(ctx.fresh)) continue;
+    if (!key && !picked.every(ctx.fresh)) continue;
     return {
       formatId: 'word-search',
       level,
@@ -110,6 +119,10 @@ export function wordSearch(r: Rng, level: Level, ctx: WordContext): Draft<WordSe
 
 /** Easy and medium days use a theme word with its clue; hard days give no clue. */
 export function wordGuess(r: Rng, level: Level, ctx: WordContext): Draft<LetterGuessPayload> | null {
+  if (ctx.force) {
+    const { key, clue = '' } = ctx.force;
+    return { formatId: 'word-guess', level, payload: { answer: key, clue }, answers: [key], needsReview: 'Link day written by hand.' };
+  }
   const themed = r.shuffle(themeWords(ctx).filter((t) => t.word.length === 5 && answerable(t.word) && ctx.fresh(t.word)));
   if (level < 3 && themed.length) {
     const t = themed[0];
@@ -141,13 +154,21 @@ export function anagrams(r: Rng, level: Level, ctx: WordContext): Draft<Anagrams
   const usable = (w: string) => answerable(w) && oneAnagram(w) && ctx.fresh(w) && !used.has(w);
   const rounds: AnagramsPayload['rounds'] = [];
   let themed = 0;
-  for (const n of ANAGRAM_LENGTHS[level]) {
+  const lengths = ANAGRAM_LENGTHS[level];
+  if (ctx.force) used.add(ctx.force.key);
+  for (const n of ctx.force ? lengths.slice(0, -1) : lengths) {
     const t = r.shuffle(themeWords(ctx)).find((x) => x.word.length === n && usable(x.word));
-    const word = t?.word ?? r.shuffle(everydayAnswers(n)).find((w) => usable(w) && !ctx.exclude?.has(w));
+    const word = t?.word ?? r.shuffle(everydayAnswers(n)).find((w) => usable(w) && !excluded(ctx, w));
     if (!word) return null;
     used.add(word);
     if (t) themed++;
     rounds.push({ letters: scramble(r, word, level === 1), answer: word, clue: t?.clue ?? '' });
+  }
+  if (ctx.force) {
+    const { key, clue = '' } = ctx.force;
+    if (!oneAnagram(key)) return null;
+    rounds.push({ letters: scramble(r, key, level === 1), answer: key, clue });
+    themed++;
   }
   return {
     formatId: 'anagrams',
@@ -172,13 +193,16 @@ function fitsLetters(word: string, letters: string): boolean {
 
 export function circleWord(r: Rng, level: Level, ctx: WordContext): Draft<LetterSetPayload> | null {
   const size = level === 1 ? 6 : 7;
-  const total = { 1: 6, 2: 8, 3: 10 }[level];
   const minLength = 4;
-  const words = [...everyday].filter((w) => w.length >= minLength && w.length <= size && answerable(w));
-  for (const base of r.shuffle(everydayAnswers(size)).slice(0, 300)) {
-    if (!ctx.fresh(base)) continue;
+  const bases = ctx.force ? [ctx.force.key] : r.shuffle(everydayAnswers(size)).slice(0, 300);
+  const longest = Math.max(...bases.map((b) => b.length));
+  const words = [...everyday].filter((w) => w.length >= minLength && w.length <= longest && answerable(w));
+  for (const base of bases) {
+    if (!ctx.force && !ctx.fresh(base)) continue;
     const subs = words.filter((w) => w !== base && fitsLetters(w, base) && !looksInflected(w));
-    if (subs.length < total - 1) continue;
+    // A fixed word may not make as many smaller words; ask for what it has, but at least five.
+    const total = ctx.force ? Math.min({ 1: 6, 2: 8, 3: 10 }[level], subs.length + 1) : { 1: 6, 2: 8, 3: 10 }[level];
+    if (subs.length < total - 1 || total < 5) continue;
     // Harder days ask for the longer words.
     const chosen = (level === 3 ? r.shuffle(subs).sort((a, b) => b.length - a.length) : r.shuffle(subs)).slice(0, total - 1);
     const targets = [base, ...chosen.sort((a, b) => b.length - a.length || a.localeCompare(b))];
@@ -187,6 +211,7 @@ export function circleWord(r: Rng, level: Level, ctx: WordContext): Draft<Letter
       level,
       payload: { letters: r.shuffle(base.split('')), targets, minLength, intro: `Find ${NUMBERS[total].toLowerCase()} words, including the one that uses every letter.` },
       answers: [base],
+      needsReview: ctx.force ? 'Link day written by hand.' : undefined,
     };
   }
   return null;
@@ -275,6 +300,22 @@ export function wordLadder(r: Rng, level: Level, ctx: WordContext): Draft<WordCh
   };
   const steps = { 1: 3, 2: 4, 3: 5 }[level];
   const ends = new Set(everydayAnswers(4));
+  if (ctx.force) {
+    // Work back from the fixed last word; one-letter steps go both ways.
+    const end = ctx.force.key;
+    const easy = distances(end, ladderGraphs.route);
+    const any = distances(end, ladderGraphs.all);
+    const starts = [...easy.keys()].filter((w) => ends.has(w) && pathTo(w, easy).length === steps + 1 && pathTo(w, any).length === steps + 1);
+    if (!starts.length) return null;
+    const start = r.pick(starts);
+    return {
+      formatId: 'word-ladder',
+      level,
+      payload: { start, end, par: steps, route: pathTo(start, easy).reverse(), intro: `Turn ${start} into ${end}.` },
+      answers: [start + end],
+      needsReview: 'Link day written by hand.',
+    };
+  }
   for (const start of r.shuffle([...ends]).slice(0, 300)) {
     const easy = distances(start, ladderGraphs.route);
     const any = distances(start, ladderGraphs.all);
@@ -302,7 +343,7 @@ export function bingo(r: Rng, level: Level, ctx: WordContext): Draft<CardPayload
     if (id === ctx.theme.id) continue;
     for (const w of ws) {
       const l = labelOf(w);
-      if (![...mine, ...others].some((x) => nearSame(x, l)) && !ctx.exclude?.has(w.word)) others.push(l);
+      if (![...mine, ...others].some((x) => nearSame(x, l)) && !excluded(ctx, w.word)) others.push(l);
     }
   }
   const [lo, hi] = { 1: [12, 17], 2: [18, 21], 3: [22, 24] }[level];

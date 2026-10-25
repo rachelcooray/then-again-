@@ -6,6 +6,9 @@ import { LEVEL_NAME } from '../content/schedule';
 import { compactDate, formatIssue, longDate, longWeekday } from '../lib/date';
 import { GemChip } from '../components/GemChip';
 import { SettingsIcon } from '../components/Icons';
+import { RegionQuestion } from '../components/RegionQuestion';
+import { getPuzzle } from '../content/puzzles';
+import { dayProgress, linkOutcome } from '../state/day';
 import { recordKey } from '../state/progress';
 import { useStore } from '../state/store';
 import { useToday } from '../state/useToday';
@@ -22,6 +25,9 @@ export function Today() {
   const featuredDone = done(featured);
   const issue = formatIssue(set.issue);
   const playPath = (f: PuzzleFormat) => `/play/${f.id}`;
+  const { complete } = dayProgress(set, data.progress);
+  const linkDone = set.link && linkOutcome(set.link, data.links[today]).over;
+  const keys = set.formats.map((id) => (data.progress[recordKey(today, id)] ? getPuzzle(today, id)?.linkKey : undefined));
 
   return (
     <div className="screen today">
@@ -33,6 +39,8 @@ export function Today() {
           <Link to="/settings" className="icon-btn" aria-label="Settings"><SettingsIcon /></Link>
         </div>
       </div>
+
+      {data.settings.region === undefined && <RegionQuestion />}
 
       <div className="today-grid">
         <div className="today-hero">
@@ -69,6 +77,21 @@ export function Today() {
               ))}
             </div>
           </div>
+
+          {(set.link || complete) && (
+            <Link to="/day" className="card card--strong today-day">
+              <span className="kicker today-day__kicker">{complete ? 'Day complete' : 'Today’s hidden link'}</span>
+              <span className="today-day__title">
+                {!complete ? 'Each puzzle hides a clue. What links them?' : set.link && !linkDone ? 'Now find what links your four clues' : 'See your day and share it'}
+              </span>
+              {set.link && (
+                <span className="today-day__keys" aria-label={`${keys.filter(Boolean).length} of 4 clues found`}>
+                  {keys.map((k, i) => <span key={i} aria-hidden="true">{k ?? '?'}</span>)}
+                </span>
+              )}
+              <span className="card__meta">{complete ? 'Open' : 'See your clues'} <span aria-hidden="true">→</span></span>
+            </Link>
+          )}
 
           <div className="card card--strong today-list desktop-only">
             <span className="kicker today-list__kicker">Today {doneCount} of {formats.length}</span>

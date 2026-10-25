@@ -2720,6 +2720,98 @@
   "seedTries": 1
  },
  {
+  "date": "2026-10-26",
+  "formatId": "word-guess",
+  "level": 1,
+  "status": "needs-review",
+  "checks": [
+   {
+    "name": "blocked words",
+    "passed": true
+   },
+   {
+    "name": "links, emails and phone numbers",
+    "passed": true
+   },
+   {
+    "name": "one answer",
+    "passed": true
+   }
+  ],
+  "seedTries": 1,
+  "note": "link day, key BELLY"
+ },
+ {
+  "date": "2026-10-26",
+  "formatId": "word-search",
+  "level": 1,
+  "status": "needs-review",
+  "checks": [
+   {
+    "name": "blocked words",
+    "passed": true
+   },
+   {
+    "name": "links, emails and phone numbers",
+    "passed": true
+   },
+   {
+    "name": "words hidden by accident",
+    "passed": true
+   },
+   {
+    "name": "one answer",
+    "passed": true
+   }
+  ],
+  "seedTries": 1,
+  "note": "link day, key NOSE"
+ },
+ {
+  "date": "2026-10-26",
+  "formatId": "nonogram",
+  "level": 1,
+  "status": "needs-review",
+  "checks": [
+   {
+    "name": "blocked words",
+    "passed": true
+   },
+   {
+    "name": "links, emails and phone numbers",
+    "passed": true
+   },
+   {
+    "name": "one answer",
+    "passed": true
+   }
+  ],
+  "seedTries": 1,
+  "note": "link day, key MUSHROOM"
+ },
+ {
+  "date": "2026-10-26",
+  "formatId": "word-ladder",
+  "level": 1,
+  "status": "needs-review",
+  "checks": [
+   {
+    "name": "blocked words",
+    "passed": true
+   },
+   {
+    "name": "links, emails and phone numbers",
+    "passed": true
+   },
+   {
+    "name": "one answer",
+    "passed": true
+   }
+  ],
+  "seedTries": 1,
+  "note": "link day, key COAT"
+ },
+ {
   "date": "2026-10-27",
   "formatId": "word-guess",
   "level": 1,
@@ -3060,6 +3152,98 @@
   "seedTries": 1
  },
  {
+  "date": "2026-10-27",
+  "formatId": "word-search",
+  "level": 1,
+  "status": "needs-review",
+  "checks": [
+   {
+    "name": "blocked words",
+    "passed": true
+   },
+   {
+    "name": "links, emails and phone numbers",
+    "passed": true
+   },
+   {
+    "name": "words hidden by accident",
+    "passed": true
+   },
+   {
+    "name": "one answer",
+    "passed": true
+   }
+  ],
+  "seedTries": 1,
+  "note": "link day, key TOWEL"
+ },
+ {
+  "date": "2026-10-27",
+  "formatId": "word-guess",
+  "level": 1,
+  "status": "needs-review",
+  "checks": [
+   {
+    "name": "blocked words",
+    "passed": true
+   },
+   {
+    "name": "links, emails and phone numbers",
+    "passed": true
+   },
+   {
+    "name": "one answer",
+    "passed": true
+   }
+  ],
+  "seedTries": 1,
+  "note": "link day, key PARTY"
+ },
+ {
+  "date": "2026-10-27",
+  "formatId": "word-ladder",
+  "level": 1,
+  "status": "needs-review",
+  "checks": [
+   {
+    "name": "blocked words",
+    "passed": true
+   },
+   {
+    "name": "links, emails and phone numbers",
+    "passed": true
+   },
+   {
+    "name": "one answer",
+    "passed": true
+   }
+  ],
+  "seedTries": 1,
+  "note": "link day, key CAKE"
+ },
+ {
+  "date": "2026-10-27",
+  "formatId": "circle-word",
+  "level": 1,
+  "status": "needs-review",
+  "checks": [
+   {
+    "name": "blocked words",
+    "passed": true
+   },
+   {
+    "name": "links, emails and phone numbers",
+    "passed": true
+   },
+   {
+    "name": "one answer",
+    "passed": true
+   }
+  ],
+  "seedTries": 1,
+  "note": "link day, key LEAVES"
+ },
+ {
   "date": "2026-10-28",
   "formatId": "word-guess",
   "level": 2,
@@ -3398,6 +3582,98 @@
    }
   ],
   "seedTries": 1
+ },
+ {
+  "date": "2026-10-28",
+  "formatId": "nonogram",
+  "level": 2,
+  "status": "needs-review",
+  "checks": [
+   {
+    "name": "blocked words",
+    "passed": true
+   },
+   {
+    "name": "links, emails and phone numbers",
+    "passed": true
+   },
+   {
+    "name": "one answer",
+    "passed": true
+   }
+  ],
+  "seedTries": 1,
+  "note": "link day, key FLOWER"
+ },
+ {
+  "date": "2026-10-28",
+  "formatId": "word-guess",
+  "level": 2,
+  "status": "needs-review",
+  "checks": [
+   {
+    "name": "blocked words",
+    "passed": true
+   },
+   {
+    "name": "links, emails and phone numbers",
+    "passed": true
+   },
+   {
+    "name": "one answer",
+    "passed": true
+   }
+  ],
+  "seedTries": 1,
+  "note": "link day, key SHINE"
+ },
+ {
+  "date": "2026-10-28",
+  "formatId": "word-search",
+  "level": 2,
+  "status": "needs-review",
+  "checks": [
+   {
+    "name": "blocked words",
+    "passed": true
+   },
+   {
+    "name": "links, emails and phone numbers",
+    "passed": true
+   },
+   {
+    "name": "words hidden by accident",
+    "passed": true
+   },
+   {
+    "name": "one answer",
+    "passed": true
+   }
+  ],
+  "seedTries": 1,
+  "note": "link day, key BEAM"
+ },
+ {
+  "date": "2026-10-28",
+  "formatId": "word-ladder",
+  "level": 2,
+  "status": "needs-review",
+  "checks": [
+   {
+    "name": "blocked words",
+    "passed": true
+   },
+   {
+    "name": "links, emails and phone numbers",
+    "passed": true
+   },
+   {
+    "name": "one answer",
+    "passed": true
+   }
+  ],
+  "seedTries": 1,
+  "note": "link day, key DIAL"
  },
  {
   "date": "2026-10-29",
@@ -3740,6 +4016,98 @@
   "seedTries": 1
  },
  {
+  "date": "2026-10-29",
+  "formatId": "word-guess",
+  "level": 2,
+  "status": "needs-review",
+  "checks": [
+   {
+    "name": "blocked words",
+    "passed": true
+   },
+   {
+    "name": "links, emails and phone numbers",
+    "passed": true
+   },
+   {
+    "name": "one answer",
+    "passed": true
+   }
+  ],
+  "seedTries": 1,
+  "note": "link day, key SHELF"
+ },
+ {
+  "date": "2026-10-29",
+  "formatId": "word-search",
+  "level": 2,
+  "status": "needs-review",
+  "checks": [
+   {
+    "name": "blocked words",
+    "passed": true
+   },
+   {
+    "name": "links, emails and phone numbers",
+    "passed": true
+   },
+   {
+    "name": "words hidden by accident",
+    "passed": true
+   },
+   {
+    "name": "one answer",
+    "passed": true
+   }
+  ],
+  "seedTries": 1,
+  "note": "link day, key WORM"
+ },
+ {
+  "date": "2026-10-29",
+  "formatId": "anagrams",
+  "level": 2,
+  "status": "needs-review",
+  "checks": [
+   {
+    "name": "blocked words",
+    "passed": true
+   },
+   {
+    "name": "links, emails and phone numbers",
+    "passed": true
+   },
+   {
+    "name": "one answer",
+    "passed": true
+   }
+  ],
+  "seedTries": 1,
+  "note": "link day, key MARK"
+ },
+ {
+  "date": "2026-10-29",
+  "formatId": "word-ladder",
+  "level": 2,
+  "status": "needs-review",
+  "checks": [
+   {
+    "name": "blocked words",
+    "passed": true
+   },
+   {
+    "name": "links, emails and phone numbers",
+    "passed": true
+   },
+   {
+    "name": "one answer",
+    "passed": true
+   }
+  ],
+  "seedTries": 1,
+  "note": "link day, key CASE"
+ },
+ {
   "date": "2026-10-30",
   "formatId": "word-guess",
   "level": 3,
@@ -4078,6 +4446,98 @@
    }
   ],
   "seedTries": 1
+ },
+ {
+  "date": "2026-10-30",
+  "formatId": "word-search",
+  "level": 3,
+  "status": "needs-review",
+  "checks": [
+   {
+    "name": "blocked words",
+    "passed": true
+   },
+   {
+    "name": "links, emails and phone numbers",
+    "passed": true
+   },
+   {
+    "name": "words hidden by accident",
+    "passed": true
+   },
+   {
+    "name": "one answer",
+    "passed": true
+   }
+  ],
+  "seedTries": 1,
+  "note": "link day, key HOLE"
+ },
+ {
+  "date": "2026-10-30",
+  "formatId": "word-guess",
+  "level": 3,
+  "status": "needs-review",
+  "checks": [
+   {
+    "name": "blocked words",
+    "passed": true
+   },
+   {
+    "name": "links, emails and phone numbers",
+    "passed": true
+   },
+   {
+    "name": "one answer",
+    "passed": true
+   }
+  ],
+  "seedTries": 1,
+  "note": "link day, key BOARD"
+ },
+ {
+  "date": "2026-10-30",
+  "formatId": "word-ladder",
+  "level": 3,
+  "status": "needs-review",
+  "checks": [
+   {
+    "name": "blocked words",
+    "passed": true
+   },
+   {
+    "name": "links, emails and phone numbers",
+    "passed": true
+   },
+   {
+    "name": "one answer",
+    "passed": true
+   }
+  ],
+  "seedTries": 1,
+  "note": "link day, key RING"
+ },
+ {
+  "date": "2026-10-30",
+  "formatId": "anagrams",
+  "level": 3,
+  "status": "needs-review",
+  "checks": [
+   {
+    "name": "blocked words",
+    "passed": true
+   },
+   {
+    "name": "links, emails and phone numbers",
+    "passed": true
+   },
+   {
+    "name": "one answer",
+    "passed": true
+   }
+  ],
+  "seedTries": 1,
+  "note": "link day, key WORD"
  },
  {
   "date": "2026-10-31",
@@ -4420,6 +4880,98 @@
   "seedTries": 1
  },
  {
+  "date": "2026-10-31",
+  "formatId": "word-guess",
+  "level": 3,
+  "status": "needs-review",
+  "checks": [
+   {
+    "name": "blocked words",
+    "passed": true
+   },
+   {
+    "name": "links, emails and phone numbers",
+    "passed": true
+   },
+   {
+    "name": "one answer",
+    "passed": true
+   }
+  ],
+  "seedTries": 1,
+  "note": "link day, key SHAKE"
+ },
+ {
+  "date": "2026-10-31",
+  "formatId": "circle-word",
+  "level": 3,
+  "status": "needs-review",
+  "checks": [
+   {
+    "name": "blocked words",
+    "passed": true
+   },
+   {
+    "name": "links, emails and phone numbers",
+    "passed": true
+   },
+   {
+    "name": "one answer",
+    "passed": true
+   }
+  ],
+  "seedTries": 1,
+  "note": "link day, key WRITING"
+ },
+ {
+  "date": "2026-10-31",
+  "formatId": "word-search",
+  "level": 3,
+  "status": "needs-review",
+  "checks": [
+   {
+    "name": "blocked words",
+    "passed": true
+   },
+   {
+    "name": "links, emails and phone numbers",
+    "passed": true
+   },
+   {
+    "name": "words hidden by accident",
+    "passed": true
+   },
+   {
+    "name": "one answer",
+    "passed": true
+   }
+  ],
+  "seedTries": 1,
+  "note": "link day, key BRAKE"
+ },
+ {
+  "date": "2026-10-31",
+  "formatId": "word-ladder",
+  "level": 3,
+  "status": "needs-review",
+  "checks": [
+   {
+    "name": "blocked words",
+    "passed": true
+   },
+   {
+    "name": "links, emails and phone numbers",
+    "passed": true
+   },
+   {
+    "name": "one answer",
+    "passed": true
+   }
+  ],
+  "seedTries": 1,
+  "note": "link day, key RAIL"
+ },
+ {
   "date": "2026-11-01",
   "formatId": "word-guess",
   "level": 2,
@@ -4758,6 +5310,98 @@
    }
   ],
   "seedTries": 1
+ },
+ {
+  "date": "2026-11-01",
+  "formatId": "word-search",
+  "level": 2,
+  "status": "needs-review",
+  "checks": [
+   {
+    "name": "blocked words",
+    "passed": true
+   },
+   {
+    "name": "links, emails and phone numbers",
+    "passed": true
+   },
+   {
+    "name": "words hidden by accident",
+    "passed": true
+   },
+   {
+    "name": "one answer",
+    "passed": true
+   }
+  ],
+  "seedTries": 1,
+  "note": "link day, key DROP"
+ },
+ {
+  "date": "2026-11-01",
+  "formatId": "word-guess",
+  "level": 2,
+  "status": "needs-review",
+  "checks": [
+   {
+    "name": "blocked words",
+    "passed": true
+   },
+   {
+    "name": "links, emails and phone numbers",
+    "passed": true
+   },
+   {
+    "name": "one answer",
+    "passed": true
+   }
+  ],
+  "seedTries": 1,
+  "note": "link day, key FLAKE"
+ },
+ {
+  "date": "2026-11-01",
+  "formatId": "word-ladder",
+  "level": 2,
+  "status": "needs-review",
+  "checks": [
+   {
+    "name": "blocked words",
+    "passed": true
+   },
+   {
+    "name": "links, emails and phone numbers",
+    "passed": true
+   },
+   {
+    "name": "one answer",
+    "passed": true
+   }
+  ],
+  "seedTries": 1,
+  "note": "link day, key BALL"
+ },
+ {
+  "date": "2026-11-01",
+  "formatId": "anagrams",
+  "level": 2,
+  "status": "needs-review",
+  "checks": [
+   {
+    "name": "blocked words",
+    "passed": true
+   },
+   {
+    "name": "links, emails and phone numbers",
+    "passed": true
+   },
+   {
+    "name": "one answer",
+    "passed": true
+   }
+  ],
+  "seedTries": 1,
+  "note": "link day, key STORM"
  },
  {
   "date": "2026-11-02",

@@ -1,11 +1,13 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { ConfirmButton } from '../components/ConfirmButton';
 import { config } from '../config';
 import { getFormat } from '../content/formats';
 import { getTheme } from '../content/themes';
 import { formatIssue } from '../lib/date';
-import { getDailySet } from '../content/daily';
+import { getDailySet, issueNumber } from '../content/daily';
 import { fullSetsCompleted, playedDates, solvedCount } from '../state/progress';
-import { useStore } from '../state/store';
+import { useStore, type SavedMemory } from '../state/store';
 
 export function Collection() {
   const { data } = useStore();
@@ -56,6 +58,46 @@ export function Collection() {
             </div>
           )}
       </section>
+
+      <section className="section" aria-labelledby="memories-title" id="memories">
+        <h2 className="kicker" id="memories-title">My memories</h2>
+        {data.memories.length ? (
+          <ul className="memory-list">
+            {data.memories.map((m) => <MemoryItem key={m.id} memory={m} />)}
+          </ul>
+        ) : (
+          <div className="panel card--outline">
+            <span className="panel__title">No stories saved yet</span>
+            <span className="muted">After a puzzle, tap “Save this story” to keep it here, and add your own memory alongside it. They stay on this phone.</span>
+          </div>
+        )}
+      </section>
     </div>
   );
 }
+
+/** A saved story with the player's own words, which they can add to or change. */
+function MemoryItem({ memory }: { memory: SavedMemory }) {
+  const { saveMemory, removeMemory } = useStore();
+  const [draft, setDraft] = useState(memory.note);
+  const [status, setStatus] = useState('');
+  const f = getFormat(memory.formatId);
+  const id = `note-${memory.id}`;
+  return (
+    <li className={`card card--outline memory-item fam-edge-${f?.family ?? 'word'}`}>
+      <span className="kicker">{f?.name ?? 'Puzzle'} · {formatIssueForDate(memory.date)}</span>
+      {memory.title && <span className="memory-item__title">{memory.title}</span>}
+      <span>{memory.text}</span>
+      <label htmlFor={id} className="small" style={{ fontWeight: 700 }}>Your own memory</label>
+      <textarea id={id} className="input memory-item__note" rows={3} value={draft} maxLength={1000}
+        placeholder="What does it bring back for you?" onChange={(e) => { setDraft(e.target.value); setStatus(''); }} />
+      <div className="grid-2">
+        <button type="button" className="btn" disabled={draft === memory.note} onClick={() => { saveMemory({ ...memory, note: draft.trim() }); setStatus('Saved on this phone.'); }}>Save</button>
+        <ConfirmButton label="Remove" question="Remove this story?" detail="Your own words with it will go too." confirmLabel="Remove" onConfirm={() => removeMemory(memory.id)} />
+      </div>
+      <span className="small" role="status" aria-live="polite">{status}</span>
+    </li>
+  );
+}
+
+const formatIssueForDate = (date: string) => formatIssue(issueNumber(date));

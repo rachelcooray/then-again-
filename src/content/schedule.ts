@@ -12,6 +12,15 @@ export interface ScheduledDay {
   formats: string[];
   /** A puzzle for every generated format, keyed by format id. */
   puzzles: Record<string, Puzzle>;
+  /** On link days, what the four puzzles' key words have in common. */
+  link?: DayLink;
+}
+
+export interface DayLink {
+  answer: string;
+  /** Four choices, the answer among them. */
+  options: string[];
+  explain: string;
 }
 
 export const LEVEL_NAME = { 1: 'Easy', 2: 'Medium', 3: 'Hard' } as const;
