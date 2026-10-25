@@ -56,6 +56,16 @@ export async function loadScheduleAround(date: DateKey): Promise<void> {
   await Promise.all([addDays(date, -1), date, addDays(date, 1)].map((d) => loadDay(d).catch(() => undefined)));
 }
 
+/** Every scheduled date, for the admin pages. */
+export function scheduledDates(): DateKey[] {
+  return Object.keys(DAY_FILES).map((f) => f.slice(-15, -5)).sort();
+}
+
+/** Loads the whole calendar (admin pages only; players load just the days around today). */
+export async function loadWholeSchedule(): Promise<void> {
+  await Promise.all(scheduledDates().map((d) => loadDay(d).catch(() => undefined)));
+}
+
 /** The generated day, if it is scheduled and its month has loaded. */
 export function scheduledDay(date: DateKey): ScheduledDay | undefined {
   if (usingCanvas()) return undefined;

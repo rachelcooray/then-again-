@@ -17,6 +17,12 @@ const ROUTES = [
   '/reminders',
   '/settings',
   '/day',
+  '/account',
+  '/admin',
+  '/admin/calendar',
+  '/admin/review',
+  '/admin/players',
+  '/admin/switches',
   ...FORMATS.map((f) => `/play/${f.id}`),
 ];
 

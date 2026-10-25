@@ -6,6 +6,7 @@ import { FAMILIES, getFormat } from '../content/formats';
 import { getPuzzle } from '../content/puzzles';
 import { LEVEL_NAME } from '../content/schedule';
 import { track } from '../lib/analytics';
+import { useSession } from '../lib/auth';
 import { addDays, formatIssue, longDate, longWeekday, weekdayIndex } from '../lib/date';
 import { maybeAskForRating } from '../lib/rating';
 import { dayProgress, dayShareText, linkOutcome } from '../state/day';
@@ -30,6 +31,7 @@ export function DayComplete() {
   const streak = currentStreak(data.progress, today);
   const week = Math.min(daysPlayedThisWeek(data.progress, today), WEEKLY_GOAL);
   const [note, setNote] = useState('');
+  const session = useSession();
 
   // A finished day is the one good moment to ask for a rating.
   useEffect(() => {
@@ -151,6 +153,15 @@ export function DayComplete() {
               {tomorrow.link ? 'Another hidden link to find.' : `${FAMILIES[tomorrowFeatured.family].label}, plus three more.`}
             </span>
           </section>
+        )}
+
+        {complete && !session && (
+          <Link to="/account" className="card card--outline day-save">
+            <span className="kicker">Keep it safe</span>
+            <span className="card__name">Save your progress</span>
+            <span>Sign in so your streak and results come with you to a new phone. It’s optional.</span>
+            <span className="card__meta">Sign in <span aria-hidden="true">→</span></span>
+          </Link>
         )}
 
         <Link to="/" className="btn btn--outline btn--block">Back to today</Link>

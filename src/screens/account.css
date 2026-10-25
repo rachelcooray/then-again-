@@ -1,0 +1,67 @@
+.account-preview {
+  gap: 0.25rem;
+}
+
+.account-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.account-code {
+  font-family: var(--font-mono);
+  font-size: 1.5rem;
+  letter-spacing: 0.3em;
+  text-align: center;
+}
+
+.account-error {
+  color: var(--error);
+  font-weight: 600;
+}
+
+.account-error:empty {
+  display: none;
+}
+
+.account-or {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.account-or::before,
+.account-or::after {
+  content: '';
+  flex: 1;
+  border-top: 1px solid var(--line);
+}
+
+.account-kicker {
+  color: var(--chartreuse);
+}
+
+.account-email {
+  overflow-wrap: anywhere;
+}
+
+.btn--on-strong-plain {
+  align-self: flex-start;
+  background: var(--on-strong);
+  color: var(--strong);
+}
+
+.account-danger {
+  color: var(--error);
+  border-color: var(--error);
+}
+
+@media (min-width: 56.25em) {
+  .account {
+    max-width: 36rem;
+    margin: 0 auto;
+    width: 100%;
+  }
+}

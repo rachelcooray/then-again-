@@ -105,6 +105,7 @@ function makePuzzle(date: string, formatId: string, level: Level, ctx: Omit<word
         formatId,
         memory: draft.memory ? { ...draft.memory, draft: !!draft.needsReview } : { title: theme.name, text: theme.description },
         level: tryLevel,
+        ...(result.status === 'needs-review' ? { review: draft.needsReview } : {}),
         payload: draft.payload,
       };
     }
@@ -160,6 +161,7 @@ function makeLinkPuzzle(date: string, level: Level, theme: { id: string; name: s
     memory: draft.memory ? { ...draft.memory, draft: true } : linkSafeMemory(date, answer),
     level,
     linkKey: lp.key,
+    review: draft.needsReview ?? 'Link day written by hand.',
     payload: draft.payload,
   };
 }

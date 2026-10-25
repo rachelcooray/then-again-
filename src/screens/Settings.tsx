@@ -70,6 +70,7 @@ export function Settings() {
             checked={data.settings.shareUsage} onChange={(shareUsage) => { setUsageSharing(shareUsage); updateSettings({ shareUsage }); }} />
         </div>
 
+        <Link to="/account" className="btn btn--outline btn--block">Account and your data</Link>
         <Link to="/help" className="btn btn--outline btn--block">Help and feedback</Link>
 
         <MovePhone />

@@ -5,9 +5,12 @@ import { ErrorBoundary } from './components/ErrorBoundary';
 import { Layout } from './components/Layout';
 import { compareVersions, APP_VERSION } from './lib/platform';
 import { useRemoteConfig } from './lib/remoteConfig';
+import { useCloudSync } from './lib/sync';
 import { UpdateRequired } from './screens/UpdateRequired';
 import { Help } from './screens/Help';
 import { Catalogue } from './screens/Catalogue';
+import { Account } from './screens/Account';
+import { Admin } from './screens/Admin';
 import { Collection } from './screens/Collection';
 import { DayComplete } from './screens/DayComplete';
 import { Gems } from './screens/Gems';
@@ -35,6 +38,8 @@ const TITLES: [RegExp, string][] = [
   [/^\/help/, 'Help'],
   [/^\/play/, 'Puzzle'],
   [/^\/day/, 'Your day'],
+  [/^\/account/, 'Account'],
+  [/^\/admin/, 'Admin'],
 ];
 
 /** Per-route document title, scroll reset and focus for screen-reader users. */
@@ -49,8 +54,9 @@ function RouteEffects() {
 }
 
 function AppRoutes() {
-  const { data } = useStore();
+  const { data, importData } = useStore();
   const { pathname } = useLocation();
+  useCloudSync(data, importData);
   const remote = useRemoteConfig();
   useApplySettings(data.settings);
   if (compareVersions(APP_VERSION, remote.min_version) < 0) return <UpdateRequired />;
@@ -74,6 +80,10 @@ function AppRoutes() {
           <Route path="help" element={<Help />} />
           <Route path="play/:formatId" element={<Play />} />
           <Route path="day" element={<DayComplete />} />
+          <Route path="account" element={<Account />} />
+          <Route path="admin" element={<Admin />} />
+          <Route path="admin/day/:date" element={<Admin />} />
+          <Route path="admin/:tab" element={<Admin />} />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>

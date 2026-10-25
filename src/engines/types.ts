@@ -73,6 +73,8 @@ export interface Puzzle<P = unknown> {
   level?: 1 | 2 | 3;
   /** On a link day, this puzzle's clue to what links the day's four. */
   linkKey?: string;
+  /** Why a person should check this puzzle before players see it (hand-written text), if they should. */
+  review?: string;
   payload: P;
 }
 

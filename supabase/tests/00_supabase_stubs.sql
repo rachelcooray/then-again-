@@ -8,3 +8,9 @@ create function auth.uid() returns uuid language sql stable as $$
 $$;
 grant usage on schema auth to anon, authenticated, service_role;
 grant execute on function auth.uid() to anon, authenticated, service_role;
+create table auth.users (
+  id uuid primary key,
+  email text,
+  created_at timestamptz not null default now(),
+  last_sign_in_at timestamptz
+);

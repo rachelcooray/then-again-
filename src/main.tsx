@@ -11,6 +11,7 @@ import './styles/tokens.css';
 import './styles/app.css';
 import { App } from './App';
 import { loadScheduleAround } from './content/schedule';
+import { finishRedirectSignIn } from './lib/auth';
 import { toDateKey } from './lib/date';
 import { startOutbox } from './lib/backend';
 import { setUsageSharing, startAnalytics } from './lib/analytics';
@@ -23,7 +24,7 @@ setUsageSharing(loadData().settings.shareUsage);
 startAnalytics();
 
 // Today's puzzles are a small local file; wait for them so the first screen shows the right day.
-void loadScheduleAround(toDateKey()).finally(() =>
+void Promise.all([loadScheduleAround(toDateKey()), finishRedirectSignIn()]).finally(() =>
   createRoot(document.getElementById('root')!).render(
     <StrictMode>
       <App />

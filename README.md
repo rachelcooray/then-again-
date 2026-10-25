@@ -38,6 +38,14 @@ Monday 26 October to Sunday 1 November 2026 are handwritten link days (`scripts/
 day's four hides one key word, shown on its result card; once all four are done, the Day complete screen (`/day`)
 asks what links them, with two tries. These seven days test whether the link is fun before any of it is generated.
 
+### Accounts and admin
+
+Signing in is optional (`#/account`): a six-digit code by email, or Google. Signed-in players' results and settings
+save to `player_saves`; they can download their data and delete their account in the app. The admin pages (`#/admin`,
+not linked from the app) show the calendar and every puzzle's answer, a review queue for hand-written content,
+player lookup and deletion for data requests, feedback and error reports, pilot numbers, and the remote switches.
+Both run as a preview until Supabase is connected: see `docs/accounts-setup.md`.
+
 ### Memories
 
 Result cards ask a yes-or-no question about the memory ("Did you have one?"). Answers go anonymously to the

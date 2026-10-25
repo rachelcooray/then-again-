@@ -4,10 +4,20 @@
  * offline and the app never waits on the server.
  */
 
-const URL_BASE = import.meta.env.VITE_SUPABASE_URL as string | undefined;
-const ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined;
+export const URL_BASE = import.meta.env.VITE_SUPABASE_URL as string | undefined;
+export const ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined;
 
 export const backendEnabled = !!(URL_BASE && ANON_KEY);
+
+/** Set by the sign-in module: the signed-in player's token, so reads and writes act as them. */
+let tokenFor: (() => Promise<string | null>) | null = null;
+export function setTokenProvider(fn: (() => Promise<string | null>) | null) {
+  tokenFor = fn;
+}
+const authHeaders = async () => {
+  const token = (await tokenFor?.()) ?? ANON_KEY;
+  return { apikey: ANON_KEY!, Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' };
+};
 
 const OUTBOX_KEY = 'then-again:outbox';
 const OUTBOX_LIMIT = 200;
@@ -80,7 +90,7 @@ export async function flush(): Promise<void> {
 export async function select<T>(table: string, query: string): Promise<T[] | null> {
   if (!backendEnabled) return null;
   try {
-    const res = await fetch(`${URL_BASE}/rest/v1/${table}?${query}`, { headers: headers() });
+    const res = await fetch(`${URL_BASE}/rest/v1/${table}?${query}`, { headers: await authHeaders() });
     return res.ok ? ((await res.json()) as T[]) : null;
   } catch {
     return null;
@@ -91,11 +101,39 @@ export async function select<T>(table: string, query: string): Promise<T[] | nul
 export async function rpc<T>(fn: string, args: Record<string, unknown>): Promise<T | null> {
   if (!backendEnabled) return null;
   try {
-    const res = await fetch(`${URL_BASE}/rest/v1/rpc/${fn}`, { method: 'POST', headers: headers(), body: JSON.stringify(args) });
-    return res.ok ? ((await res.json()) as T) : null;
+    const res = await fetch(`${URL_BASE}/rest/v1/rpc/${fn}`, { method: 'POST', headers: await authHeaders(), body: JSON.stringify(args) });
+    return res.ok ? ((await res.json().catch(() => null)) as T) : null;
   } catch {
     return null;
   }
+}
+
+/**
+ * A write as the signed-in player or admin. Unlike the outbox, it reports failure, because
+ * the screen that asked needs to say so. Throws with a message fit to show.
+ */
+export async function write(method: 'POST' | 'PATCH' | 'DELETE', path: string, body?: unknown, prefer = 'return=minimal'): Promise<void> {
+  if (!backendEnabled) throw new Error('The server isn’t connected yet.');
+  let res: Response;
+  try {
+    res = await fetch(`${URL_BASE}/rest/v1/${path}`, { method, headers: { ...(await authHeaders()), Prefer: prefer }, body: body === undefined ? undefined : JSON.stringify(body) });
+  } catch {
+    throw new Error('You seem to be offline. Try again when you’re connected.');
+  }
+  if (!res.ok) throw new Error(res.status === 401 || res.status === 403 ? 'You don’t have permission to do that.' : 'Something went wrong on our side. Try again in a minute.');
+}
+
+/** Like rpc, but throws a message fit to show instead of returning null. */
+export async function call<T>(fn: string, args: Record<string, unknown> = {}): Promise<T> {
+  if (!backendEnabled) throw new Error('The server isn’t connected yet.');
+  let res: Response;
+  try {
+    res = await fetch(`${URL_BASE}/rest/v1/rpc/${fn}`, { method: 'POST', headers: await authHeaders(), body: JSON.stringify(args) });
+  } catch {
+    throw new Error('You seem to be offline. Try again when you’re connected.');
+  }
+  if (!res.ok) throw new Error(res.status === 401 || res.status === 403 ? 'You don’t have permission to do that.' : 'Something went wrong on our side. Try again in a minute.');
+  return (await res.json().catch(() => null)) as T;
 }
 
 /** Sends the outbox whenever the device comes back online or the app returns to the foreground. */

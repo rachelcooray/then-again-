@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ConfirmButton } from '../components/ConfirmButton';
+import { useSession } from '../lib/auth';
 import { config } from '../config';
 import { getFormat } from '../content/formats';
 import { getTheme } from '../content/themes';
@@ -11,6 +12,7 @@ import { useStore, type SavedMemory } from '../state/store';
 
 export function Collection() {
   const { data } = useStore();
+  const session = useSession();
   const records = Object.values(data.progress).sort((a, b) => b.completedAt.localeCompare(a.completedAt));
 
   return (
@@ -19,6 +21,7 @@ export function Collection() {
         <h1 className="display">My collection</h1>
         <nav className="chip-row" aria-label="Collection">
           <Link to="/rewards" className="chip chip--solid">Rewards &amp; badges</Link>
+          <Link to="/account" className="chip chip--outline">{session ? 'Account' : 'Sign in'}</Link>
           {config.gemsEnabled && <Link to="/gems" className="chip chip--outline">Gems</Link>}
           <Link to="/reminders" className="chip chip--outline">Reminders</Link>
           <Link to="/settings" className="chip chip--outline">Settings</Link>

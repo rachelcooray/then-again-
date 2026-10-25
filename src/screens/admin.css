@@ -1,0 +1,138 @@
+.admin-preview {
+  gap: 0.25rem;
+}
+
+.admin-tabs {
+  flex-wrap: wrap;
+}
+
+.admin-strong-kicker {
+  color: var(--chartreuse);
+}
+
+.admin-stats {
+  grid-template-columns: repeat(auto-fit, minmax(6.5rem, 1fr));
+}
+
+.admin-days,
+.admin-puzzles,
+.admin-errors {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.admin-day {
+  min-height: 3.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  border: 2px solid var(--line);
+  border-radius: var(--radius-s);
+  background: var(--white);
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.admin-day__date {
+  flex: 0 0 6.5rem;
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.admin-day__body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-puzzle,
+.admin-feedback,
+.admin-player {
+  gap: 0.375rem;
+  border-left: 0.375rem solid var(--fam-edge, var(--line));
+  color: var(--ink);
+}
+
+.admin-answer summary {
+  min-height: 2.75rem;
+  display: flex;
+  align-items: center;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.admin-answer p {
+  overflow-wrap: anywhere;
+}
+
+.admin-status {
+  font-weight: 600;
+}
+
+.admin-error {
+  color: var(--error);
+}
+
+.admin-error:empty {
+  display: none;
+}
+
+.admin-errors li {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--line);
+  overflow-wrap: anywhere;
+}
+
+.admin-search,
+.admin-switches {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.admin-fieldset {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.admin-checks {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+  gap: 0.25rem 0.75rem;
+}
+
+.admin-check {
+  min-height: 2.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.admin-check input {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.admin-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+@media (min-width: 56.25em) {
+  .admin {
+    max-width: 48rem;
+    margin: 0 auto;
+    width: 100%;
+  }
+}
