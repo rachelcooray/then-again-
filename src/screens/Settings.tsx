@@ -56,8 +56,6 @@ export function Settings() {
           onChange={(appearance) => updateSettings({ appearance })} />
 
         <div className="list">
-          <SwitchRow label="Sound" description="Quiet clicks and a chime when you finish"
-            checked={data.settings.sound} onChange={(sound) => updateSettings({ sound })} />
           <SwitchRow label="Share anonymous usage" description="Counts like puzzles played, with nothing that identifies you"
             checked={data.settings.shareUsage} onChange={(shareUsage) => { setUsageSharing(shareUsage); updateSettings({ shareUsage }); }} />
         </div>

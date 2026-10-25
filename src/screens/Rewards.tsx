@@ -49,8 +49,7 @@ export function Rewards() {
       <div className="screen">
         <div className="card card--strong streak">
           <div className="streak__head">
-            <span className="title streak__title">{streak}-day streak</span>
-            <span className="kicker streak__shields">0 shields</span>
+            <span className="title streak__title">{streak ? `${streak}-day streak` : 'Start your streak today'}</span>
           </div>
           <ol className="streak__days" aria-label="The last seven days">
             {days.map((d) => {
@@ -70,8 +69,9 @@ export function Rewards() {
           <span className="small" style={{ color: 'var(--on-strong-muted)' }}>
             {streak >= 7
               ? 'Seven days in a row. Well played.'
-              : `Play on ${7 - streak} more day${7 - streak === 1 ? '' : 's'} in a row to earn ${config.gemsEnabled ? '20 Gems and ' : ''}a mystery envelope.`}{' '}
-            Streak shields, earned now and then, cover a missed day automatically.
+              : streak
+                ? `${7 - streak} more day${7 - streak === 1 ? '' : 's'} in a row makes a 7-day streak.`
+                : 'Finish a puzzle today to start it. Missing a day starts it again, but nothing you’ve earned is taken away.'}
           </span>
         </div>
 
@@ -83,16 +83,6 @@ export function Rewards() {
             ))}
           </div>
         </section>
-
-        <div className="panel fam-connect">
-          <span className="kicker">Mystery envelope · earned, never sold</span>
-          <span className="panel__title">Reach a 7-day streak to earn one</span>
-          <span className="small">
-            {config.gemsEnabled
-              ? 'Could contain: a collectible (6 in 10), a theme pack (3 in 10) or 50 Gems (1 in 10).'
-              : 'You’ll see what it could contain, and the odds of each, before you open it.'}
-          </span>
-        </div>
 
         <section className="section">
           <h2 className="kicker">Badges</h2>

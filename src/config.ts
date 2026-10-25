@@ -16,6 +16,6 @@ export const config = {
   /** Store pages, for the "please update" screen (VITE_APP_STORE_URL, VITE_PLAY_STORE_URL). */
   appStoreUrl: (import.meta.env.VITE_APP_STORE_URL as string | undefined) ?? '',
   playStoreUrl: (import.meta.env.VITE_PLAY_STORE_URL as string | undefined) ?? '',
-  /** The full catalogue is an internal planning view; hide it before public release. */
-  showCatalogue: import.meta.env.VITE_SHOW_CATALOGUE !== 'false',
+  /** The full catalogue is an internal planning view, shown only in builds made with VITE_SHOW_CATALOGUE=true. */
+  showCatalogue: import.meta.env.VITE_SHOW_CATALOGUE === 'true',
 } as const;

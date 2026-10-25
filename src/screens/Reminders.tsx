@@ -3,6 +3,7 @@ import { BackHeader } from '../components/BackHeader';
 import { SwitchRow } from '../components/Switch';
 import { getDailySet } from '../content/daily';
 import { fullSetsCompleted } from '../state/progress';
+import { isNative } from '../lib/platform';
 import { useStore } from '../state/store';
 
 const TIMES = ['07:00', '09:00', '13:00', '19:00'];
@@ -45,6 +46,13 @@ export function Reminders() {
           <div className="panel card--outline">
             <span className="panel__title">Reminders are off</span>
             <span className="muted">We won’t ask about reminders until you’ve finished a full day of puzzles. You can switch them on below whenever you like.</span>
+          </div>
+        )}
+
+        {!isNative && (
+          <div className="panel card--outline">
+            <span className="panel__title">Reminders come with the phone app</span>
+            <span className="muted">A web page can’t send reminders reliably. Your choices here are saved and will apply when you play in the Then Again app.</span>
           </div>
         )}
 

@@ -62,7 +62,6 @@ export function Themes() {
             );
           })}
         </div>
-        <p className="small muted">Past daily sets reopen in the archive in a later update. The last 7 days will stay free.</p>
       </section>
     </div>
   );

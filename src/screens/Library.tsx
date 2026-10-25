@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { config } from '../config';
-import { COMING_SOON, FAMILIES, FAMILY_ORDER, FORMATS, type FamilyId } from '../content/formats';
+import { FAMILIES, FAMILY_ORDER, FORMATS, type FamilyId } from '../content/formats';
 import { recordKey } from '../state/progress';
 import { useStore } from '../state/store';
 import { useToday } from '../state/useToday';
@@ -20,7 +20,6 @@ export function Library() {
     (!q || `${name} ${description} ${FAMILIES[family].label}`.toLowerCase().includes(q));
 
   const live = FORMATS.filter((f) => matches(f.name, f.description, f.family));
-  const soon = COMING_SOON.filter((f) => matches(f.name, f.description, f.family));
 
   return (
     <div className="screen">
@@ -71,16 +70,9 @@ export function Library() {
             </Link>
           );
         })}
-        {soon.map((f) => (
-          <div key={f.name} className={`card card--dashed fam-edge-${f.family}`}>
-            <span className="kicker">{FAMILIES[f.family].kicker} · Coming soon</span>
-            <span className="card__name">{f.name}</span>
-            <span>{f.description}</span>
-          </div>
-        ))}
       </div>
 
-      {live.length + soon.length === 0 && (
+      {live.length === 0 && (
         <p className="muted" style={{ textAlign: 'center', margin: '1.5rem 0' }}>No puzzles match that search.</p>
       )}
 
