@@ -71,6 +71,7 @@ export function Settings() {
         </div>
 
         <Link to="/account" className="btn btn--outline btn--block">Account and your data</Link>
+        <Link to="/plus" className="btn btn--outline btn--block">Then Again Plus</Link>
         <Link to="/help" className="btn btn--outline btn--block">Help and feedback</Link>
 
         <MovePhone />

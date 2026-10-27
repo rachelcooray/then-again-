@@ -17,6 +17,8 @@ type EventName =
   | 'link_result'
   | 'story_saved'
   | 'region_choice'
+  | 'paywall_view'
+  | 'plus_start'
   | 'reminder_choice'
   | 'visit_end';
 

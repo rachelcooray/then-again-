@@ -17,6 +17,7 @@ import { Gems } from './screens/Gems';
 import { Library } from './screens/Library';
 import { NotFound } from './screens/NotFound';
 import { Play } from './screens/Play';
+import { Plus } from './screens/Plus';
 import { Reminders } from './screens/Reminders';
 import { Rewards } from './screens/Rewards';
 import { Settings } from './screens/Settings';
@@ -39,6 +40,7 @@ const TITLES: [RegExp, string][] = [
   [/^\/play/, 'Puzzle'],
   [/^\/day/, 'Your day'],
   [/^\/account/, 'Account'],
+  [/^\/plus/, 'Then Again Plus'],
   [/^\/admin/, 'Admin'],
 ];
 
@@ -81,6 +83,7 @@ function AppRoutes() {
           <Route path="play/:formatId" element={<Play />} />
           <Route path="day" element={<DayComplete />} />
           <Route path="account" element={<Account />} />
+          <Route path="plus" element={<Plus />} />
           <Route path="admin" element={<Admin />} />
           <Route path="admin/day/:date" element={<Admin />} />
           <Route path="admin/:tab" element={<Admin />} />

@@ -1,5 +1,7 @@
 import { BackHeader } from '../components/BackHeader';
 import { BigGemIcon } from '../components/Icons';
+import { Link } from 'react-router-dom';
+import { config } from '../config';
 import { useStore } from '../state/store';
 
 const EARN = [
@@ -11,10 +13,11 @@ const EARN = [
   ['Complete a theme collection', '+30'],
 ];
 
+// Kept below the price of Plus, so a top-up never costs more than a month of every game.
 const PACKS = [
-  { gems: '100', price: '$0.99', cls: 'gem-pack' },
-  { gems: '550', price: '$4.99', cls: 'gem-pack fam-search' },
-  { gems: '1,200', price: '$9.99', cls: 'gem-pack fam-connect' },
+  { gems: '100', price: '$0.29', cls: 'gem-pack' },
+  { gems: '400', price: '$0.99', cls: 'gem-pack fam-search' },
+  { gems: '1,000', price: '$1.99', cls: 'gem-pack fam-connect' },
 ];
 
 export function Gems() {
@@ -62,10 +65,10 @@ export function Gems() {
               </div>
             ))}
           </div>
-          <div className="panel fam-logic">
-            <span className="panel__title">Then Again Plus</span>
-            <span className="small">100 Gems every month, no adverts, the full archive and detailed stats.</span>
-          </div>
+          <Link to="/plus" className="panel fam-logic" style={{ textDecoration: 'none' }}>
+            <span className="panel__title">Then Again Plus · {config.plusPrice} a month</span>
+            <span className="small">Every game, every day. See Plus →</span>
+          </Link>
           <p className="small muted">
             Then Again is free during the pilot, so nothing is for sale yet. When purchases open they go through Apple or
             Google with a confirmation step, and today’s puzzles never need Gems to play.

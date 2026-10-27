@@ -104,6 +104,8 @@ export interface UsageSummary {
   accounts: number;
   feedback_open: number;
   errors_7d: number;
+  paywall_views?: number;
+  plus_starts?: number;
 }
 
 export const usageSummary = () => call<UsageSummary>('admin_usage_summary', { p_days: 30 });

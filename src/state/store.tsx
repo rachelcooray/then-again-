@@ -44,6 +44,14 @@ export interface AppData {
   memories: SavedMemory[];
   /** "Did you have one?" answers by puzzle id. */
   votes: Record<string, boolean>;
+  /** Then Again Plus, when the player has it. */
+  plus?: PlusState;
+}
+
+export interface PlusState {
+  /** "preview" until purchases are connected; then the store the subscription came from. */
+  source: 'preview' | 'app-store' | 'play-store' | 'web';
+  since: string;
 }
 
 export interface SavedMemory {
@@ -122,6 +130,7 @@ interface Store {
   saveMemory: (memory: SavedMemory) => void;
   removeMemory: (id: string) => void;
   vote: (puzzleId: string, hadOne: boolean) => void;
+  setPlus: (plus: PlusState | null) => void;
   /** Brings in progress from another phone. Results and stories already on this phone are kept. */
   importData: (incoming: Pick<AppData, 'progress' | 'settings' | 'reminders'> & Partial<Pick<AppData, 'memories'>>) => void;
   resetAll: () => void;
@@ -159,6 +168,7 @@ export function StoreProvider({ children, initial }: { children: ReactNode; init
     [],
   );
   const removeMemory = useCallback((id: string) => setData((d) => ({ ...d, memories: d.memories.filter((x) => x.id !== id) })), []);
+  const setPlus = useCallback((plus: PlusState | null) => setData((d) => ({ ...d, plus: plus ?? undefined })), []);
   const vote = useCallback((puzzleId: string, hadOne: boolean) => setData((d) => ({ ...d, votes: { ...d.votes, [puzzleId]: hadOne } })), []);
   const importData = useCallback(
     (incoming: Pick<AppData, 'progress' | 'settings' | 'reminders'> & Partial<Pick<AppData, 'memories'>>) =>
@@ -174,8 +184,8 @@ export function StoreProvider({ children, initial }: { children: ReactNode; init
   const resetAll = useCallback(() => setData(DEFAULT_DATA), []);
 
   const value = useMemo(
-    () => ({ data, updateSettings, updateReminders, recordResult, saveAttempt, guessLink, saveMemory, removeMemory, vote, importData, resetAll }),
-    [data, updateSettings, updateReminders, recordResult, saveAttempt, guessLink, saveMemory, removeMemory, vote, importData, resetAll],
+    () => ({ data, updateSettings, updateReminders, recordResult, saveAttempt, guessLink, saveMemory, removeMemory, vote, setPlus, importData, resetAll }),
+    [data, updateSettings, updateReminders, recordResult, saveAttempt, guessLink, saveMemory, removeMemory, vote, setPlus, importData, resetAll],
   );
   return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>;
 }

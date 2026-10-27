@@ -15,19 +15,36 @@ import { formatIssue } from '../lib/date';
 import { recordKey } from '../state/progress';
 import { useStore } from '../state/store';
 import { useToday } from '../state/useToday';
+import { useAccess } from '../state/access';
 import { NotFound } from './NotFound';
+import { PlusOffer } from './Plus';
 import './play.css';
 
 export function Play() {
   const { formatId = '' } = useParams();
   const today = useToday();
+  const access = useAccess();
   const format = getFormat(formatId);
   if (!format) return <NotFound />;
+  if (access.locked(format.id, today)) return <Locked format={format} />;
   const engine = engineFor(format);
   const puzzle = getPuzzle(today, format.id);
   if (!engine || !puzzle) return <ComingSoon format={format} />;
   // Remount when the day or format changes so nothing carries over.
   return <PuzzleScreen key={`${today}:${format.id}`} format={format} engine={engine} puzzle={puzzle} today={today} />;
+}
+
+function Locked({ format }: { format: PuzzleFormat }) {
+  return (
+    <>
+      <BackHeader title={format.name} fallback="/library" backLabel="Back" />
+      <div className="screen play">
+        <span className="kicker">{FAMILIES[format.family].kicker} · {format.minutes} min</span>
+        <p className="play-rules">{format.description}</p>
+        <PlusOffer format={format} />
+      </div>
+    </>
+  );
 }
 
 function ComingSoon({ format }: { format: PuzzleFormat }) {

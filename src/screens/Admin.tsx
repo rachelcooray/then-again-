@@ -24,6 +24,7 @@ import {
   type PlayerRecord,
   type UsageSummary,
 } from '../lib/admin';
+import { config } from '../config';
 import { authPreview } from '../lib/auth';
 import { compactDate, daysBetween, longDate, toDateKey, weekdayIndex } from '../lib/date';
 import { useRemoteConfig } from '../lib/remoteConfig';
@@ -172,6 +173,8 @@ function Overview() {
             {stat(usage.accounts, 'accounts')}
             {stat(usage.feedback_open, 'open feedback')}
             {stat(usage.errors_7d, 'errors this week')}
+            {stat(usage.paywall_views ?? 0, 'Plus offers seen')}
+            {stat(usage.plus_starts ?? 0, 'Plus started')}
           </div>
         ) : (
           <p className="muted small" role="status">{usageError || 'Loading…'}</p>
@@ -489,6 +492,8 @@ function Feedback() {
 function Switches() {
   const remote = useRemoteConfig();
   const [paused, setPaused] = useState<string[]>(remote.paused_formats);
+  const [paywall, setPaywall] = useState(remote.monetisation_enabled);
+  const [free, setFree] = useState<string[]>(remote.free_formats.length ? remote.free_formats : config.freeFormats);
   const [banner, setBanner] = useState(remote.banner?.text ?? '');
   const [threshold, setThreshold] = useState(String(remote.vote_percent_after));
   const [minVersion, setMinVersion] = useState(remote.min_version);
@@ -502,9 +507,12 @@ function Switches() {
     if (authPreview) return setMessage('Switches can be saved once Supabase is connected.');
     const n = Number(threshold);
     if (!Number.isInteger(n) || n < 1) return setMessage('The number of answers must be a whole number above zero.');
+    if (!free.length) return setMessage('Keep at least one game free.');
     setBusy(true);
     try {
       await saveSwitch('paused_formats', paused);
+      await saveSwitch('monetisation_enabled', paywall);
+      await saveSwitch('free_formats', free);
       await saveSwitch('banner', banner.trim() ? { text: banner.trim() } : null);
       await saveSwitch('vote_percent_after', n);
       await saveSwitch('min_version', minVersion.trim());
@@ -518,14 +526,29 @@ function Switches() {
   };
 
   const toggle = (id: string) => setPaused((p) => (p.includes(id) ? p.filter((x) => x !== id) : [...p, id]));
+  const toggleFree = (id: string) => setFree((p) => (p.includes(id) ? p.filter((x) => x !== id) : [...p, id]));
 
   return (
     <form className="admin-switches" onSubmit={save}>
       <p className="muted small">Changes reach players without a new release.</p>
       <fieldset className="admin-fieldset">
+        <legend className="kicker">Then Again Plus</legend>
+        <label className="admin-check">
+          <input type="checkbox" checked={paywall} onChange={(e) => setPaywall(e.target.checked)} /> Lock games outside the free list behind Plus
+        </label>
+        <span className="small muted">Free without Plus ({free.length}){config.dailyFourAlwaysFree ? '. Today’s four are always free as well.' : '.'}</span>
+        <div className="admin-checks" role="group" aria-label="Free games">
+          {FORMATS.map((f) => (
+            <label key={f.id} className="admin-check">
+              <input type="checkbox" checked={free.includes(f.id)} onChange={() => toggleFree(f.id)} /> {f.name}
+            </label>
+          ))}
+        </div>
+      </fieldset>
+      <fieldset className="admin-fieldset">
         <legend className="kicker">Pause a puzzle type</legend>
         <span className="small muted">For example while a bad puzzle is replaced.</span>
-        <div className="admin-checks">
+        <div className="admin-checks" role="group" aria-label="Paused games">
           {FORMATS.map((f) => (
             <label key={f.id} className="admin-check">
               <input type="checkbox" checked={paused.includes(f.id)} onChange={() => toggle(f.id)} /> {f.name}

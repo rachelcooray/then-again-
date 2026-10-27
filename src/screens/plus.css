@@ -1,0 +1,71 @@
+.plus {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+
+.plus-hero,
+.plus-active {
+  gap: 0.625rem;
+}
+
+.plus-kicker {
+  color: var(--chartreuse);
+}
+
+.plus-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.75rem;
+  line-height: 1.05;
+}
+
+.plus-price {
+  display: flex;
+  align-items: baseline;
+  gap: 0.375rem;
+  font-weight: 600;
+}
+
+.plus-price__n {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 2.5rem;
+  line-height: 1;
+}
+
+.plus-benefits {
+  margin: 0;
+  padding-left: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.btn--on-strong-plus {
+  background: var(--chartreuse);
+  color: var(--fixed-ink);
+}
+
+.plus-restore,
+.plus-cancel {
+  color: var(--on-strong);
+  border-color: var(--on-strong);
+  align-self: flex-start;
+}
+
+.plus-note:empty {
+  display: none;
+}
+
+.plus-preview {
+  gap: 0.25rem;
+}
+
+@media (min-width: 56.25em) {
+  .plus-screen {
+    max-width: 36rem;
+    margin: 0 auto;
+    width: 100%;
+  }
+}

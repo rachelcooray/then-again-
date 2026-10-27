@@ -5,6 +5,7 @@ import { FAMILIES, FAMILY_ORDER, FORMATS, type FamilyId } from '../content/forma
 import { getPuzzle } from '../content/puzzles';
 import { LEVEL_NAME } from '../content/schedule';
 import { recordKey } from '../state/progress';
+import { useAccess } from '../state/access';
 import { useStore } from '../state/store';
 import { useToday } from '../state/useToday';
 
@@ -13,6 +14,7 @@ type Filter = 'all' | FamilyId;
 export function Library() {
   const today = useToday();
   const { data } = useStore();
+  const access = useAccess();
   const [filter, setFilter] = useState<Filter>('all');
   const [query, setQuery] = useState('');
 
@@ -27,7 +29,7 @@ export function Library() {
     <div className="screen">
       <div className="screen__head library-head">
         <h1 className="display">Library</h1>
-        <span className="kicker">{FORMATS.length} puzzle types</span>
+        <span className="kicker">{access.on && !access.plus ? `${access.free.length} free · ${FORMATS.length - access.free.length} with Plus` : `${FORMATS.length} puzzle types`}</span>
       </div>
 
       <div className="library-search">
@@ -62,12 +64,14 @@ export function Library() {
         {live.map((f) => {
           const played = data.progress[recordKey(today, f.id)];
           const level = getPuzzle(today, f.id)?.level;
+          const locked = access.locked(f.id, today);
           return (
             <Link key={f.id} to={`/play/${f.id}`} className={`card fam-${f.family}`}>
               <span className="kicker">{FAMILIES[f.family].kicker}</span>
               <span className="card__name">{f.name}</span>
               <span>{f.description}</span>
               <span className="card__meta" style={{ marginTop: 'auto' }}>
+                {locked ? <span className="plus-badge">Plus</span> : null}
                 {f.minutes} min · {level ? LEVEL_NAME[level] : f.difficulty}{played ? ' · Played today' : ''} <span aria-hidden="true">→</span>
               </span>
             </Link>
@@ -77,6 +81,14 @@ export function Library() {
 
       {live.length === 0 && (
         <p className="muted" style={{ textAlign: 'center', margin: '1.5rem 0' }}>No puzzles match that search.</p>
+      )}
+
+      {access.on && !access.plus && (
+        <Link to="/plus" className="card card--strong library-plus">
+          <span className="kicker library-plus__kicker">Then Again Plus</span>
+          <span className="card__name">Every game, every day, for {config.plusPrice} a month</span>
+          <span className="card__meta">See Plus <span aria-hidden="true">→</span></span>
+        </Link>
       )}
 
       {config.showCatalogue && (

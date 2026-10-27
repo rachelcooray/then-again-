@@ -20,6 +20,12 @@ const errors: string[] = [];
 test.beforeEach(async ({ page }) => {
   // These tests play the design puzzles, whose answers they know, rather than the generated calendar.
   await page.addInitScript(() => localStorage.setItem('then-again:content', 'canvas'));
+  // These tests play every game, so they have Plus.
+  await page.addInitScript(() => {
+    if (sessionStorage.getItem('plus-seeded')) return;
+    sessionStorage.setItem('plus-seeded', '1');
+    localStorage.setItem('then-again:v1', JSON.stringify({ version: 1, plus: { source: 'preview', since: '2026-10-01T00:00:00Z' } }));
+  });
   errors.length = 0;
   page.on('pageerror', (e) => errors.push(e.message));
 });

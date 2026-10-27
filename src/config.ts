@@ -12,8 +12,17 @@ export const config = {
    * stay hidden until it exists. Turn on with VITE_GEMS=true.
    */
   gemsEnabled: env.VITE_GEMS === 'true',
-  /** Purchases, Gem packs, Plus and adverts stay off during the free pilot (section 7). */
-  monetisationEnabled: false,
+  /**
+   * Games beyond the free ones need Then Again Plus. On unless a build sets VITE_MONETISATION=false;
+   * the remote switch monetisation_enabled can also turn it off without a release.
+   */
+  monetisationEnabled: env.VITE_MONETISATION !== 'false',
+  /** Games anyone can play without Plus. The remote switch free_formats can change the list. */
+  freeFormats: ['word-guess', 'word-search', 'sudoku', 'logic-grid', 'circle-word'] as string[],
+  /** Then Again Plus, shown before the store gives its local price. */
+  plusPrice: '$0.99',
+  /** Today's four stay free for everyone, so the daily habit, streak and hidden link never hit a paywall. */
+  dailyFourAlwaysFree: true,
   /** Where players can email for help. Shown in Help when set (VITE_SUPPORT_EMAIL). */
   supportEmail: env.VITE_SUPPORT_EMAIL ?? '',
   /** Store pages, for the "please update" screen (VITE_APP_STORE_URL, VITE_PLAY_STORE_URL). */

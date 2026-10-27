@@ -46,6 +46,15 @@ not linked from the app) show the calendar and every puzzle's answer, a review q
 player lookup and deletion for data requests, feedback and error reports, pilot numbers, and the remote switches.
 Both run as a preview until Supabase is connected: see `docs/accounts-setup.md`.
 
+### Then Again Plus
+
+Five games are free (`config.freeFormats`: Word Guess, Word Search, Sudoku, 4×4 Logic, Circle Word Finder) and so is
+every one of today's four, whatever they are (`config.dailyFourAlwaysFree`). The other games need Plus at $0.99 a
+month (`#/plus`). The admin Switches page can turn the locks off or change the free list without a release
+(`monetisation_enabled`, `free_formats`). Payments aren't connected yet: "Get Plus" starts a labelled preview on the phone.
+Gem packs are priced below Plus: 100 for $0.29, 400 for $0.99, 1,000 for $1.99 (the Gems screen stays hidden until the
+server-side wallet exists).
+
 ### Memories
 
 Result cards ask a yes-or-no question about the memory ("Did you have one?"). Answers go anonymously to the

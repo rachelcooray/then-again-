@@ -82,7 +82,7 @@ test.describe('hard-day boards at 320px with the largest text', () => {
     await page.addInitScript(() => {
       if (sessionStorage.getItem('seeded')) return;
       sessionStorage.setItem('seeded', '1');
-      localStorage.setItem('then-again:v1', JSON.stringify({ version: 1, settings: { textSize: 'larger', appearance: 'light' } }));
+      localStorage.setItem('then-again:v1', JSON.stringify({ version: 1, settings: { textSize: 'larger', appearance: 'light' }, plus: { source: 'preview', since: '2026-10-01T00:00:00Z' } }));
     });
     await page.clock.setFixedTime(new Date(`${SATURDAY}T10:00:00`));
     for (const id of Object.keys(hard.puzzles)) {

@@ -9,7 +9,10 @@ import { select } from './backend';
 export interface RemoteConfig {
   min_version: string;
   latest_version: string;
+  /** Games beyond the free list need Plus. */
   monetisation_enabled: boolean;
+  /** Games anyone can play without Plus; empty means the list built into the app. */
+  free_formats: string[];
   gems_enabled: boolean;
   /** Formats taken out of play for now, for example while a bad puzzle is replaced. */
   paused_formats: string[];
@@ -22,7 +25,8 @@ export interface RemoteConfig {
 export const DEFAULT_REMOTE: RemoteConfig = {
   min_version: '0.0.0',
   latest_version: '0.0.0',
-  monetisation_enabled: false,
+  monetisation_enabled: true,
+  free_formats: [],
   gems_enabled: false,
   paused_formats: [],
   banner: null,

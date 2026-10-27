@@ -103,7 +103,7 @@ test('admin: players, feedback and switches explain what needs the server', asyn
   await page.goto('/#/admin/feedback');
   await expect(page.getByText('appear here once Supabase is connected')).toBeVisible();
   await page.goto('/#/admin/switches');
-  await page.getByLabel('Sudoku', { exact: true }).check();
+  await page.getByRole('group', { name: 'Paused games' }).getByLabel('Sudoku', { exact: true }).check();
   await page.getByRole('button', { name: 'Save switches' }).click();
   await expect(page.getByText('Switches can be saved once Supabase is connected.')).toBeVisible();
 });
